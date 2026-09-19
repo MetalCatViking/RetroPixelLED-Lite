@@ -2,7 +2,7 @@
 
 # 🕹️ Integración con ReplayOS
 
-El **Modo Arcade** en la versión Lite permite que tu matriz LED funcione como una marquesina dinámica con **ReplayOS**. El panel detectará el sistema y juego que estás jugando y te lo mostrará automáticamente y si el juego tiene una marquesina animada preparada, la reproducirá en bucle mientras juegas.
+El **Modo Arcade** en la versión Lite permite que tu matriz LED funcione como una marquesina dinámica con **ReplayOS**. El panel detectará el sistema y juego que estás jugando, te lo mostrará automáticamente y si el juego tiene una marquesina animada preparada, la reproducirá en bucle mientras juegas.
 
 > [!NOTE]
 > **Diferencia clave con Batocera/Recalbox:** ReplayOS no tiene un sistema de scripts/eventos como esos frontends, así que aquí **no se instala nada en el dispositivo de ReplayOS**. En su lugar, es el propio ESP32 quien pregunta periódicamente a la **API REST** de ReplayOS qué sistema y juego están activos ahora mismo, y busca la marquesina correspondiente en su propia tarjeta SD. Toda la preparación de contenido (imágenes, GIFs, listados) se hace en tu PC con las herramientas de PowerShell de este apartado, y el resultado se copia a la SD del panel.
