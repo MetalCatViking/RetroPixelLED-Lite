@@ -1,5 +1,12 @@
 ## 📝 Changelog (Registro de Cambios)
 
+### [v3.1.2] - 2026-09-01
+**Retro Pixel LED Lite: "Total Control"**
+
+#### ✨ Añadido
+* **🔤 Selección de estilo de fuente en la PWA:** Se puede elegir entre los estilos Bold, SemiBold, Regular y Light.
+* **🏠 Integración con Home Assistant**: Se integra con Home Asistant mediante integración REST.
+
 ### [v3.1.0] - 2026-08-02
 **Retro Pixel LED Lite: "PWA Total Control"**
 
