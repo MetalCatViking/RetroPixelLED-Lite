@@ -299,6 +299,26 @@
     background:transparent; color:var(--text-primary); font-family:var(--font-pixel);
     font-size:10px; letter-spacing:1px; cursor:pointer; margin-top:6px;
   }
+
+  /* ---------- MANDO IR (dentro de Ajustes) ---------- */
+  .irRow{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    padding:10px 0; border-bottom:1px solid var(--grid-line);
+  }
+  .irRow:last-of-type{border-bottom:none;}
+  .irInfo{display:flex; flex-direction:column; gap:2px;}
+  .irInfo .irLabel{font-size:12px; color:var(--text-primary);}
+  .irInfo .irCode{font-size:9px; color:var(--text-dim); font-family:var(--font-mono);}
+  .irBtn{
+    padding:8px 12px; border-radius:6px; border:1px solid var(--amber); background:transparent;
+    color:var(--amber); font-family:var(--font-mono); font-size:10px; letter-spacing:.5px;
+    cursor:pointer; white-space:nowrap;
+  }
+  .irBtn.waiting{border-color:var(--text-dim); color:var(--text-dim); cursor:default;}
+  .irBtn:disabled{opacity:.5; cursor:default;}
+  .irMsg{font-size:10px; text-align:center; min-height:14px; margin-top:10px;}
+  .irMsg.ok{color:#5FDB7E;}
+  .irMsg.err{color:var(--red-alert);}
 </style>
 </head>
 <body>
@@ -442,6 +462,16 @@
       Se leen y escriben directamente sobre <code>config.ini</code>. El panel se reiniciará al guardar para aplicar los cambios.
     </div>
     <div id="cfgBody"><div class="cfgLoading">Cargando ajustes del panel...</div></div>
+
+    <div class="cfgGroup">
+      <h3>Mando IR</h3>
+      <div class="modalSub" style="margin:0 0 10px;">
+        Pulsa "MAPEAR" y, en los siguientes segundos, pulsa la tecla del mando físico que quieras asignar a esa función.
+      </div>
+      <div id="irRows"></div>
+      <div class="irMsg" id="irMsg"></div>
+    </div>
+
     <div class="modalBtnRow">
       <button id="cfgCancel">CANCELAR</button>
       <button id="cfgSave">GUARDAR</button>
@@ -844,7 +874,7 @@ pingPanel();
 /* =========================================================
    ESTADO GENERAL DEL PANEL (brillo, modo, playlist, reloj...)
    ========================================================= */
-const CLOCK_STYLES = ['Matrix', 'Solid', 'Rainbow', 'Pulse', 'Gradient'];
+const CLOCK_STYLES = ['Solid', 'Aurora', 'Rainbow', 'Gradient', 'Fuego', 'Glitch'];
 let panelStatus = null; // última foto de /status
 let currentTab = 'gif';
 
@@ -1224,6 +1254,7 @@ async function abrirAjustes(){
 
   cfgOverlay.classList.add('open');
   cfgBody.innerHTML = '<div class="cfgLoading">Cargando ajustes del panel...</div>';
+  cargarEstadoIR(); // en paralelo, no bloquea la carga del resto de ajustes
 
   try {
     const res = await fetch(`http://${ip}/config`, { signal: AbortSignal.timeout(5000) });
@@ -1280,6 +1311,134 @@ document.getElementById('settingsBtn').addEventListener('click', abrirAjustes);
 document.getElementById('cfgClose').addEventListener('click', cerrarAjustesSinGuardar);
 document.getElementById('cfgCancel').addEventListener('click', cerrarAjustesSinGuardar);
 document.getElementById('cfgSave').addEventListener('click', guardarAjustes);
+
+/* =========================================================
+   MANDO IR (mapeo de botones desde Ajustes)
+   ========================================================= */
+// idx debe coincidir con el switch(pasoMapeo) de gestionarMapeoIR() en el firmware.
+// OJO: en el firmware "ir_btn_up/down" son Brillo y "ir_btn_subir/bajar" son Navegación.
+const IR_BOTONES = [
+  { idx:0, key:'on',    label:'⏻ Encendido' },
+  { idx:1, key:'off',   label:'⏻ Apagado' },
+  { idx:2, key:'up',    label:'☀ Subir brillo' },
+  { idx:3, key:'down',  label:'☀ Bajar brillo' },
+  { idx:4, key:'menu',  label:'☰ Menú' },
+  { idx:5, key:'ok',    label:'✓ Validar' },
+  { idx:6, key:'subir', label:'▲ Subir (navegar)' },
+  { idx:7, key:'bajar', label:'▼ Bajar (navegar)' },
+];
+
+const irRows = document.getElementById('irRows');
+const irMsg = document.getElementById('irMsg');
+let irCapturando = false;
+
+irRows.innerHTML = IR_BOTONES.map(b => `
+  <div class="irRow">
+    <div class="irInfo">
+      <span class="irLabel">${b.label}</span>
+      <span class="irCode" id="irCode_${b.idx}">—</span>
+    </div>
+    <button class="irBtn" id="irBtn_${b.idx}" data-idx="${b.idx}">MAPEAR</button>
+  </div>`).join('');
+
+function setIrMsg(txt, tipo){
+  irMsg.textContent = txt || '';
+  irMsg.className = 'irMsg' + (tipo ? ' ' + tipo : '');
+}
+
+function irSetBotonesEnabled(enabled){
+  document.querySelectorAll('.irBtn').forEach(b => b.disabled = !enabled);
+}
+
+async function cargarEstadoIR(){
+  const ip = ipEl.value.trim();
+  if (!ip) return;
+  try {
+    const res = await fetch(`http://${ip}/ir/estado`, { signal: AbortSignal.timeout(4000) });
+    if (!res.ok) return;
+    const data = await res.json();
+    IR_BOTONES.forEach(b => {
+      const el = document.getElementById('irCode_' + b.idx);
+      if (el) el.textContent = data[b.key] || '—';
+    });
+  } catch (e) { /* si falla, dejamos los guiones */ }
+}
+
+async function irMapearBoton(idx){
+  const ip = ipEl.value.trim();
+  if (!ip || irCapturando) return;
+
+  const b = IR_BOTONES.find(x => x.idx === idx);
+  const btn = document.getElementById('irBtn_' + idx);
+  const codeEl = document.getElementById('irCode_' + idx);
+  const valorPrevio = codeEl ? codeEl.textContent : '—';
+
+  irCapturando = true;
+  irSetBotonesEnabled(false);
+  btn.classList.add('waiting');
+  btn.textContent = 'ESPERANDO...';
+  setIrMsg('Pulsa ahora la tecla en el mando físico...', '');
+
+  try {
+    await fetch(`http://${ip}/ir/learn`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idx }),
+      signal: AbortSignal.timeout(4000)
+    });
+  } catch (e) {
+    setIrMsg('No se pudo contactar con el panel.', 'err');
+    btn.classList.remove('waiting');
+    btn.textContent = 'MAPEAR';
+    irCapturando = false;
+    irSetBotonesEnabled(true);
+    return;
+  }
+
+  // Sondeamos /ir/estado hasta que el panel salga del modo captura (código recibido o timeout)
+  let intentos = 0;
+  const maxIntentos = 40; // ~20s de margen, por encima del timeout de captura del propio panel
+
+  const intervalo = setInterval(async () => {
+    intentos++;
+    try {
+      const res = await fetch(`http://${ip}/ir/estado`, { signal: AbortSignal.timeout(3000) });
+      const data = await res.json();
+
+      if (data.pasoMapeo !== idx || intentos >= maxIntentos) {
+        clearInterval(intervalo);
+        const nuevoValor = data[b.key] || '—';
+        if (codeEl) codeEl.textContent = nuevoValor;
+
+        if (nuevoValor !== valorPrevio) {
+          setIrMsg(`✓ "${b.label}" mapeado correctamente.`, 'ok');
+        } else {
+          setIrMsg('✗ Tiempo agotado, no se detectó ninguna tecla.', 'err');
+        }
+
+        btn.classList.remove('waiting');
+        btn.textContent = 'MAPEAR';
+        irCapturando = false;
+        irSetBotonesEnabled(true);
+      }
+    } catch (e) {
+      if (intentos >= maxIntentos) {
+        clearInterval(intervalo);
+        setIrMsg('Se perdió la conexión con el panel durante el mapeo.', 'err');
+        btn.classList.remove('waiting');
+        btn.textContent = 'MAPEAR';
+        irCapturando = false;
+        irSetBotonesEnabled(true);
+      }
+    }
+  }, 500);
+}
+
+irRows.addEventListener('click', (e) => {
+  const btn = e.target.closest('.irBtn');
+  if (!btn) return;
+  irMapearBoton(parseInt(btn.dataset.idx, 10));
+});
 
 /* =========================================================
    PLAYLISTS
