@@ -1,11 +1,22 @@
 ## 📝 Changelog (Registro de Cambios)
 
+
+### [v3.1.3] - 2026-09-19
+**Retro Pixel LED Lite: "Total Control"**
+
+#### ✨ Añadido
+* **Preproducción de GIFs con ReplayOS:** Se reproduce el GIF del juego que ejecutas en ReplayOS.
+* **Nuevos estilos de Reloj:** Se añaden nuevos estilos para el reloj.
+* **Configuración de IR mediante PWA:** Se añade a la PWA la función de configurar los botones del mando IR.
+---
+
 ### [v3.1.2] - 2026-09-01
 **Retro Pixel LED Lite: "Total Control"**
 
 #### ✨ Añadido
-* **🔤 Selección de estilo de fuente en la PWA:** Se puede elegir entre los estilos Bold, SemiBold, Regular y Light.
-* **🏠 Integración con Home Assistant**: Se integra con Home Asistant mediante integración REST.
+* **Selección de estilo de fuente en la PWA:** Se puede elegir entre los estilos Bold, SemiBold, Regular y Light.
+* **Integración con Home Assistant:** Se integra con Home Asistant mediante integración REST.
+---
 
 ### [v3.1.0] - 2026-08-02
 **Retro Pixel LED Lite: "PWA Total Control"**
