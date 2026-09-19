@@ -100,7 +100,7 @@ Si ya tienes (o has descargado) una colección de GIFs de arcade con nombres "hu
 > [!NOTE]
 > Esta segunda opción también sabe copiar a las rutas de Batocera o Recalbox (por red), si alguna vez preparas GIFs para varios frontends a la vez desde el mismo PC.
 
-## 3. Estructura de archivos en la SD de ReplayOS
+## 3. Estructura de archivos en la SD de Retro Pixel LED lite
 
 Para que la integración funcione, la carpeta `Arcade` va en la **raíz** de la SD del panel:
 
