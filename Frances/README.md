@@ -1,84 +1,111 @@
-# ✨ Retro Pixel LED Lite v3.1.2
-**[🇪🇸 Español](https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/README.md) | [🇫🇷 Français](https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/Frances/README.md)**
+# ✨ Retro Pixel LED Lite
 
-### **[✈️ Rejoindre le Groupe Telegram : Retro Pixel LED pour rester informé des mises à jour](https://t.me/RetroPixelLed)**
+<p align="center">
+  <img alt="Version" src="https://img.shields.io/badge/version-3.1.3-blue">
+  <img alt="Plateforme" src="https://img.shields.io/badge/plateforme-ESP32-informational">
+  <img alt="Licence" src="https://img.shields.io/badge/licence-MIT-green">
+  <img alt="Statut" src="https://img.shields.io/badge/statut-actif-success">
+</p>
 
-## 💡 Description du Projet
+<p align="center">
+  <a href="https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/README.md">🇪🇸 Español</a> ·
+  <a href="https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/Frances/README.md">🇫🇷 Français</a> ·
+  <a href="https://t.me/RetroPixelLed">✈️ Groupe Telegram</a>
+</p>
 
-**Retro Pixel LED Lite** est la version haute performance conçue pour ceux qui recherchent une stabilité absolue, une vitesse instantanée et un système sans maintenance. Contrairement à la version standard, le firmware LITE élimine la charge du serveur web et la connectivité permanente pour consacrer 100% de la puissance de l'ESP32 au rendu des GIFs.
+<p align="center">
+  <a href="https://paypal.me/fjgordillo"><img alt="Faire un don avec PayPal" src="https://img.shields.io/badge/☕_Offrez--moi_un_café-PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white"></a>
+</p>
 
-Si la branche 2.x.x a introduit le Menu OSD, la nouvelle **v3.0.0** représente la transition définitive vers l'indépendance matérielle. Cette version transforme le panneau LED en un appareil intelligent autonome, éliminant complètement le besoin de connecter l'ESP32 à un ordinateur pour les tâches de maintenance ou de configuration.
-Pour la première fois, le système permet la modification des fichiers de configuration (`config.ini`) et la gestion des bibliothèques de playlists directement depuis l'Explorateur Windows ou des clients FTP, transformant la carte SD en un lecteur réseau sans fil.
-L'assistance native pour télécommandes est intégrée, vous permettant de naviguer dans le Menu OSD, d'ajuster la luminosité dynamique et de contrôler la mise sous/hors tension depuis votre canapé. **À partir de la version 3.1.0, nous pouvons contrôler le panneau LED depuis l'APPLICATION !!!**
-
-
-Vous souhaitez créer vos propres GIFs ? Voici trois magnifiques outils :
-- [DMD GIF converter](https://github.com/shan-aya/DMD_GIF_converter) créé par **shan-aya**.
-- [dmd gif converter](https://github.com/red77290/dmd_gif_converter) créé par **red77290**.
-- [Video à GIF](https://p4blogc.github.io/dmdos-converter/) créé par **p4bloGC**.
-
-
-## 🆕 Nouveautés de la Version v3.1.2 Lite
-
-#### 🚀 Nouvelles Fonctionnalités (Features)
-
-* **🔤 Sélection du style de police dans la PWA:** Il est posible de choisir entre les styles Bold, SemiBold, Regular et Light.
-* **🏠 Intégration avec Home Assistant :** S'intègre avec Home Assistant via l'intégration REST. **Plus d'infos au point 10. 🏠 Intégration avec Home Assistant**
+> 💛 Si Retro Pixel LED apporte une touche rétro sympathique à votre intérieur, vous pouvez m'offrir un café en utilisant le bouton ci-dessus. Chaque contribution m'aide à développer de nouvelles fonctionnalités !
 
 ---
 
-## 🕹️ Intégration Spéciale : Mode Arcade (Batocera, Recalbox & RePlayOS)
+## 💡 Description du projet
 
-Cette version Lite introduit un support avancé pour les écosystèmes de retrogaming, permettant deux méthodes de synchronisation : via des scripts locaux (**Batocera / Recalbox**) ou par surveillance native sur réseau local (**RePlayOS**). 
+**Retro Pixel LED Lite** est la version haute performance de Retro Pixel LED, conçue pour ceux qui recherchent une stabilité absolue, une vitesse instantanée et un système sans entretien. Contrairement à la version standard, le firmware **LITE** se débarrasse du serveur web embarqué et des connexions permanentes pour dédie 100 % de la puissance de l'ESP32 à une seule tâche : le rendu fluide des GIFs.
 
-Grâce à une hiérarchie de fichiers intelligente et optimisée pour le matériel de l'ESP32, le panneau gère le changement d'état et affiche :
+Si la branche 2.x.x a apporté le menu OSD, la version **v3.0.0** a marqué un tournant vers l'indépendance matérielle : le panneau LED est devenu un appareil autonome qui n'a plus besoin d'être connecté à un ordinateur pour sa configuration ou sa maintenance. Le fichier `config.ini` et les playlists peuvent être édités directement via l'explorateur Windows ou un client FTP, transformant la carte SD en un lecteur réseau sans fil. Elle intègre également le support natif des télécommandes infrarouges : naviguez dans le menu OSD, ajustez la luminosité et allumez/éteignez le panneau depuis votre canapé.
 
-1. **Marquise du Jeu :** Image `.bmp` 24 bits chargée instantanément, ou un **GIF animé** (Batocera et Recalbox) s'il en existe un pour ce jeu — incluant des séquences de plusieurs GIFs lus les uns après les autres en boucle.
-2. **Logo du Système :** Image `.bmp` 24 bits chargée instantanément lors de la navigation à travers les systèmes.
-
-
-Pour plus d'informations, rendez-vous au point `9. 🕹️ Intégration avec Batocera, Recalbox ou ReplayOS (Arcade)`
+**Depuis la v3.1.0, vous pouvez contrôler le panneau via une application web (PWA)**, et depuis la **v3.1.2**, directement depuis **Home Assistant**. 🏠
 
 ---
 
-## 📜 Historique Détaillé des Changements (v3.0.0 -> v3.1.2)
+## 📑 Table des matières
 
-| Fonctionnalité | Détail Technique | Bénéfice |
-| :--- | :--- | :--- |
-| **🏠 Intégration Home Assistant** | Exposition des points d'accès REST API (GET `/status`, POST `/control`, `/playlist`, `/texto`, `/timer/toggle`) et package YAML complet pour une intégration domotique native. | **Automatisation et contrôle domotique.** Contrôlez l'allumage, l'extinction, changez de mode, de playlist et envoyez des notifications textuelles depuis l'interface ou les automatisations de Home Assistant. |
-| **🔤 Sélection de police du texte** | Intégration de 4 typographies sélectionnables par paramètre (`Bold`, `SemiBold`, `Regular`, `Light`) sur les points d'accès HTTP, la PWA et l'intégration REST. | **Personnalisation visuelle.** Permet d'adapter le style visuel des messages défilants selon le type de notification ou les préférences esthétiques. |
-| **🎛️ Panneau de Contrôle PWA** | Interface web progressive (Progressive Web App) avec 5 modules de contrôle indépendants et édition à distance de `config.ini`. | **Contrôle total depuis n'importe quel appareil.** Indépendant de la géolocalisation, fonctionne sur le réseau local sans serveur externe. |
-| **☀️ Contrôle de Luminosité** | Curseur glissant en temps réel (0-100%) avec application instantanée, sans redémarrage. | **Ajustement fluide.** Adapte la luminosité à l'éclairage ambiant en un instant. |
-| **🔤 Texte Défilant avec UTF-8** | Moteur de défilement de texte avec décodeur UTF-8→Latin-1 en temps réel, support des caractères polonais et accentués. | **Internationalisation complète.** Messages avec ñ, á, ł, ą sans limitations. |
-| **🎨 Mode GIF / Horloge / Texte** | Sélecteur de mode sur l'accueil de la PWA ; changement instantané sans redémarrage. | **Expérience immédiate.** Changements visibles sur le panneau instantanément. |
-| **🎞️ Playlists Dynamiques** | Changement de playlist en temps réel depuis la PWA ; rechargement des index à la volée. | **Flexibilité maximale.** Alternez entre les collections sans interrompre la lecture. |
-| **⏰ Minuteur Intelligent** | Mise sous/hors tension programmée avec interface de sélection d'horaire ; dérogation manuelle par bouton ou PWA. | **Automatisation complète.** Allume le panneau à une heure, l'éteint à une autre ; un bouton annule le programme. |
-| **🔄 Mise à Jour Distante (OTA + Langues)** | Page de Mise à Jour indépendante dans la PWA ; téléchargement du firmware et des langues depuis GitHub sans extraction de la SD. | **Maintenance sans fil.** Mettez à jour le panneau entièrement sans fil, y compris les fichiers de langue JSON. |
-| **⚙️ Réglages Complets Distants** | Édition à distance des sections de `config.ini` : WiFi, Matériel (panneau, vitesse I2S, rafraîchissement), Lecture (arcade, horloge), Météo, Langue. | **Configuration sans fil.** Modifiez tout le comportement du panneau depuis la PWA ; redémarrage automatique si nécessaire. |
-| **💬 Contrôle du Texte Défilant** | Endpoints HTTP POST et PWA web app sur le réseau local pour envoyer des chaînes personnalisées, sélectionner la couleur, la palette et la vitesse de défilement. | **Interactivité distante.** Affichez des messages et notifications à la volée depuis n'importe quel appareil mobile ou ordinateur connecté au réseau sans reprogrammer. |
-| **💥 Transition de Particules** | Moteur de particules dynamiques intégré pour les effets d'entrée et de sortie de l'heure. | **Fluidité visuelle.** Élimine les coupures statiques au profit d'un effet fluide et professionnel. |
-| **🎨 Sélection de Couleur OSD** | Menu interactif à l'écran associé au récepteur IR et à la mémoire EEPROM/SD. | **Personnalisation.** Changez la couleur de l'horloge à la volée depuis la télécommande sans modifier le `config.ini`. |
-| **⚡ Horloge Sans Scintillement** | Refactorisation de la logique de rendu utilisant un mode *Single Buffer* optimisé pour les interfaces. | **Image nette.** Élimination totale du scintillement (*flicker*) lors de la mise à jour rapide des données. |
-| **🧠 Optimisation de la RAM** | Refactorisation des objets `String` en `char[]` et utilisation massive de `PSTR()` / `F()`. | **Zéro fragmentation.** Les textes sont stockés dans la Flash, libérant le Heap pour le Double Buffer. |
-| **🛡️ Anti-Panic System** | Vérification de `display->begin()` avec basculement en Single Buffer en cas d'échec d'allocation RAM. | **Stabilité totale.** Évite les blocages (`StoreProhibited`) si la mémoire se fragmente après l'utilisation du WiFi. |
-| **🖱️ Confirmation Sécurisée** | Logique de détection basée sur la durée de pression (*Long Press*) pour le bouton physique. | **Navigation Précise.** Évite les entrées accidentelles dans les menus ; vous confirmez désormais en maintenant enfoncé. |
-| **📂 Serveur FTP Intégré** | Protocole de transfert de fichiers sans fil direct vers la carte SD de l'ESP32. | **Confort.** Gérez vos playlists, fichiers `.ini` et `.json` sans avoir à retirer la MicroSD. |
-| **📡 Télécommande IR** | Cartographie dynamique des fonctions et navigation dans les menus via récepteur infrarouge. | **Contrôle à distance.** Gérez la luminosité, éteignez ou allumez le panneau et naviguez dans le menu confortablement depuis une télécommande. |
-| **🎨 Configuration des Couleurs** | Paramètre `colorOrder` (RGB/RBG/GBR) traité dynamiquement depuis le `config.ini`. | **Polyvalence.** Compatibilité avec n'importe quel panneau HUB75 du marché sans reprogrammation. |
+1. [🆕 Nouveautés de la version actuelle](#-nouveautés-de-la-version-v313-lite)
+2. [🚀 Guide rapide](#-guide-rapide-premiers-pas)
+3. [🎛️ Fonctionnalités principales](#️-fonctionnalités-principales)
+   - [🖥️ Menu OSD](#️-menu-osd-navigation-intelligente)
+   - [📱 Application PWA de contrôle à distance](#-pwa--application-de-contrôle-à-distance)
+   - [🏠 Home Assistant](#-home-assistant)
+   - [🕹️ Mode Arcade](#️-mode-arcade-batocera-recalbox--replayos)
+   - [🕒 Horloge et Météo](#-horloge-et-météo)
+   - [⏰ Minuteur](#-minuteur)
+   - [🌐 Multi-langue](#-multi-langue)
+   - [📂 Serveur FTP](#-serveur-ftp)
+   - [🔄 Mise à jour OTA](#-mise-à-jour-ota)
+4. [⚙️ Installation et configuration](#️-installation-et-configuration)
+   - [1. Programmer l'ESP32](#1--programmer-lesp32-web-installer)
+   - [2. Préparer la carte SD](#2--préparation-de-la-carte-sd)
+   - [3. Le fichier `config.ini`](#3--configuration-via-configini)
+   - [4. Fuseau horaire (TZ)](#4--configuration-du-fuseau-horaire-tz)
+   - [5. Clé API Météo](#5-%EF%B8%8F-comment-obtenir-votre-cl%C3%A9-api-m%C3%A9t%C3%A9o)
+5. [📖 Générateur de playlists (Windows)](#-générateur-de-playlists-windows)
+6. [🕹️ Intégration Arcade](#️-intégration-arcade-batocera-recalbox-ou-replayos)
+7. [🏠 Intégration Home Assistant](#-intégration-home-assistant-guide-complet)
+8. [🧠 Architecture interne / Core Lite](#-architecture-interne--core-lite)
+9. [📜 Historique détaillé des modifications](#-historique-détaillé-des-modifications-v300--v313)
+10. [🛒 Liste du matériel](#-liste-du-matériel)
+11. [🔌 Câblage (Pinout)](#-câblage-pinout)
+12. [🛠️ Feuille de route (Roadmap)](#%EF%B8%8F-feuille-de-route-roadmap)
+13. [⚖️ Licence et remerciements](#️-licence-et-remerciements)
+
 ---
-### 🖥️ Structure du Menu OSD (Navigation Intelligente)
 
-Le système se contrôle à l'aide d'un **bouton unique**. Il utilise une logique de pression avancée qui s'adapte selon le menu dans lequel vous vous trouvez :
-* **Pression Rapide :**
-    * **Dans les Menus :** Déplacer le curseur / Naviguer vers le bas.
-    * **En Mode Veille :** Réveille immédiatement le panneau (Wake-up).
-* **Pression Maintenue :**
-    * **Action Générale :** Entrer dans les sous-menus ou confirmer la sélection.
-    * **Dans la Configuration de l'Heure (Minuteur) :** Soustrait **-5 minutes** à la valeur actuelle pour un ajustement rapide vers l'arrière.
-* **Pression Très Longue (> 4 sec) :**
-    * **Dérogation Manuelle (Manual Override) :** Force l'extinction (Mode Veille), en bloquant l'automatisme du minuteur jusqu'au prochain cycle.
-* **Maintenir la Pression Continue :**
-    * **Dans la Configuration de l'Heure (Minuteur) :** Augmente automatiquement **+5 minutes** de manière cyclique tant que vous maintenez la pression.
+## 🆕 Nouveautés de la version v3.1.3 Lite
+
+- **🕹️ Support du système RePlayOS :** lecture automatique des GIFs et marquises rétro lors du changement de jeu grâce à l'intégration du frontend RePlayOS.
+- **⏰ Nouveaux styles visuels pour l'horloge :** options de personnalisation supplémentaires pour l'affichage de l'heure sur le panneau.
+- **📡 Cartographie télécommande IR via la PWA :** assignez et configurez les boutons de votre télécommande infrarouge directement depuis l'interface web.
+
+Pour le détail des versions précédentes (marquises GIF en Arcade, reconnexion WiFi, affichage de l'IP dans le menu OSD...), consultez l'[Historique des modifications](#-historique-détaillé-des-modifications-v300--v313).
+
+---
+
+## 🚀 Guide rapide (premiers pas)
+
+Si vous installez Retro Pixel LED Lite pour la première fois, voici la méthode la plus rapide :
+
+1. **Flashez le firmware** avec l'[installateur web](#1--programmer-lesp32-web-installer) — il vous suffit d'utiliser Chrome ou Edge, aucune installation requise sur votre PC.
+2. **Préparez la carte MicroSD** au format FAT32 en y copiant le [contenu du dossier `Contenido SD`](#2--préparation-de-la-carte-sd).
+3. **Éditez `config.ini`** avec vos identifiants WiFi et vos préférences ([référence complète](#3--configuration-via-configini)).
+4. **Allumez le panneau.** Il synchronisera l'heure, chargera vos GIFs et sera immédiatement opérationnel. ✨
+5. *(Optionnel)* Installez la [PWA](#-pwa--application-de-contrôle-à-distance) pour le contrôler depuis votre téléphone, ou [intégrez-le à Home Assistant](#-intégration-home-assistant-guide-complet).
+6. *(Optionnel)* Si vous utilisez Batocera, Recalbox ou ReplayOS, suivez le [guide d'intégration Arcade](#️-intégration-arcade-batocera-recalbox-ou-replayos) pour afficher les marquises dynamiques.
+
+Le reste de ce document constitue une référence détaillée pour chaque fonctionnalité. 🙂
+
+---
+
+## 🎛️ Fonctionnalités principales
+
+Cette section résume **le rôle** de chaque composant du système. Pour la procédure d'installation étape par étape, rendez-vous dans la section [⚙️ Installation et configuration](#️-installation-et-configuration).
+
+### 🖥️ Menu OSD (navigation intelligente)
+
+Le système se contrôle via un **bouton unique** (ou la télécommande IR), avec une logique de pression qui s'adapte en fonction du menu :
+
+- **Pression courte :**
+  - **Dans les menus :** déplacer le curseur / naviguer vers le bas.
+  - **En mode veille :** réveille immédiatement le panneau.
+- **Pression longue :**
+  - **Action générale :** entrer dans les sous-menus ou valider la sélection.
+  - **Dans la config du minuteur :** soustrait **-5 minutes** à la valeur actuelle.
+- **Pression très longue (> 4 sec) :**
+  - **Désactivation manuelle (Override) :** force l'extinction (mode veille), bloquant le minuteur jusqu'au cycle suivant.
+- **Maintien continu :**
+  - **Dans la config du minuteur :** augmente automatiquement de **+5 minutes** en boucle tant que le bouton est maintenu.
 
 ```text
 🏠 MENU PRINCIPAL
@@ -88,263 +115,322 @@ Le système se contrôle à l'aide d'un **bouton unique**. Il utilise une logiqu
 │   ├── 📄 ...
 │   └── 🔙 Retour
 ├── 📂 Lecture
-│   └── 🖼️ Mode : [GIFs / Horloge]
-│   └── 🔀 Aléatoire : [OUI / NON]
-│   └── 🕹️ Arcade : [OFF / Batocera / Recalbox / ReplayOS]
-│   └── 💬 Texte : [OUI / NON]
+│   ├── 🖼️ Mode : [GIFs / Horloge]
+│   ├── 🔀 Aléatoire : [OUI / NON]
+│   ├── 🕹️ Arcade : [OFF / Batocera / Recalbox / ReplayOS]
+│   ├── 💬 Texte : [OUI / NON]
 │   └── 🔙 Retour
 ├── ☀️ Luminosité
-│   └──   Luminosité : [5% - 100%]
+│   └── Niveau : [5% - 100%]
 ├── 📶 WiFi : [ON / OFF]
 │   ├── 🔄 Activer : [OUI / NON]
 │   ├── 🔎 Afficher IP : [OUI / NON]
-│   ├── 🏷️ IP : [192.169.1.117]
+│   ├── 🏷️ IP : [192.168.1.117]
 │   ├── 📱 Contrôle APP : [OUI / NON]
 │   └── 🔙 Retour
 ├── 🕒 Horloge : [ON / OFF]
-│   ├── 🔄 Activar : [OUI / NON]
+│   ├── 🔄 Activer : [OUI / NON]
 │   ├── 🖼️ Tous les : [1...20] GIFs
-│   ├── ⏳ Afficher : [5...30] sec
-│   └── 🎨 Style Horloge : [Matrix, Solid, Rainbow, Pulse, Gradient]
-│   └── 🎨 Couleur : [Blanc, Rouge, Vert, Bleu, Jaune, Cyan, Magenta, Orange et Rose]
+│   ├── ⏳ Durée : [5...30] sec
+│   ├── 🎨 Style Horloge : [Matrix, Solid, Rainbow, Pulse, Gradient]
+│   ├── 🎨 Couleur : [Blanc, Rouge, Vert, Bleu, Jaune, Cyan, Magenta, Orange, Rose]
 │   ├── 🔄 Transition : [OUI / NON]
 │   └── 🔙 Retour
 ├── 🌡️ Météo : [ON / OFF]
-│   └── 🔄 Activer : [OUI / NON]
+│   ├── 🔄 Activer : [OUI / NON]
 │   └── 🔙 Retour
 ├── 🕒 Minuteur : [ON / OFF]
-│   ├── 🔄 Activer : [OUI / NON]
+│   ├── 🔄 Activar : [OUI / NON]
 │   ├── ⏳ ON : [00:00 à 24:00]
 │   ├── ⏳ OFF : [00:00 à 24:00]
 │   └── 🔙 Retour
-├── ⚙️ Réglages Avancés
+├── ⚙️ Paramètres avancés
 │   ├── ⚡ Vitesse I2S : [8, 10, 16, 20MHz]
 │   ├── 🔄 Rafraîchissement : [30, 60, 90, 120Hz]
 │   ├── 🖼️ Buffer : [OUI / NON]
-│   ├── 👻 AntiGhot : [1, 2, 3, 4]
-│   ├── 🎮 Mappage Télécommande IR : [On, Off, Menu, Valider, Monter, Descendre, Luminosité+, Luminosité-]
-│   ├── ⚠️ Réinitialiser :
+│   ├── 👻 AntiGhost : [1, 2, 3, 4]
+│   ├── 🎮 Mappage Télécommande IR : [On, Off, Menu, Valid, Haut, Bas, Lum+, Lum-]
+│   ├── ⚠️ Réinitialiser
 │   └── 🔙 Retour
-├── 🚀 Mise à Jour
-│   └── 🔄 Rechercher OTA
+├── 🚀 Mise à jour
+│   ├── 🔄 Chercher OTA
 │   ├── 🔤 Télécharger langues
 │   └── 🔙 Retour
 ├── 📂 Explorateur SD
-│   └── 🔄 Démarrer FTP
+│   ├── 🔄 Démarrer FTP
 │   └── 🔙 Retour
 ├── 🌐 Langue
-│   └── [ES] Espagnol
-│   ├── [EN] Anglais
+│   ├── [ES] Español
+│   ├── [EN] English
 │   ├── [FR] Français
 │   ├── ...
 │   └── 🔙 Retour
-├── 💾 Enregistrer
+├── 💾 Sauvegarder
 └── 🔙 Quitter
 ```
 
-## 📱 PWA - Progressive Web App (Télécommande Complète)
+---
 
-### **[👉 Installer ou Essayer Retro Pixel LED Control](https://fjgordillo86.github.io/RetroPixelLED-Lite/control/)**
+### 📱 PWA — Application de contrôle à distance
 
-La PWA est une application web moderne, installable sur n'importe quel appareil (smartphone, tablette, ordinateur) connecté au même réseau local que le panneau. Elle ne nécessite aucun serveur externe, fonctionne entièrement sur le réseau local et reste accessible hors ligne une fois installée.
+**[👉 Installer ou tester Retro Pixel LED Control](https://fjgordillo86.github.io/RetroPixelLED-Lite/control/)**
+
+Application web moderne, installable sur n'importe quel appareil (téléphone, tablette, PC) connecté au même réseau local que le panneau LED. Elle ne nécessite aucun serveur externe et fonctionne hors ligne une fois installée. 📴
 
 https://github.com/user-attachments/assets/f5231448-7862-4476-901e-ac25ac7f4248
 
-#### 🎯 Caractéristiques Principales
+L'interface se divise en **5 sections** :
 
-L'interface est divisée en **5 sections indépendantes** accessibles depuis la barre de navigation :
+**1️⃣ Page principale (Accueil)**
+- **☀️ Contrôle de la luminosité :** curseur 0-100% avec application instantanée.
+- **🎛️ Sélecteur de mode :** bascule en temps réel entre GIF, Horloge ou Texte.
+  - **Mode GIF :** sélection de playlist + lecture aléatoire.
+  - **Mode Horloge :** 5 styles (Matrix, Solid, Rainbow, Pulse, Gradient) et 9 couleurs.
+  - **Mode Texte :** aperçu en direct pendant la saisie, choix de la couleur, de la police et de la vitesse de défilement.
+- **🔌 État de la connexion :** indicateur visuel (vert/rouge) du WiFi local.
 
-**1️⃣ Page d'Accueil (Home)**
-- **☀️ Contrôle de Luminosité :** Curseur 0-100% avec application instantanée, sans redémarrage.
-- **🎛️ Sélecteur de Mode :** Choisissez entre GIF, Horloge ou Texte en temps réel.
-  - **Mode GIF :** Affiche la playlist active + bascule de lecture aléatoire.
-  - **Mode Horloge :** Choisissez parmi 5 styles (Matrix, Solid, Rainbow, Pulse, Gradient) et 9 couleurs personnalisées.
-  - **Mode Texte :** Aperçu en direct de la matrice LED pendant que vous tapez, avec sélecteur de couleur et vitesse de défilement.
-- **🔌 État de la Connexion :** Indicateur visuel (vert/rouge) du statut WiFi.
+**2️⃣ Minuteur ⏰**
+- Activation / désactivation en un clic.
+- Plages horaires d'allumage et d'extinction (format 24h).
+- Bouton d'allumage/extinction manuel immédiat.
+- État actuel : allumé (✓ vert) ou en veille (● gris).
 
-**2️⃣ Minuteur (⏰)**
-- **Activer/Désactiver le minuteur** avec un interrupteur.
-- **Sélecteur d'heure d'allumage** (format 24h, plage 00:00 - 23:59).
-- **Sélecteur d'heure d'extinction** (même format).
-- **Bouton d'allumage/extinction manuel immédiat** (dérogation).
-- État actuel : panneau allumé (✓ vert) ou en veille (● gris).
+**3️⃣ Mode Texte défilant**
+- Aperçu en direct sur une matrice 26×7 pendant la saisie.
+- Sélecteur de couleur : palette de 9 couleurs + code HEX personnalisé.
+- **Sélecteur de police :** `Bold`, `SemiBold`, `Regular`, `Light` — *(nouveau dans la v3.1.2)*.
+- Vitesse de défilement : curseur de 5 à 200 ms par pas.
+- Boutons "▶ Envoyer" et "■ Stopper".
 
-**3️⃣ Mode Texte**
-- **Aperçu de matrice 26×7 :** Affiche le texte en temps réel pendant que vous l'écrivez, simulant exactement le rendu sur le panneau.
-- **Sélecteur de couleur :** Palette de 9 couleurs prédéfinies + sélecteur personnalisé hexadécimal.
-- **Contrôle de vitesse :** Curseur 5-200ms/pas avec aperçu en direct.
-- **Boutons d'action :** "▶ ENVOYER" (envoie le texte au panneau) et "■ STOP" (annule le défilement).
+**4️⃣ Mises à jour 🔄**
+- **Mise à jour OTA du firmware :** vérification et installation automatique depuis GitHub.
+- **Téléchargement des langues :** récupération des fichiers `.json` depuis GitHub vers le dossier `/idioma` de la SD.
 
-**4️⃣ Mise à Jour (🔄)**
-- **OTA du Firmware :** Vérifie GitHub et télécharge/installe automatiquement si une nouvelle version est disponible.
-- **Téléchargement des Langues :** Récupère tous les fichiers `.json` depuis le dossier des langues du dépôt GitHub et les enregistre dans `/idiomas` sur la SD, en remplaçant les précédents.
+**5️⃣ Configuration 🛠**
 
-**5️⃣ Réglages (🛠)**
-- **Édition distante complète de config.ini**, organisée en 7 sections :
-  - **WiFi :** SSID, mot de passe, fuseau horaire.
-  - **Matériel :** Nombre de panneaux, ordre des couleurs (RGB/RBG/GBR), luminosité, vitesse I2S, rafraîchissement minimum, buffering, anti-ghosting.
-  - **Arcade :** Activer Batocera, Recalbox, ReplayOS, ou aucun.
-  - **Texte Défilant :** Activer le défilement de texte à distance.
-  - **Horloge :** Actif/inactif, transition avec particules, intervalle, durée, style, couleur.
-  - **Météo :** Activer, ville, clé API OpenWeatherMap, intervalle de mise à jour, texte au-dessus de l'horloge.
-  - **Langue :** Sélecteur (ES, EN, FR, ...).
-  - **Redémarrage automatique** après enregistrement si des modifications le nécessitent.
+Édition à distance du fichier `config.ini`, organisée en 7 modules : WiFi, Matériel, Arcade, Texte défilant, Horloge, Météo et Langue.
 
-#### ⚙️ Installation et Configuration
+Redémarrage automatique après enregistrement si la modification le nécessite.
 
-1. **Accès Web :** Ouvrez https://fjgordillo86.github.io/RetroPixelLED-Lite/control/ depuis le navigateur de votre appareil (smartphone, tablette ou ordinateur).
-2. **Configurer l'IP :** Sur l'écran, appuyez sur l'icône de connexion (⚙) et entrez l'IP locale de votre panneau ESP32 (ex. 192.168.1.117).
-3. **Installer comme Application (Optionnel) :**
-   - Chrome/Edge : Une invite d'installation automatique devrait apparaître. Si ce n'est pas le cas, appuyez sur le menu (⋮) et sélectionnez "Installer l'application".
-   - Firefox/Safari : Appuyez sur le menu de partage (↗) et choisissez "Sur l'écran d'accueil".
-4. **Utilisation :** Une fois installée, elle apparaîtra comme une application normale sur votre appareil — accès rapide sans saisir d'URL.
+#### ⚙️ Installation de l'application PWA
+
+1. Ouvrez <https://fjgordillo86.github.io/RetroPixelLED-Lite/control/> depuis votre appareil.
+2. Cliquez sur l'icône de connexion (⚙) et entrez l'adresse IP locale de votre panneau (ex : `192.168.1.117`).
+3. *(Optionnel)* Installez l'application : Chrome/Edge le proposera automatiquement ; sinon, menu (⋮) → "Installer l'application". Sur Safari iOS, Partager (↗) → "Sur l'écran d'accueil".
+4. Terminé — l'application est prête à être utilisée. 🎉
 
 #### 📝 Prérequis
 
-- Le panneau doit être connecté au même réseau WiFi que votre appareil.
-- Il doit être **activé** sur le panneau (`CONFI_APP_ENABLE=1`) pour pouvoir contrôler le Panneau LED depuis l'APPLICATION.
-- Le mode **Texte Défilant** doit être **activé** sur le panneau (`config.ini: TEXT_ENABLE=1`) pour que les commandes d'envoi de messages fonctionnent.
-- Pour mettre à jour le firmware ou les langues, le panneau doit avoir accès à Internet (accès à GitHub).
-- Les fichiers de langue sont téléchargés une seule fois ; une fois enregistrés sur la carte SD, ils fonctionnent hors ligne.
+- Le panneau et votre appareil doivent être connectés au même réseau WiFi local.
+- `CONFI_APP_ENABLE=1` dans le fichier `config.ini`.
+- `TEXT_ENABLE=1` pour autoriser l'envoi de messages texte.
+- Connexion internet sur le panneau pour les mises à jour OTA et le téléchargement des langues.
 
 ---
 
-### 📖 Comment utiliser le Script Générateur de Playlists (Windows)
+### 🏠 Home Assistant
 
-Le script `Generador de Playlist v1.0.1.bat` facilite la création de collections personnalisées sans toucher à une seule ligne de code. Vous le trouverez dans le dossier "Contenido SD" [ici](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Contenido%20SD).
+Contrôle complet depuis votre tableau de bord Home Assistant via l'**API REST locale** — sans cloud ni dépendance à internet. Fonctionnalités :
+- 🟢 **Allumer / Éteindre** le panneau avec un commutateur (`switch`).
+- 📊 **Consulter l'état actuel** (mode actif, playlist en cours, etc.).
+- 🔄 **Changer de mode** (Horloge / GIF) et de **playlist** instantanément.
+- 💬 **Envoyer du texte défilant** en personnalisant la couleur, la vitesse et la **police**.
 
-1. **Préparation :** Placez le fichier `.bat` à la **racine de votre carte SD**, à côté du dossier `gifs`.
-2. **Exécution :** Double-cliquez sur le fichier. Une fenêtre de commande s'ouvrira.
-3. **Sélection :** - Le script listera tous les sous-dossiers contenus dans `/gifs`.
-   - Entrez les numéros des dossiers que vous souhaitez inclure dans la liste, séparés par des virgules (ex : `3,4,10`) ou tapez `TODO`.
-4. **Nom :** Écrivez le nom que vous souhaitez donner à votre liste (ex : `MesFavoris`). 
-5. **Résultat :** Le script créera automatiquement un dossier nommé `playlists` et y enregistrera le fichier `MesFavoris.txt` avec les chemins corrigés pour l'ESP32.
-6. **Chargement :** Insérez la carte SD dans votre Retro Pixel LED, il lira la première playlist trouvée dans le dossier. Si vous souhaitez changer de playlist, entrez dans le menu OSD et sélectionnez-la dans "Playlists".
-<img width="514" height="565" alt="Script PlayList" src="https://github.com/user-attachments/assets/3c600615-5539-4430-af7b-26cd219fc7fe" />
+Consultez le [Guide complet d'intégration Home Assistant](#-intégration-home-assistant-guide-complet) plus bas.
 
-### ⚙️ Fichier de Configuration (config.ini)
-Remplace complètement l'interface web de la version standard. Il permet d'ajuster le comportement du matériel de manière persistante.
-* **Emplacement dans le repo :** `/Contenido SD/`
-* **Destination :** Le fichier `config.ini` doit être copié à la **racine de la Micro SD**.
-* **Fonction :** Définit les identifiants WiFi pour la synchronisation horaire, la luminosité des LEDs, le style de l'horloge et la fréquence à laquelle la galerie est interrompue pour afficher l'heure.
 ---
 
-## ⚙️ Installation et Configuration
+### 🕹️ Mode Arcade (Batocera, Recalbox & ReplayOS)
+
+Transforme votre panneau en une marquise dynamique réagissant aux jeux lancés, via deux méthodes : scripts locaux (**Batocera / Recalbox**) ou surveillance réseau (**ReplayOS**).
+
+Affiche automatiquement :
+1. **Marquise du jeu :** image `.bmp` 24 bits ou **GIF animé** (y compris des séquences de plusieurs GIFs joués en boucle).
+2. **Logo du système :** image `.bmp` lors de la navigation dans les menus.
+
+S'active depuis `Menu → Lecture → Arcade`. Instructions complètes disponibles dans la [section d'intégration Arcade](#️-intégration-arcade-batocera-recalbox-ou-replayos).
+
+---
+
+### 🕒 Horloge et Météo
+
+- **Horloge :** 5 styles (Matrix, Solid, Rainbow, Pulse, Gradient) et 9 couleurs, avec effet de transition de particules. Elle interrompt la galerie de GIFs tous les *x* GIFs pour s'afficher pendant *x* secondes, puis reprend la lecture exacte du GIF interrompu.
+- **Météo :** utilise une clé API gratuite OpenWeatherMap pour afficher la température, l'icône météo et un message personnalisé (`WEATHER_MSG`). Voir [comment obtenir votre clé API](#5--comment-obtenir-votre-clé-api-météo).
+
+---
+
+### ⏰ Minuteur
+
+Allumage et extinction programmables selon une plage horaire, avec possibilité de bascule manuelle via le bouton physique ou la PWA.
+
+---
+
+### 🌐 Multi-langue
+
+Système de **dictionnaires dynamiques** : les traductions ne restent pas chargées en RAM en permanence. Elles sont lues depuis la carte SD uniquement lors de l'accès au menu OSD, libérant la mémoire heap pour le moteur GIF.
+
+- **Emplacement :** dossier `/idioma/` sur la SD. Le nom du fichier définit la langue dans le menu : `/idioma/FR.json` → "FR".
+- **Structure JSON :** blocs `MENU`, `SUBMENU_XXX`, `ESTADOS`, `CONFIG_INI`.
+- **Règles importantes :**
+  - 🚫 Évitez les caractères spéciaux non supportés.
+  - 📏 Maximum 21 caractères par libellé pour assurer le centrage automatique sur 128px.
+  - 🔡 Incluez les deux-points et l'espace si nécessaire (ex: `"mode": "Mode: "`).
+  - 💾 Enregistrez en UTF-8 sans BOM.
+- **Mise à jour distante :** téléchargez les dernières traductions directement depuis GitHub via le menu OSD (`Mise à jour → Télécharger langues`) ou la PWA.
+
+---
+
+### 📂 Serveur FTP
+
+Serveur de fichiers sans fil pour la maintenance sans retirer la carte MicroSD.
+
+> [!IMPORTANT]
+> Recommandé pour éditer **`config.ini`**, les fichiers de langues (`.json`) et les **playlists** (`.txt`). Transférer de vastes collections de GIFs via FTP n'est pas recommandé en raison des limites de vitesse de transfert.
+
+**Activation :** `Menu OSD → Explorateur SD → Démarrer FTP`. Le panneau stoppe la lecture des GIFs et affiche son IP.
+
+**Configuration recommandée (FileZilla) :**
+
+| Paramètre | Valeur |
+| :--- | :--- |
+| Protocole | FTP basique (non sécurisé) |
+| Hôte | Adresse IP du panneau |
+| Identifiant / Mot de passe | `admin` / `admin` |
+| Port | `21` |
+| Connexions simultanées | 1 (limite stricte) |
+| Limite de vitesse | 20 KiB/s |
+
+---
+
+### 🔄 Mise à jour OTA
+
+Mise à jour sans fil sans raccorder le panneau au PC :
+1. Connectez le panneau au réseau WiFi dans `config.ini`.
+2. Allez dans `Menu OSD → Mise à jour → Chercher OTA` (ou via la PWA).
+3. Le système télécharge le firmware depuis GitHub et redémarre. 🔃
+
+> [!WARNING]
+> Ne coupez pas l'alimentation pendant le processus de mise à jour.
+
+---
+
+## ⚙️ Installation et configuration
 
 ### 1. 🚀 Programmer l'ESP32 (Web Installer)
-Vous pouvez installer cette version sans rien installer sur votre PC en utilisant notre installateur basé sur Chrome/Edge :
 
-### **[👉 Ouvrir l'Installateur Web Retro Pixel LED Lite](https://fjgordillo86.github.io/RetroPixelLED-Lite/)**
+Flashez le firmware directement depuis votre navigateur :
 
-**Étapes pour l'installation :**
+**[👉 Ouvrir l'installateur web Retro Pixel LED Lite](https://fjgordillo86.github.io/RetroPixelLED-Lite/)**
+
 1. Utilisez un navigateur compatible (**Google Chrome** ou **Microsoft Edge**).
-2. Connectez votre ESP32 au port USB de l'ordinateur.
-3. Cliquez sur le bouton **"Install"** sur le site et sélectionnez le port COM correspondant.
-4. **IMPORTANT :** Veillez à cocher la case **"Erase device"** dans l'assistant pour effectuer un nettoyage complet de la mémoire et éviter les erreurs de fragmentation.
+2. Connectez votre ESP32 en USB.
+3. Cliquez sur **"Install"** et sélectionnez le port COM correspondant.
+4. **Important :** cochez la case **"Erase device"** pour effacer complètement la mémoire et éviter les problèmes de fragmentation.
 
-> 💡 **Votre ESP32 n'est pas reconnu ?**
-> Si aucun port COM n'apparaît lorsque vous cliquez sur "Install", il est probable que vous deviez installer les pilotes de la puce USB de votre carte :
-> * **Puce CP2102 :** [Télécharger les Pilotes Silicon Labs](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers)
-> * **Puce CH340/CH341 :** [Télécharger les Pilotes SparkFun](https://learn.sparkfun.com/tutorials/how-to-install-ch340-drivers/all)
+> 💡 **L'ESP32 n'est pas détecté ?** Installez les pilotes USB de votre carte :
+> - **Puce CP2102 :** [pilotes Silicon Labs](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers)
+> - **Puce CH340/CH341 :** [pilotes SparkFun](https://learn.sparkfun.com/tutorials/how-to-install-ch340-drivers/all)
 
-### 2. 📂 Préparation de la Carte SD
-Formatez votre MicroSD en **FAT32** et ajoutez tout le contenu du dossier [Contenido SD](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Contenido%20SD) à la racine. La carte Micro SD aura la structure suivante :
+### 2. 📂 Préparation de la carte SD
+
+Formatez votre carte MicroSD en **FAT32** et copiez-y le contenu du dossier [Contenido SD](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Contenido%20SD) à la racine :
 
 ```text
 / (Racine de la SD)
-├── gifs/                        <-- Vos dossiers avec GIFs (Arcade, Consoles, etc.)
-├── idioma/                      <-- Ici se trouveront les fichiers .json avec les textes traduits.
-│   ├── ES.json                  <-- Dictionnaire ES.json.
-│   ├── EN.json                  <-- Dictionnaire EN.json.
-│   └── FR.json                  <-- Dictionnaire FR.json.
-├── playlists/                   <-- Ici se trouveront les listes générées par le script "Generador de Playlists".
-│   ├── Arcade.txt               <-- Liste .txt.
-│   ├── Computers.txt            <-- Liste .txt.
-│   ├── Consolas.txt             <-- Liste .txt.
-│   └── Todos.txt                <-- Liste .txt.
-├── config.ini                   <-- Configuration du WiFi et du Panneau.
-└── Generador de Playlists.bat   <-- Script pour générer les Playlists.
+├── gifs/                        <-- Vos dossiers contenant les GIFs (Arcade, Consoles, etc.)
+├── idioma/                      <-- Fichiers .json contenant les traductions.
+│   ├── ES.json
+│   ├── EN.json
+│   └── FR.json
+├── playlists/                   <-- Listes de lecture générées par le script.
+│   ├── Arcade.txt
+│   ├── Computers.txt
+│   ├── Consoles.txt
+│   └── Tous.txt
+├── config.ini                   <-- Fichier de configuration principal.
+└── Generador de Playlists.bat   <-- Script de génération des playlists.
 ```
 
->[!IMPORTANT]
->Si vous ajoutez, supprimez ou déplacez des GIFs dans le dossier `/gifs/`, veillez à exécuter à nouveau le script **Generador de Playlists.bat** pour mettre à jour l'index.
+> [!IMPORTANT]
+> Si vous ajoutez, supprimez ou déplacez des fichiers dans `/gifs/`, exécutez à nouveau `Generador de Playlists.bat` pour mettre à jour l'indexation.
 
 ### 3. 📝 Configuration via `config.ini`
-Le fichier nommé `config.ini` que vous trouverez dans le dossier "Contenido SD" [ici](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Contenido%20SD) doit être ajouté à la racine de la carte SD et modifié pour personnaliser Retro Pixel LED Lite selon vos préférences :
+
+Le fichier `config.ini` se trouve dans le dossier [Contenido SD](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Contenido%20SD) — copiez-le à la racine de la SD et adaptez les paramètres :
 
 ```ini
 # ============================================================
-# 🕹️ RETRO PIXEL LED LITE v3.1.2 - FICHIER DE CONFIGURATION
+# 🕹️ RETRO PIXEL LED LITE v3.1.3 - FICHIER DE CONFIGURATION
 # ============================================================
 # Remarque : Ne laissez pas d'espaces autour du symbole '='.
 # Exemple correct : BRIGHTNESS=40
 
 [WIFI_NTP]
-# Configurez votre réseau WiFi
+# Configuration réseau WiFi
 WIFI_ENABLE=1
 SSID=Nom_De_Votre_Reseau
-PASS=MotDePasse_De_Votre_Reseau
-# Configurez votre fuseau horaire
+PASS=Mot_De_Passe_WiFi
+# Configuration du fuseau horaire (Chaine POSIX)
 TZ=CET-1CEST,M3.5.0,M10.5.0/3
 
 [HARDWARE]
-# Nombre de panneaux
+# Nombre de panneaux LED
 PANEL_CHAIN=2
-# Ordre des couleurs du Panneau : RGB, RBG ou GBR
+# Ordre des couleurs : RGB, RBG ou GBR
 COLOR_ORDER=RGB
 # Luminosité (0 à 255)
 BRIGHTNESS=38
 # Vitesse I2S : 0=8MHz, 1=10MHz, 2=16MHz, 3=20MHz (Turbo)
 I2S_SPEED=2
-# Rafraîchissement Minimum (Hz) : 30 à 120
+# Rafraichissement minimum (Hz) : 30 à 120
 REFRESH_MIN=120
 # Double Buffer : 0=OFF, 1=ON (Élimine le scintillement)
 DOUBLE_BUFF=0
-# Anti-Ghosting : 1 à 4 (Augmentez si vous voyez de la rémanence lumineuse)
+# Anti-Ghosting : 1 à 4
 LATCH_BLANK=1
 
 [LOGIC]
 # Mode d'affichage : 0=GIFs, 1=Horloge Seule
 PLAY_MODE=0
-# Active ou désactive la configuration via l'APPLICATION : 0=OFF, 1=ON (Nécessite le WiFi)
+# Activer l'interface PWA : 0=OFF, 1=ON (Nécessite le WiFi)
 CONFI_APP_ENABLE=1
-# Sélectionnez votre système Arcade : 0=OFF, 1=Batocera, 2=Recalbox, 3=ReplayOS
+# Sélection du système Arcade : 0=OFF, 1=Batocera, 2=Recalbox, 3=ReplayOS
 ARCADE_ENABLE=0
-# Active ou désactive le texte défilant : 0=OFF, 1=ON (Nécessite le WiFi)
+# Activer le texte défilant : 0=OFF, 1=ON (Nécessite le WiFi)
 TEXT_ENABLE=1
-# Active ou désactive l'horloge : 0=OFF, 1=ON (Nécessite le WiFi)
+# Activer l'horloge : 0=OFF, 1=ON (Nécessite le WiFi)
 CLOCK_ENABLE=1
-# Mode de lecture : 0=Séquentiel, 1=Aléatoire
+# Ordre de lecture : 0=Séquentiel, 1=Aléatoire
 RANDOM_MODE=1
-# Intervalle : Tous les combien de GIFs l'horloge apparaît
+# Intervalle : Afficher l'horloge tous les X GIFs
 AUTO_CLOCK_INT=6
-# Durée : Combien de secondes l'horloge s'affiche
+# Durée d'affichage de l'horloge (secondes)
 CLOCK_DURATION=10
 # Styles : 0=Matrix, 1=Solid, 2=Rainbow, 3=Pulse, 4=Gradient
 CLOCK_STYLE=2
-# Active la transition de l'horloge vers les GIFs avec une explosion de particules : 0=OFF, 1=ON
+# Effet de transition de particules : 0=OFF, 1=ON
 TRANSITION_ENABLE=1
 # Couleur de l'horloge (0=Blanc, 1=Rouge, 2=Vert, 3=Bleu, 4=Jaune, 5=Cyan, 6=Magenta, 7=Orange, 8=Rose)
 CLOCK_COLOR=4
 
 [WEATHER]
-# Active la météo : 0=OFF, 1=ON (Nécessite le WiFi)
+# Activer la météo : 0=OFF, 1=ON (Nécessite le WiFi)
 WEATHER_ENABLE=1
-# Votre ville (Sans espaces, utilisez '+' si nécessaire : Madrid,ES ou Buenos+Aires,AR)
-CITY=Navalmoral+de+la+Mata,ES
+# Votre ville (Sans espaces, utilisez '+' : Paris,FR ou Lyon,FR)
+CITY=Paris,FR
 # Votre clé API gratuite OpenWeatherMap
 API_KEY=xxxxxxxxxxxxxxxxxxxxxxx
-# Intervalle de mise à jour de la météo en MINUTES
+# Intervalle de mise à jour en MINUTES
 WEATHER_INT=60
-# Texte affiché au-dessus de l'horloge
+# Texte personnalisé au-dessus de l'horloge
 WEATHER_MSG=Game Room
 
 [LANGUAGE]
-# Indique la Langue (Nom du fichier sans .json : ES, EN, FR...)
-LANGUAGE=ES
+# Code Langue (Nom du fichier dans /idioma sans .json : ES, EN, FR...)
+LANGUAGE=FR
 
 [IR_REMOTE]
-# Codes HEX de la télécommande IR (Inutile d'indiquer quoi que ce soit, Retro Pixel LED les enregistrera automatiquement)
+# Codes HEX de la télécommande (Enregistrés automatiquement via le menu OSD)
 BTN_ON=F20DFF00
 BTN_OFF=E01FFF00
 BTN_BRILLO_UP=F609FF00
@@ -362,285 +448,255 @@ TOKEN=xxxxxx
 
 [END]
 ```
----
 
-### 4. 🌍 Configuration du Fuseau Horaire (TZ)
+### 4. 🌍 Configuration du fuseau horaire (TZ)
 
-Pour que l'**Horloge** et le **Minuteur** fonctionnent correctement, le paramètre `timezone` dans le fichier `config.ini` doit suivre le format POSIX.
+Pour que l'**horloge** et le **minuteur** fonctionnent correctement, la variable `TZ` doit respecter la norme POSIX.
 
-Exemple pour l'**Espagne (Péninsule et Baléares) / France / Italie** :
-`timezone=CET-1CEST,M3.5.0,M10.5.0/3`
-Exemple pour les **Canaries / Portugal / Royaume-Uni** :
-`timezone=WET0WEST,M3.5.0/1,M10.5.0`
+- **France / Belgique / Suisse / Espagne :** `TZ=CET-1CEST,M3.5.0,M10.5.0/3`
+- **Royaume-Uni / Portugal :** `TZ=WET0WEST,M3.5.0/1,M10.5.0`
+- **Canada (Est) / Québec :** `TZ=EST5EDT,M3.2.0,M11.1.0`
 
-### Comment obtenir votre code TZ ?
-Si vous habitez dans une autre région, vous pouvez obtenir le code exact de votre ville ici :
-👉 **[ESP32 TZ Tool / Database](https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv)**
+👉 Consultez la [Base de données POSIX ESP32](https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv) pour obtenir la chaîne exacte correspondant à votre région.
 
-### Explication du format :
-* **CET-1CEST** : Nom de la zone (Central European Time) et décalage de base (UTC+1).
-* **M3.5.0** : Passage à l'heure d'été (Mars, semaine 5, Dimanche).
-* **M10.5.0/3** : Passage à l'heure d'hiver (Octobre, semaine 5, Dimanche à 03:00).
-  
-### 5. ☁️ Comment obtenir votre API KEY Météo
+### 5. ☁️ Comment obtenir votre clé API Météo
 
-Pour que la barre de notifications affiche la température et l'icône de la météo, vous avez besoin d'une clé gratuite de **OpenWeatherMap** :
-
-1. Rendez-vous sur [OpenWeatherMap.org](https://openweathermap.org/) et créez un compte gratuit.
-2. Une fois connecté, allez dans votre profil et cliquez sur **"My API Keys"**.
-3. Générez une nouvelle Key (vous pouvez la nommer "RetroPixel").
-4. **IMPORTANT :** La Key peut prendre entre **30 minutes et 2 heures** pour s'activer après sa création. Si le panneau affiche "0.0C", patientez simplement un moment.
-5. Copiez cette clé dans la section `API_KEY=` de votre fichier `config.ini`.
-
-### 🔍 Comment vérifier si le code de la ville est correct ?
-
-Si vous souhaitez être 100% certain qu'**OpenWeatherMap** reconnaît votre ville avant d'enregistrer le fichier sur la Micro SD, vous pouvez effectuer ce test rapide dans votre navigateur :
-
-1. Copiez l'adresse suivante dans la barre de votre navigateur.
-2. Remplacez `Navalmoral de la Mata` par votre **Ville** réelle.
-3. Remplacez `XXXXX` par votre **Clé API** réelle.
-
-`http://api.openweathermap.org/data/2.5/weather?q=Navalmoral de la Mata,ES&appid=XXXXX`
-
-* **Si le résultat est un texte avec des données (JSON) :** Le nom est parfait et l'ESP32 le lira sans problème !
-* **Si le résultat est une erreur (401 ou 404) :** Vérifiez que votre Clé API est active (rappelez-vous qu'elle peut mettre jusqu'à 2 heures à s'activer) ou que le nom de la ville ne contient pas de coquilles.
-
-### 6. ☁️ Mise à Jour du Système (OTA)
-Il n'est plus nécessaire de connecter le panneau au PC pour le mettre à jour. Si une nouvelle version est disponible sur le dépôt :
-
-1. Vérifiez que le WiFi est configuré et actif dans votre `config.ini`.
-2. Accédez au menu OSD du panneau.
-3. Naviguez jusqu'à **Mise à Jour > Rechercher OTA**.
-4. Le système téléchargera le nouveau firmware depuis GitHub et redémarrera tout seul.
-
-> [!WARNING]
-> Ne débranchez pas l'alimentation du panneau pendant le processus de mise à jour.
-
-### 7. 🌐 Guide du Système Multilingue (Fichiers .json)
-
-La version v2.1.0 utilise un système de **Dictionnaires Dynamiques**. Contrairement à d'autres systèmes, le dictionnaire NE réside PAS en permanence dans la mémoire RAM ; il ne se charge que lorsque l'utilisateur entre dans le menu et se libère à la sortie. Cela garantit que le moteur de GIFs dispose de toute la mémoire disponible pour les animations.
-
-#### 📂 Emplacement et Nomenclature
-Les fichiers doivent se trouver dans le dossier `/idioma/` de la carte SD. Le nom du fichier (sans l'extension) est celui qui apparaîtra dans le menu de sélection.
-
-- `/idioma/ES.json` -> Apparaîtra comme "ES"
-- `/idioma/EN.json` -> Apparaîtra comme "EN"
-
-#### 🛠️ Structure du Fichier JSON
-Si vous souhaitez créer une nouvelle traduction, vous pouvez copier le fichier `ES.json` et le renommer. Les champs sont organisés par blocs :
-
-1. **`MENU`** : Étiquettes du menu principal.
-2. **`SUBMENU_XXX`** : Étiquettes spécifiques à chaque section.
-3. **`ESTADOS`** : Mots courts d'état (ON, OFF, OUI, NON, RETOUR).
-4. **`CONFIG_INI`** : Commentaires qui seront écrits dans le fichier de configuration physique de la SD.
-
-#### ⚠️ Règles Critiques pour l'Édition
-Afin d'éviter que le système ne subisse de blocages (*Kernel Panic*) ou d'erreurs visuelles, suivez ces règles :
-
-* **🚫 Sans Accents ni Ñ :** La police actuelle du système ne prend pas en charge les caractères Unicode étendus. Utilisez `n` au lieu de `ñ` et évitez les accents (ex : `Actualizacion` au lieu de `Actualización`).
-* **📏 Limite de Caractères :** Les étiquettes des sous-menus ne doivent pas dépasser **21 caractères** pour garantir un centrage parfait dans la zone de 128px sans dépasser des marges.
-* **🔡 Format des Étiquettes :** Dans les sections de sous-menu, incluez le double-point et l'espace si vous souhaitez qu'ils apparaissent (ex : `"modo": "Mode : "`).
-* **💾 Format UTF-8 :** Assurez-vous d'enregistrer le fichier au format **UTF-8 (sans BOM)** pour éviter l'apparition de caractères étranges au début de la lecture.
-
-#### 🔄 Flux de Chargement
-Lorsque vous changez de langue dans l'OSD :
-1. Le système met à jour la valeur `LANGUAGE` dans le `config.ini`.
-2. Le pointeur du dictionnaire est réinitialisé.
-3. La prochaine fois que vous ouvrirez le menu, le système recherchera le fichier correspondant à la nouvelle configuration.
-
-### 8. 📂 Explorateur SD (FTP)
-Cette fonction active un serveur de fichiers sans fil sur votre Retro Pixel LED. Son objectif principal est de faciliter la maintenance du système sans devoir retirer la carte MicroSD.
-
-> [!IMPORTANT]
-> **Utilisation recommandée :** Cette fonction a été conçue spécifiquement pour gérer **les fichiers de configuration (`config.ini`)**, **les fichiers de langue (`ES.json`)**, l'édition de **playlists (`.txt`)** et les fichiers de petite taille. En raison des limitations de bande passante du matériel ESP32, **elle n'est pas recommandée pour le transfert massif de collections de GIFs**, car le processus serait extrêmement lent par rapport à un lecteur de carte conventionnel.
-
-#### 🚀 Comment activer le serveur FTP
-1. Naviguez dans le menu OSD jusqu'à **Explorateur SD**.
-2. Sélectionnez l'option **Démarrer FTP**.
-3. Le panneau arrêtera la lecture des GIFs et affichera :
-   * **Adresse IP :** (ex. `192.168.1.109`)
-
-#### 💻 Configuration de la connexion
-Il est recommandé d'utiliser un client comme **FileZilla** avec les données suivantes :
-
-* **Protocole :** Protocole de transfert de fichiers FTP.
-* **Serveur/Hôte :** L'adresse IP qui apparaît sur votre panneau LED.
-* **Chiffrement :** Utiliser uniquement un FTP simple.
-* **Type d'authentification :** Normal
-* **Identifiant :** `admin`
-* **Mot de passe :** `admin`
-* **Port :** `21`
-* **Mode de transfert :** Par défaut
-* **Limiter le nombre de connexions simultanées :** Activé
-* **Nombre maximum de connexions :** 1
-  
-<img width="545" height="227" alt="image" src="https://github.com/user-attachments/assets/1b537615-3e39-48ba-9eb0-48b03931c5f9" />
-
-<img width="544" height="193" alt="image" src="https://github.com/user-attachments/assets/ba4c85bc-920a-48c9-83d8-99b96ecbc57f" />
-
-**Dans Édition -> Options -> Transferts**
-* **Nombre maximal de transferts simultanés :** 1
-* **Activer les limites de vitesse :** Activé
-* **Limite de téléchargement :** 20 KiB/s
-* **Limite d'envoi :** 20 KiB/s
-<img width="841" height="522" alt="image" src="https://github.com/user-attachments/assets/e90d3e84-9c93-45c0-b942-8b601db40041" />
+1. Créez un compte gratuit sur [OpenWeatherMap.org](https://openweathermap.org/).
+2. Accédez à votre profil → **"My API Keys"**.
+3. Générez une nouvelle clé.
+4. **Attention :** l'activation d'une nouvelle clé peut prendre entre 30 minutes et 2 heures. ⏳
+5. Copiez votre clé dans la variable `API_KEY=` de votre fichier `config.ini`.
 
 ---
-Si vous ne souhaitez pas installer de logiciel supplémentaire tel que FileZilla, vous pouvez intégrer la carte SD du panneau directement sur votre ordinateur comme s'il s'agissait d'un dossier en utilisant l'**Explorateur de Fichiers** :
 
-`(Cette option n'est pas recommandée, lors des tests il est arrivé que les fichiers ne soient pas chargés complètement, provoquant des erreurs)`
+## 📖 Générateur de playlists (Windows)
 
-1. **Ouvrir l'Explorateur :** Allez dans **Ce PC** sur votre ordinateur.
-2. **Ajouter un emplacement :** Faites un clic droit sur un espace blanc de la fenêtre et sélectionnez **"Ajouter un emplacement réseau"**.
-3. **Configurer l'adresse :** Lorsque l'assistant demande l'adresse réseau, entrez l'IP affichée par votre panneau avec le préfixe FTP.
-   * Exemple : `ftp://192.168.1.109`
-4. **Identifiants :** Décochez la case "Ouvrir une session anonyme" et renseignez l'utilisateur : `admin`.
-5. **Terminer :** Donnez un nom descriptif au lecteur (ex : `Retro Pixel LED`) pour l'identifier facilement à l'avenir.
+Le script `Generador de Playlist v1.0.1.bat` crée des sélections personnalisées de GIFs. Il se trouve dans le dossier [Contenido SD](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Contenido%20SD).
 
-#### ⚠️ Remarques de sécurité et d'utilisation
-* **Verrouillage de l'écran :** Tant que le FTP est actif, le panneau ne lira pas de GIFs afin de consacrer tout le CPU au transfert de données.
-* **Sortie sécurisée :** Pour fermer le serveur et revenir au mode normal, appuyez sur le bouton physique ou utilisez la touche "Valider" de votre télécommande IR.
-* **Attention à la mise hors tension :** Ne débranchez pas l'alimentation pendant l'édition d'un fichier via FTP, car le fichier pourrait être corrompu.
+1. Placer le fichier `.bat` à la racine de la SD à côté du dossier `gifs`.
+2. Double-cliquez pour exécuter l'outil.
+3. Saisissez les numéros de dossiers séparés par des virgules (ex: `3,4,10`) ou tapez `TODO` pour inclure l'ensemble.
+4. Entrez le nom de votre playlist (ex: `MesFavoris`).
+5. Le fichier `playlists/MesFavoris.txt` est généré automatiquement.
 
-### 9. 🕹️ Intégration avec Batocera, Recalbox ou ReplayOS (Arcade)
-Si vous souhaitez activer l'affichage par Retro Pixel LED Lite des marquees du jeu lancé ou du système parcouru, vous devez activer l'option **Arcade** dans le menu.
-```
+<img width="514" height="565" alt="Script PlayList" src="https://github.com/user-attachments/assets/3c600615-5539-4430-af7b-26cd219fc7fe" />
+
+---
+
+## 🕹️ Intégration Arcade (Batocera, Recalbox ou ReplayOS)
+
+Activez l'option dans `Menu → Lecture → Arcade` pour afficher les marquises de vos jeux :
+
+```text
 🏠 MENU PRINCIPAL
 ├── 📂 Lecture
-│   └── 🖼️ Mode : [GIFs / Horloge]
-│   └── 🔀 Aléatoire : [OUI / NON]
-│   └── 🕹️ Arcade : [OFF / Batocera / Recalbox / ReplayOS]   <-- ICI
+│   ├── 🖼️ Mode : [GIFs / Horloge]
+│   ├── 🔀 Aléatoire : [OUI / NON]
+│   ├── 🕹️ Arcade : [OFF / Batocera / Recalbox / ReplayOS]   <-- SÉLECTIONNEZ ICI
 │   └── 🔙 Retour
 ```
+
 > [!IMPORTANT]
-> ### 🕹️ Configuration de Batocera, Recalbox ou ReplayOS
-> Pour apprendre à synchroniser vos ROMs, utiliser le script PC et installer les scripts de communication, consultez notre guide détaillé :
-> 
-> **[👉 CLIQUEZ ICI POUR VOIR LES INSTRUCTIONS POUR BATOCERA](https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/Frances/README_BATOCERA.md)**
-> 
-> **[👉 CLIQUEZ ICI POUR VOIR LES INSTRUCTIONS POUR RECALBOX](https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/Frances/README_RECALBOX.md)**
-> 
-> **[👉 CLIQUEZ ICI POUR VOIR LES INSTRUCTIONS POUR REPLAYOS](https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/README_REPLAYOS.md)**
----
-### 10. 🏠 Intégration avec Home Assistant
-
-Vous pouvez intégrer et contrôler totalement **RetroPixel LED Lite** depuis **Home Assistant** via l'API REST locale, sans dépendre du cloud. 
-
-Cette intégration vous permet de :
-- 🟢 **Allumer / Éteindre** le panneau à l'aide d'un interrupteur (*switch*).
-- 📊 **Consulter l'état actuel** (mode actif, playlist en cours de lecture, etc.).
-- 🔄 **Changer de mode** (Horloge / GIF) et de **Playlist** instantanément.
-- 💬 **Envoyer des messages texte défilants** en choisissant la couleur, la vitesse et la police depuis le Dashboard.
+> Pour installer les scripts requis sur votre système d'émulation, suivez la documentation dédiée :
+>
+> **[👉 Guide d'installation pour Batocera](https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/Frances/README_BATOCERA.md)**
+>
+> **[👉 Guide d'installation pour Recalbox](https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/Frances/README_RECALBOX.md)**
+>
+> **[👉 Guide d'installation pour ReplayOS](https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/Frances/README_REPLAYOS.md)**
 
 ---
 
-### 📦 1. Ajouter la configuration à Home Assistant
+## 🏠 Intégration Home Assistant (Guide complet)
 
-Si vous utilisez la structure de dossiers par packages (`packages`), enregistrez le fichier nommé `retropixel.yaml` disponible **[ICI](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Home%20Asisstant)** dans le dossier `/config/packages/`. Si vous n'utilisez pas les packages, collez le contenu dans votre fichier `configuration.yaml`.
+Intégrez **Retro Pixel LED Lite** dans **Home Assistant** via son API REST locale.
 
-> ⚠️ **IMPORTANT :** Remplacez l'adresse IP `192.168.31.210` par l'adresse IP attribuée à votre ESP32 et adaptez le nom des playlists avec les vôtres.
+Fonctionnalités :
+- 🟢 Commutateur d'alimentation (`switch`).
+- 📊 Monitoring (mode actif, playlist chargée, IP).
+- 🔄 Sélecteur de modes et playlists.
+- 💬 Envoi de texte défilant avec sélection des couleurs, vitesses et **polices**.
 
-Une carte `entities.yaml` est également disponible pour l'ajouter à votre tableau de bord.
+### 📦 Installation dans Home Assistant
+
+Si vous utilisez des "packages", copiez `retropixel.yaml` depuis le dossier **[Home Assistant](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Home%20Asisstant)** vers `/config/packages/`. Sinon, collez son contenu dans votre `configuration.yaml`.
+
+> ⚠️ **Important :** Remplacez l'adresse IP `192.168.31.210` par celle de votre ESP32, et adaptez le nom des playlists.
+
+Une carte d'interface Lovelace prête à l'emploi (`entities.yaml`) est également fournie.
+
 <img width="822" height="1005" alt="Captura HA" src="https://github.com/user-attachments/assets/9294b479-f428-4c68-9fcc-c871ad2e88e4" />
 
+---
 
-## 🧠 Fonctionnalités Core LITE
+## 🧠 Architecture interne / Core Lite
 
-* **📡 Contrôle IR & Mappage Dynamique :** Prise en charge complète des télécommandes infrarouges avec mappage des fonctions depuis le menu OSD (Luminosité, Navigation, Power Toggle et Confirmation).
-* **📂 Serveur FTP de Maintenance :** Permet la gestion sans fil du fichier `config.ini` et des listes de lecture. Idéal pour des ajustements rapides sans retirer la carte MicroSD.
-* **Gestion RAM Anti-Panique :** Système de surveillance du *heap*. Si le DMA ne peut pas allouer de mémoire après l'activité WiFi, le système bascule en Single Buffer pour garantir une stabilité totale.
-* **Moteur de Recherche Binaire (Arcade) :** Capacité à localiser des marquees parmi des milliers de fichiers en quelques millisecondes. Le système ne "scanne" pas les dossiers, mais saute directement à la position du fichier sur la SD grâce à des index triés par ordre alphabétique.
-* **Mémoire Adaptative (Single/Double Buffer) :** Gestion intelligente de la RAM. Le système utilise le *Double Buffer* pour une fluidité totale dans les GIFs, mais bascule automatiquement en *Single Buffer* en mode Arcade afin de garantir une stabilité absolue lors du chargement de bitmaps haute définition.
-* **API HTTP en Temps Réel :** Récepteur de commandes intégré permettant la synchronisation avec des systèmes externes tels que Batocera ou RetroPie pour le changement dynamique des marquees.
-* **Smart Text Centering :** Moteur dynamique qui aligne automatiquement les menus et les états au centre de la matrice (`offset + 64px`) en calculant la largeur de chaque chaîne de texte.
-* **WiFi Stealth Mode :** L'ESP32 n'active le WiFi que brièvement pour synchroniser l'heure et la météo. Le reste du temps, le système reste **100% hors ligne**, garantissant **0 latence** lors de la lecture des GIFs.
-* **Barre de Notifications Dynamique :** Si vous activez la météo, l'horloge abaisse automatiquement sa position (`startY=9`) pour afficher le message personnalisé (`WEATHER_MSG`), l'icône météo et la température.
-* **Icônes en Bitmap :** Inclut des icônes optimisées de 8x8 pixels dessinées à la main pour représenter : Soleil, Nuages, Pluie, Neige, Orage et Brouillard.
-* **Iconographie Avancée (Jour/Nuit) :** Inclut des icônes de 8x8 pixels dessinées à la main représentant : Soleil, Lune (Nuit), Nuages, Pluie, Neige, Orage et Brouillard, s'adaptant dynamiquement en fonction de la tranche horaire.
-* **Système de Playlists Dynamiques :** Remplace l'ancien moteur à liste unique. Désormais, le système peut gérer plusieurs fichiers `.txt` dans le dossier `/playlists/`, permettant de passer d'une collection thématique à une autre (Arcade, Consoles, Favoris, etc.) depuis le menu OSD.
-* **Horloge à Auto-Interruption :** Le panneau interrompt la galerie tous les "x" GIFs pour afficher l'heure pendant "x" secondes (tous deux configurables depuis le menu OSD et dans config.ini), puis reprend la lecture exactement là où elle s'était arrêtée.
-* **Résilience Hors Ligne :** Si aucun réseau WiFi n'est disponible, le système ignore la synchronisation et commence à lire immédiatement les GIFs en utilisant l'horloge interne de la puce.
-* **Moteur de Rendu Double Buffer :** Exploite le DMA de l'ESP32 pour afficher les images de manière invisible, obtenant une fluidité absolue et éliminant toute trace de scintillement dans les animations.
+Détails techniques :
 
-## 🛒 Liste du Matériel
-
-Pour garantir la compatibilité, il est recommandé d'utiliser les composants testés lors du développement :
-
-* **Microcontrôleur :** [ESP32 DevKit V1 (30 broches) - AliExpress](https://es.aliexpress.com/item/1005005704190069.html)
-* **Panneau LED Matrix (HUB75) :** [P2.5 / P4 RGB Matrix Panel - AliExpress](https://es.aliexpress.com/item/1005008479388445.html)
-* **Lecteur de Carte :** [Module Adaptateur Micro SD (SPI) - AliExpress](https://es.aliexpress.com/item/1005005591145849.html)
-* **Carte de connexion ESP32-Panneau LED :** [DMDos Board V3 - Mortaca ](https://www.mortaca.com/) (Optionnel, aucune soudure requise et intègre un lecteur SD)
-* **Récepteur IR :** [Capteur récepteur infrarouge Universel - AliExpress](https://es.aliexpress.com/item/1005005343424296.html)
-* **Bouton Poussoir :** [Interrupteur momentané au choix DS-316 - AliExpress](https://es.aliexpress.com/item/4000888761296.html)
-* **Alimentation :** Bloc d'alimentation 5V (Minimum 2A recommandé pour les panneaux de 64x32).
+- **📡 Cartographie dynamique des touches IR :** configuration simplifiée des boutons enregistrée dans `config.ini`.
+- **📂 Gestion FTP sans fil :** mise à jour des playlists et paramètres à distance.
+- **Système de protection RAM :** gestion dynamique de la mémoire heap pour prévenir les réinitialisations inopinées lors de l'allocation des buffers.
+- **Recherche binaire (Arcade) :** indexation rapide pour rechercher les marquises parmi des milliers de fichiers sur la carte SD en quelques millisecondes.
+- **Gestion dynamique de la mémoire :** bascule automatique entre le *Double Buffer* (pour les GIFs à fréquence d'images élevée) et le *Single Buffer* (pour les images fixes ou de haute résolution).
+- **API HTTP en temps réel :** points d'accès REST légers pour la synchronisation avec Batocera, Recalbox, ReplayOS et Home Assistant.
+- **Centrage intelligent du texte :** calcul automatique de la largeur en pixels pour centrer le texte défilant (`offset + 64px`).
+- **Mode WiFi économe :** la connexion réseau s'active brièvement pour la synchronisation horaire et météo avant de repasser hors ligne, garantissant **0 ms de latence** sur le rendu.
+- **Bannière d'information dynamique :** repositionnement de l'horloge vers le bas (`startY=9`) lorsque la météo est activée.
+- **Système d'icônes Jour/Nuit :** icônes adaptées aux conditions météorologiques et à l'heure locale.
+- **Lecture intelligente :** interruption ponctuelle de la boucle GIF pour afficher l'horloge avant de reprendre le GIF exactement là où il s'était arrêté.
+- **Fallback Hors-Ligne :** maintien de l'heure via le RTC interne en cas de perte du signal WiFi.
 
 ---
-## ⚙️ Installation
 
-### 1. 🔌 Connexions 
-Si vous utilisez la DMDos Board V3, cette partie est déjà traitée, passez au point suivant.
+## 📜 Historique détaillé des modifications (v3.0.0 → v3.1.3)
 
-#### 📂 Lecteur de Carte Micro SD (Interface SPI)
+| Fonctionnalité | Détails techniques | Avantage |
+| :--- | :--- | :--- |
+| **🕹️ Support RePlayOS** | Intégration de l'API RePlayOS pour la gestion des marquises et logos. | **Expérience Arcade dynamique.** Mise à jour automatique des images lors des changements de jeux. |
+| **⏰ Styles d'horloge** | Ajout de nouveaux modes de rendu et thèmes visuels. | **Personnalisation accrue** selon vos préférences. |
+| **📡 Cartographie IR via PWA** | Capture et configuration des touches de la télécommande depuis l'interface web. | Configuration simplifiée de la télécommande. |
+| **🏠 Intégration Home Assistant** | Points d'accès REST (`GET /status`, `POST /control`, `/playlist`, `/texto`, `/timer/toggle`) et fichier YAML dédié. | **Domotique intégrée.** Contrôle de l'allumage, des modes et du texte depuis HA. |
+| **🔤 Polices de caractères** | 4 polices au choix (`Bold`, `SemiBold`, `Regular`, `Light`) pour le texte défilant via API, PWA et HA. | **Style visuel personnalisé** pour vos messages. |
+| **🎛️ Interface PWA** | Application web progressive avec 5 modules de contrôle et éditeur de `config.ini`. | **Contrôle à distance complet** sans dépendance réseau externe. |
+| **☀️ Ajustement de la luminosité** | Curseur 0-100% avec prise en compte immédiate. | Adaptation rapide à la lumière ambiante. |
+| **🔤 Support UTF-8** | Convertisseur UTF-8 vers Latin-1 pour gérer l'ensemble des caractères accentués. | Affichage correct des caractères internationaux. |
+| **🎨 Changement de mode à chaud** | Bascule rapide entre les modes (GIF / Horloge / Texte) via la PWA sans redémarrage. | Transitions instantanées. |
+| **🎞️ Playlists dynamiques** | Changement de la liste de lecture active depuis l'application web. | Gestion facilitée des collections de GIFs. |
+| **⏰ Minuteur programmable** | Plages horaires d'allumage et d'extinction configurables avec reprise manuelle. | Gestion automatisée de l'alimentation. |
+| **🔄 Mises à jour sans fil (OTA & Langues)** | Téléchargement du firmware et des langues depuis GitHub sans retirer la carte SD. | Maintenance du système à distance. |
+| **⚙️ Configuration distante** | Éditeur complet du fichier `config.ini` depuis la PWA. | Paramétrage fluide sans manipulation de fichiers. |
+| **💬 Envoi de texte défilant** | Endpoints HTTP POST + PWA pour diffuser des messages personnalisés. | Diffusion de messages en temps réel. |
+| **💥 Effet de particules** | Animation de particules pour l'affichage et la disparition de l'horloge. | Transitions visuelles fluides. |
+| **🎨 Personnalisation des couleurs OSD** | Sélecteur de couleurs interactif sauvegardé dans la mémoire de l'appareil. | Changement de style visuel sans éditer de fichier. |
+| **⚡ Rendu horloge optimisé** | Passage en *Single Buffer* pour le rendu de l'horloge. | Élimine les scintillements d'affichage. |
+| **🧠 Optimisation de la mémoire** | Migration des `String` vers des tableaux `char[]` et utilisation optimisée des macros `PSTR()` / `F()`. | Évite la fragmentation de la RAM et préserve les ressources du DMA. |
+| **🛡️ Système Anti-Panic** | Vérification automatique de l'allocation mémoire à l'initialisation de l'affichage. | Prévient les plantages (`StoreProhibited`) liés à l'usage du WiFi. |
+| **🖱️ Logique d'appui prolongé** | Validation des appuis longs pour éviter les fausses manipulations. | Navigation plus sûre dans l'OSD. |
+| **📂 Serveur FTP intégré** | Gestion des fichiers à distance sur la carte SD. | Édition des playlists et de la configuration sans lecteur de carte. |
+| **📡 Navigation par télécommande IR** | Prise en charge des télécommandes infrarouges pour la navigation OSD. | Contrôle à distance simple. |
+| **🎨 Ordre des couleurs configurable** | Option `colorOrder` (RGB/RBG/GBR) ajustable dans `config.ini`. | Compatibilité étendue avec les différents panneaux HUB75. |
+
+---
+
+## 🛒 Liste du matériel
+
+Matériel recommandé et testé :
+
+- **Microcontrôleur :** [ESP32 DevKit V1 (30 broches) - AliExpress](https://es.aliexpress.com/item/1005005704190069.html)
+- **Panneau LED Matrix (HUB75) :** [Panneau P2.5 / P4 RGB Matrix - AliExpress](https://es.aliexpress.com/item/1005008479388445.html)
+- **Lecteur de carte Micro SD :** [Module Adaptateur Micro SD (SPI) - AliExpress](https://es.aliexpress.com/item/1005005591145849.html)
+- **Shield PCB ESP32 vers Matrix :** [Carte DMDos V3 - Mortaca](https://www.mortaca.com/) *(Optionnel, évite les soudures et intègre un port SD)*
+- **Récepteur Infrarouge :** [Module récepteur IR universel - AliExpress](https://es.aliexpress.com/item/1005005343424296.html)
+- **Bouton poussoir :** [Bouton poussoir momentané DS-316 - AliExpress](https://es.aliexpress.com/item/4000888761296.html)
+- **Alimentation :** Alimentation 5V DC (2A minimum recommandé pour un panneau 64x32).
+
+---
+
+## 🔌 Câblage (Pinout)
+
+Si vous utilisez la carte **DMDos V3**, le câblage est pré-routé — vous pouvez passer à la section suivante.
+
+#### 📂 Lecteur Micro SD (Bus SPI)
 | Broche SD | Broche ESP32 | Fonction |
 | :--- | :--- | :--- |
-| **CS** | GPIO 5 | Chip Select |
-| **CLK** | GPIO 18 | Clock |
-| **MOSI** | GPIO 23 | Master Out Slave In |
-| **MISO** | GPIO 19 | Master In Slave Out |
+| **CS** | GPIO 5 | Sélection du composant (Chip Select) |
+| **CLK** | GPIO 18 | Horloge bus SPI (Clock) |
+| **MOSI** | GPIO 23 | Sortie données (Master Out) |
+| **MISO** | GPIO 19 | Entrée données (Master In) |
 | **VCC** | 3.3V | Alimentation |
 | **GND** | GND | Masse |
 
-#### 🖼️ Panneau LED RGB (Interface HUB75)
+#### 🖼️ Panneau LED RGB HUB75
 | Broche Panneau | Broche ESP32 | Fonction |
 | :--- | :--- | :--- |
-| **R1** | GPIO 25 | Données Rouge (Supérieur) |
-| **G1** | GPIO 26 | Données Vert (Supérieur) |
-| **B1** | GPIO 27 | Données Bleu (Supérieur) |
-| **R2** | GPIO 14 | Données Rouge (Inférieur) |
-| **G2** | GPIO 12 | Données Vert (Inférieur) |
-| **B2** | GPIO 13 | Données Bleu (Inférieur) |
-| **A** | GPIO 33 | Sélection de Ligne A |
-| **B** | GPIO 32 | Sélection de Ligne B |
-| **C** | GPIO 22 | Sélection de Ligne C |
-| **D** | GPIO 17 | Sélection de Ligne D |
+| **R1** | GPIO 25 | Données Rouge (Haut) |
+| **G1** | GPIO 26 | Données Vert (Haut) |
+| **B1** | GPIO 27 | Données Bleu (Haut) |
+| **R2** | GPIO 14 | Données Rouge (Bas) |
+| **G2** | GPIO 12 | Données Vert (Bas) |
+| **B2** | GPIO 13 | Données Bleu (Bas) |
+| **A** | GPIO 33 | Ligne d'adresse A |
+| **B** | GPIO 32 | Ligne d'adresse B |
+| **C** | GPIO 22 | Ligne d'adresse C |
+| **D** | GPIO 17 | Ligne d'adresse D |
 | **E** | GND | Masse |
-| **CLK** | GPIO 16 | Clock |
-| **LAT** | GPIO 4 | Latch |
-| **OE** | GPIO 15 | Output Enable (Luminosité) |
+| **CLK** | GPIO 16 | Horloge de rafraîchissement |
+| **LAT** | GPIO 4 | Verrouillage (Latch) |
+| **OE** | GPIO 15 | Activation de la sortie (Luminosité) |
 
-#### 🕹️ Contrôle Utilisateur Menu OSD (Physique et Infrarouge)
-
-Le système permet un contrôle total via un bouton physique (avec logique de pression longue) et un récepteur IR pour la manipulation à distance.
-
+#### 🕹️ Contrôles (Bouton et Infrarouge)
 | Composant | Broche ESP32 | Fonction |
 | :--- | :--- | :--- |
-| **Bouton (PIN)** | GPIO 21 | **Multifonction :** Clic (Naviguer) / Pression Longue (Confirmer - Power Toggle). |
-| **Bouton (GND)** | GND | Référence masse. |
-| **Récepteur IR (Data)** | GPIO 34 | Entrée signal (Protocole NEC/etc). |
-| **Récepteur IR (VCC)** | 3.3V | Alimentation du capteur. |
-| **Récepteur IR (GND)** | GND | Référence masse. |
+| **Bouton (Signal)** | GPIO 21 | **Multifonction :** Pression courte (Naviguer) / Pression longue (Valider / Veille). |
+| **Bouton (Masse)** | GND | Référence de masse. |
+| **Récepteur IR (Data)**| GPIO 34 | Entrée du signal télécommande (Protocole NEC). |
+| **Récepteur IR (VCC)** | 3.3V | Alimentation du module. |
+| **Récepteur IR (GND)** | GND | Référence de masse. |
 
 <img width="769" height="716" alt="image" src="https://github.com/user-attachments/assets/11fef006-59f3-405f-b00a-a32c9bba7bc5" />
 
+---
+
+### 📂 Configuration du serveur FTP (Explorateur SD)
+
+Permet d'accéder sans fil aux fichiers stockés sur la carte SD depuis votre réseau local.
+
+> [!IMPORTANT]
+> **Utilisation recommandée :** modification de `config.ini`, des dictionnaires de langues (`.json`), des playlists (`.txt`) et de petits fichiers. Il n'est pas recommandé de transférer de grandes collections de GIFs par ce biais.
+
+**Démarrer le serveur FTP :**
+1. Rendez-vous dans le `Menu OSD → Explorateur SD`.
+2. Sélectionnez **Démarrer FTP**.
+3. L'affichage des GIFs s'interrompt et l'**adresse IP** du panneau s'affiche (ex: `192.168.1.109`).
+
+**Configuration sous FileZilla :**
+- **Protocole :** FTP - Protocole de Transfert de Fichiers
+- **Hôte :** Adresse IP affichée sur le panneau
+- **Type d'authentification :** Normale
+- **Identifiant / Mot de passe :** `admin` / `admin`
+- **Port :** `21`
+- **Nombre de connexions simultanées :** 1
+
+<img width="545" height="227" alt="image" src="https://github.com/user-attachments/assets/1b537615-3e39-48ba-9eb0-48b03931c5f9" />
+<img width="544" height="193" alt="image" src="https://github.com/user-attachments/assets/ba4c85bc-920a-48c9-83d8-99b96ecbc57f" />
+
+**Dans les options de FileZilla → Transferts :**
+- Nombre maximal de transferts simultanés : 1.
+- Limite de vitesse : 20 KiB/s en émission et réception.
+
+<img width="841" height="522" alt="image" src="https://github.com/user-attachments/assets/e90d3e84-9c93-45c0-b942-8b601db40041" />
+
+**Remarques importantes :**
+- La lecture des GIFs est mise en pause tant que le serveur FTP est actif.
+- Pour quitter le mode FTP, appuyez sur le bouton physique ou la touche "OK" de la télécommande.
+- Évitez de couper l'alimentation pendant le transfert de fichiers pour éviter de corrompre la carte SD.
 
 ---
 
-## 🛠️ Feuille de Route (Roadmap LITE)
+## 🛠️ Feuille de route (Roadmap)
 
-### ⚡ Optimisation & Fonctionnalités
+### ⚡ Performances et fonctionnalités de base
 
-### 🎨 Esthétique & Connectivité
+*(À définir)*
+
+### 🎨 Améliorations visuelles et connectivité
+
+*(À définir)*
 
 ---
 
-## ⚖️ Licence et Remerciements
+## ⚖️ Licence et remerciements
 
-Ce projet est publié sous **Licence MIT**.
+Ce projet est distribué sous licence libre **MIT**.
 
-Remerciements particuliers aux développeurs des bibliothèques de base :
-* **Bitbank2** pour la formidable bibliothèque `AnimatedGIF`.
-* **Mrfaptastic** pour le moteur DMA haute performance dédié aux matrices.
-* **Communauté Telegram DMDos** : en la découvrant et en voyant ce dont DMDos était capable, j'ai été encouragé à développer **Retro Pixel LED**.
-* **RpiTe@m** pour le partage **gratuit** du pack de 600 GIFs et sa collection incroyable de 11000 GIFs disponible [ici.](https://www.neo-arcadia.com/forum/viewtopic.php?t=67065)
-* **shan-aya** pour la traduction en français et son magnifique logiciel de création de [GIFs.](https://github.com/shan-aya/DMD_GIF_converter)
-* **joseAveleira** pour l'effet de particules sur l'Horloge. [GitHub](https://github.com/joseAveleira/RelojPixel/tree/main)
+Un grand merci aux auteurs des bibliothèques utilisées :
+- **Bitbank2** pour la bibliothèque `AnimatedGIF`.
+- **Mrfaptastic** pour le moteur Matrix DMA ESP32.
+- La **Communauté Telegram DMDos**, pour leurs idées et retours d'expérience.
+- **RpiTe@m** pour le pack de 600 GIFs et la collection de 11 000 GIFs disponible [ici](https://www.neo-arcadia.com/forum/viewtopic.php?t=67065).
+- **shan-aya** pour la traduction française et l'utilitaire [DMD_GIF_converter](https://github.com/shan-aya/DMD_GIF_converter).
+- **joseAveleira** pour l'effet de particules de l'horloge. [GitHub](https://github.com/joseAveleira/RelojPixel/tree/main)
+
+---
+
+<p align="center">Projet développé avec passion et beaucoup de GIFs rétro. Si ce projet vous plaît, n'hésitez pas à lui ajouter une ⭐ sur GitHub !</p>
