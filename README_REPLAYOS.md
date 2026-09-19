@@ -104,12 +104,14 @@ Si un juego no tiene ni marquesina propia ni logo de sistema, el panel busca por
 
 #### ¿De dónde saco los GIFs?
 
-Si ya tienes (o has descargado) una colección de GIFs de arcade con nombres "humanos" en vez de nombres de romset (por ejemplo `ARCADE_NEOGEO_MetalSlugStory.gif` en vez de `mslug.gif`), usa **`Script_RetroPixelLED_GIF_Renamer`**:
+Si ya tienes (o has descargado) una colección de GIFs de arcade con nombres "humanos" en vez de nombres de romset (por ejemplo `ARCADE_NEOGEO_MetalSlugStory.gif` en vez de `mslug.gif`), usa el sigueinte script para renombar los GIFs, descargalo de [aquí](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/GIFs).:
 
-1. **Opción 1 — Renombrar GIFs:** indica la carpeta donde tienes los GIFs. El script consulta un catálogo público de nombres de MAME ([`MAME.dat`](https://github.com/libretro/libretro-database)) para identificar a qué romset corresponde cada título, además de un diccionario propio para los casos más comunes. Puedes elegir entre coincidencia solo exacta, o exacta + aproximada (resuelve más casos, con algo más de riesgo). Lo que no consiga identificar se mueve a una carpeta `SinResolver\` para que lo revises tú a mano — nunca renombra "a ciegas".
+1. Ejecuta `Ejecutar Script_RetroPixelLED_GIF_Renamer.bat`.
+
+2. **Opción 1 — Renombrar GIFs:** indica la carpeta donde tienes los GIFs. El script consulta un catálogo público de nombres de MAME ([`MAME.dat`](https://github.com/libretro/libretro-database)) para identificar a qué romset corresponde cada título, además de un diccionario propio para los casos más comunes. Puedes elegir entre coincidencia solo exacta, o exacta + aproximada (resuelve más casos, con algo más de riesgo). Lo que no consiga identificar se mueve a una carpeta `SinResolver\` para que lo revises tú a mano — nunca renombra "a ciegas".
    <img width="1090" height="830" alt="image" src="https://github.com/user-attachments/assets/58ba389f-367c-4114-b6e1-533018f50e77" />
 
-2. **Opción 2 — Copiar GIFs a carpetas de sistema:** una vez renombrados, esta opción compara los GIFs contra los romsets reales de cada sistema en tu carpeta `ROMS/` y los copia automáticamente a `Arcade/<sistema>/`, junto a los `.bmp` que ya tengas ahí.
+3. **Opción 2 — Copiar GIFs a carpetas de sistema:** una vez renombrados, esta opción compara los GIFs contra los romsets reales de cada sistema en tu carpeta `ROMS/` y los copia automáticamente a `Arcade/<sistema>/`, junto a los `.bmp` que ya tengas ahí.
   <img width="1106" height="1204" alt="image" src="https://github.com/user-attachments/assets/ee3e51a6-2dd7-4297-8a2a-a4486171f60d" />
 
 > [!NOTE]
