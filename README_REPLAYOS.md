@@ -41,7 +41,7 @@ A diferencia de Batocera y Recalbox, aquí no hay un instalador que despliegue n
 1. Conocer la **IP local** de tu ReplayOS y el **Token** obtenidos en el paso 1.
 2. Tener acceso, desde el PC, a tu carpeta de **ROMS** y a la **tarjeta SD** del panel (insertada en el PC, o accesible como unidad).
 3. Descargar los script para las marquesinas **`Ejecutar Script Marquesinas_ReplayOS.bat`** y **`Script_Marquesinas_ReplayOS.ps1`**, los puedes encontrar [aquí](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/Marquesinas).
-4. Descargar los script para renombrar los GIFs **`Ejecutar Script_RetroPixelLED_GIF_Renamer.ps1`** y **`Script_RetroPixelLED_GIF_Renamer.ps1`**, los puedes encontrar [aquí](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/GIFs).
+4. Descargar los script para renombrar los GIFs **`Ejecutar Script_RetroPixelLED_GIF_Renamer.bat`** y **`Script_RetroPixelLED_GIF_Renamer.ps1`**, los puedes encontrar [aquí](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/GIFs).
 > [!IMPORTANT]
 > Si descargaste el repositorio en un archivo `.zip`, asegúrate de **descomprimirlo por completo** antes de ejecutar los scripts.
 
