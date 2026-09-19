@@ -27,6 +27,7 @@ Para que el modo **🕹️ Arcade** funcione, el ESP32 necesita poder preguntarl
 
 4. **Configurar el ESP32:** Podemos configurarlo desde 2 sitios APP o archivo config.ini *se recomienda la APP*.
 - **APP:** Entramos en configuración en la sección *ARCADE* seleccionamos `ReplayOS` y en la sección *REPLAYOS* indicamos la IP y el Token.
+  
   <img width="428" height="945" alt="image" src="https://github.com/user-attachments/assets/1724a3a3-f292-4b11-8e54-b547c4ece0fa" />
   <img width="412" height="938" alt="image" src="https://github.com/user-attachments/assets/e649cf1b-1a98-423e-b3c8-5386d39fd0f1" />
 
