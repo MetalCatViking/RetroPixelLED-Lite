@@ -2,7 +2,7 @@
 
 
 ### [v3.1.3] - 2026-09-19
-**Retro Pixel LED Lite: "Total Control"**
+**Retro Pixel LED Lite: "Arcade ReplayOS"**
 
 #### ✨ Añadido
 * **Preproducción de GIFs con ReplayOS:** Se reproduce el GIF del juego que ejecutas en ReplayOS.
