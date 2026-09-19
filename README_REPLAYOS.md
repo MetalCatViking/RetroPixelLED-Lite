@@ -49,10 +49,6 @@ A diferencia de Batocera y Recalbox, aquí no hay un instalador que despliegue n
 
 1. Ejecuta `Ejecutar Script Marquesinas_ReplayOS.bat`.
 2. **Opción 1 — Scrapear sistema(s):** introduce la ruta de tu carpeta `ROMS`. El script te mostrará las subcarpetas de sistema que encuentre ahí — elige una, varias, o escribe `TODOS`.
-
-> [!CAUTION]
-> **El nombre del sistema tiene que ser exactamente el de la carpeta dentro de `ROMS/`, no el nombre "bonito" del sistema.** Por ejemplo, ReplayOS puede identificar Neo Geo internamente como `snk_ngo` en vez de `neogeo` — es literalmente ese nombre de carpeta el que ReplayOS envía al ESP32, así que tiene que coincidir exacto. Por eso el script lo toma directamente de tu carpeta `ROMS/` en vez de preguntártelo: así no hay que adivinarlo ni equivocarse.
-
 3. Elige la fuente (ArcadeDB o TheGamesDB) y qué recursos descargar (marquesina, logo, decal...) se recomienda **DECAL** para crear las marquesinas. El script guardará los recursos **sin procesar** en una carpeta de caché reutilizable — no genera todavía ningún `.bmp`.
 4. **Opción 2 — Generar imágenes:** convierte, 100% sin conexión, lo que ya tienes en caché a `.bmp` de 128×32 con el dithering RGB565 aplicado, y lo deja en tu carpeta `Arcade/<sistema>/` local.
 5. **Opción 3 — Generar / auditar listados:** escanea esa carpeta `Arcade/<sistema>/` y genera (o actualiza) el `<sistema>.txt` que el ESP32 usa para saber, muy rápido, qué romsets tienen marquesina. Si ya existía un listado, te avisa antes de tocarlo de qué archivos sobran o faltan indexar.
