@@ -142,7 +142,17 @@ share/marquesinas/Arcade/neogeo/mslug_02.gif
 
 #### ¿De dónde saco los GIFs?
 
-Tú decides cómo generarlos — el panel solo necesita que el archivo final esté a **128×32 píxeles**. Como referencia, si tu colección de Recalbox ya tiene vídeos de preview scrapeados (`<video>` en el `gamelist.xml`), puedes convertirlos a GIF con una herramienta como [dmd_gif_converter](https://github.com/red77290/dmd_gif_converter), que además de redimensionar incluye un modo de encuadre automático pensado para no perder la acción al reducir un vídeo grande a un tamaño tan pequeño. Es un proyecto de terceros, independiente de este repositorio — cualquier otro método que te deje un `.gif` de 128×32 servirá igual de bien.
+Si ya tienes (o has descargado) una colección de GIFs de arcade con nombres "humanos" en vez de nombres de romset (por ejemplo `ARCADE_NEOGEO_MetalSlugStory.gif` en vez de `mslug.gif`), usa el sigueinte script para renombar los GIFs, descargalo de [aquí](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/GIFs) y sigue estos pasos:
+
+1. Ejecuta `Ejecutar Script_RetroPixelLED_GIF_Renamer.bat`.
+
+2. **Opción 1 — Renombrar GIFs:** indica la carpeta donde tienes los GIFs. El script consulta un catálogo público de nombres de MAME ([`MAME.dat`](https://github.com/libretro/libretro-database)) para identificar a qué romset corresponde cada título, además de un diccionario propio para los casos más comunes. Puedes elegir entre coincidencia solo exacta, o exacta + aproximada (resuelve más casos, con algo más de riesgo). Lo que no consiga identificar se mueve a una carpeta `SinResolver\` para que lo revises tú a mano — nunca renombra "a ciegas".
+   <img width="1090" height="830" alt="image" src="https://github.com/user-attachments/assets/58ba389f-367c-4114-b6e1-533018f50e77" />
+
+3. **Opción 2 — Copiar GIFs a carpetas de sistema:** una vez renombrados, esta opción compara los GIFs contra los romsets reales de cada sistema en tu carpeta `ROMS/` y los copia automáticamente a `Arcade/<sistema>/`, junto a los `.bmp` que ya tengas ahí.
+   <img width="1106" height="1204" alt="image" src="https://github.com/user-attachments/assets/ee3e51a6-2dd7-4297-8a2a-a4486171f60d" />
+
+También puedes generarlos — el panel solo necesita que el archivo final esté a **128×32 píxeles**. Como referencia, si tu colección de Batocera ya tiene vídeos de preview scrapeados (`<video>` en el `gamelist.xml`), puedes convertirlos a GIF con una herramienta como [dmd_gif_converter](https://github.com/red77290/dmd_gif_converter), que además de redimensionar incluye un modo de encuadre automático pensado para no perder la acción al reducir un vídeo grande a un tamaño tan pequeño. Es un proyecto de terceros, independiente de este repositorio — cualquier otro método que te deje un `.gif` de 128×32 servirá igual de bien.
 
  ### 5. 🛠️ Logos de Sistemas.
  Podemos usar los logos ya redimensionados que se encuentran en la carpeta `Arcade/Logos Sistemas/` del proyecto [aquí](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/Logos%20Sistemas).
