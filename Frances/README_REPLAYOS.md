@@ -106,7 +106,7 @@ Si vous avez déjà (ou avez téléchargé) une collection de GIFs arcade avec d
    <img width="1090" height="830" alt="image" src="https://github.com/user-attachments/assets/58ba389f-367c-4114-b6e1-533018f50e77" />
 
 3. **Option 2 — Copier les GIFs dans les dossiers de système :** une fois renommés, cette option compare les GIFs aux romsets réels de chaque système dans votre dossier `ROMS/` et les copie automatiquement dans `Arcade/<système>/`, aux côtés des fichiers `.bmp` déjà présents.
-  <img width="1106" height="1204" alt="image" src="https://github.com/user-attachments/assets/ee3e51a6-2dd7-4297-8a2a-a4486171f60d" />
+   <img width="1106" height="1204" alt="image" src="https://github.com/user-attachments/assets/ee3e51a6-2dd7-4297-8a2a-a4486171f60d" />
 
 > [!NOTE]
 > Cette seconde option sait également copier vers les chemins de Batocera ou Recalbox (par réseau), si vous préparez des GIFs pour plusieurs frontends en même temps depuis le même PC.
