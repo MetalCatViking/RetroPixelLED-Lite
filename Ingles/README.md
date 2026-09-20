@@ -10,6 +10,7 @@
 <p align="center">
   <a href="https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/README.md">🇪🇸 Español</a> ·
   <a href="https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/Frances/README.md">🇫🇷 Français</a> ·
+   <a href="https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/Ingles/README.md">🇬🇧 English</a> ·
   <a href="https://t.me/RetroPixelLed">✈️ Telegram Group</a>
 </p>
 
@@ -510,11 +511,11 @@ Navigate to `Menu → Playback → Arcade` to set up dynamic game marquee respon
 > [!IMPORTANT]
 > To configure script installation and synchronize ROM metadata, follow the guide for your distribution:
 >
-> **[👉 Batocera Setup Instructions](https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/README_BATOCERA.md)**
+> **[👉 Batocera Setup Instructions](https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/Ingles/README_BATOCERA.md)**
 >
-> **[👉 Recalbox Setup Instructions](https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/README_RECALBOX.md)**
+> **[👉 Recalbox Setup Instructions](https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/Ingles/README_RECALBOX.md)**
 >
-> **[👉 ReplayOS Setup Instructions](https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/README_REPLAYOS.md)**
+> **[👉 ReplayOS Setup Instructions](https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/Ingles/README_REPLAYOS.md)**
 
 ---
 
