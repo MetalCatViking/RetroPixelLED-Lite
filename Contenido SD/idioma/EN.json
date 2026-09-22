@@ -73,7 +73,7 @@
   },
   "SUBMENU_ACTUALIZACION": {
     "titulo": "UPDATE",
-    "buscar_idioma": "Download Languages",
+    "buscar_idioma": "Update language files",
     "buscar_ota": "Check for OTA"
   },
   "SUBMENU_FTP": {
