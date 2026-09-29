@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    RetroPixelLED - ReplayOS Toolkit v5.0
+    RetroPixelLED - ReplayOS Toolkit v5.1
 .DESCRIPTION
     Unified tool for preparing arcade marquees for RetroPixelLED-Lite
     when the frontend is ReplayOS. Replaces the previous script (a single
@@ -348,9 +348,9 @@ function Invoke-ScrapeUnSistema {
         if (-not (Test-Path $dirPath)) { New-Item -ItemType Directory -Path $dirPath -Force | Out-Null }
     }
 
-    # Romsets = filenames (without extension) of the .zip files in this system's ROM folder.
+    # Romsets = filenames (without extension) of the .zip or .7z files in this system's ROM folder.
     # Common shared BIOS sets are excluded.
-    $files = Get-ChildItem -Path $RomFolder -File -Filter "*.zip" -ErrorAction SilentlyContinue
+    $files = Get-ChildItem -Path $RomFolder -File -ErrorAction SilentlyContinue | Where-Object { $_.Extension -in ".zip", ".7z" }
     $seenRomsets = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
     $bioNames = @("neogeo", "cps1", "cps2", "cps3", "pgm", "naomi", "naomibios")
     $games = @()
@@ -715,7 +715,7 @@ function Invoke-AuditarListadoUnSistema {
 do {
     Clear-Host
     Write-Host "===================================================" -ForegroundColor Magenta
-    Write-Host "     RETROPIXELLED - REPLAYOS TOOLKIT v5.0" -ForegroundColor White
+    Write-Host "     RETROPIXELLED - REPLAYOS TOOLKIT v5.1" -ForegroundColor White
     Write-Host "===================================================" -ForegroundColor Magenta
     Write-Host ""
     Write-Host "  1) Scrape system(s) from ROMS" -ForegroundColor White
