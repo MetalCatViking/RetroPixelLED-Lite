@@ -177,6 +177,8 @@ bool idiomaCargado = false;
 
 // Variables FTP
 FtpServer ftpSrv;
+char ftp_user[32] = "admin";
+char ftp_pass[32] = "admin";
 
 // Variables de lectura dinámica
 std::vector<String> listaPlaylists;
@@ -356,6 +358,10 @@ void leerConfigIni() {
         else if (clave == "IP") strlcpy(replayOS_IP,  valor.c_str(), sizeof(replayOS_IP));
         else if (clave == "TOKEN") strlcpy(replayOS_Token,  valor.c_str(), sizeof(replayOS_Token));
 
+        // [FTP]
+        else if (clave == "FTP_USER") strlcpy(ftp_user, valor.c_str(), sizeof(ftp_user));
+        else if (clave == "FTP_PASS") strlcpy(ftp_pass, valor.c_str(), sizeof(ftp_pass));
+
     }
 
     configFile.close();
@@ -472,6 +478,12 @@ void guardarConfigIni() {
     configFile.printf("IP=%s\n", replayOS_IP);
     configFile.println(F("# Token ReplayOS: SYSTEM > INFORMATION > NET CONTROL CODE"));
     configFile.printf("TOKEN=%s\n\n", replayOS_Token);
+
+    configFile.println(F("[FTP]"));
+    configFile.println(F("# Usuario FTP"));
+    configFile.printf("FTP_USER=%s\n", ftp_user);
+    configFile.println(F("# Contraseña FTP"));
+    configFile.printf("FTP_PASS=%s\n\n", ftp_pass);
 
     configFile.println(F("[END]"));
     configFile.close();
@@ -2987,7 +2999,7 @@ void ejecutarModoFTP() {
     }
 
     // 2. Iniciar FTP
-    ftpSrv.begin("admin", "admin"); 
+    ftpSrv.begin(ftp_user, ftp_pass);
 
     // 3. Interfaz Visual Estática
     display->fillScreen(0);
