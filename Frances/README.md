@@ -40,7 +40,7 @@ Si la branche 2.x.x a apporté le menu OSD, la version **v3.0.0** a marqué un t
    - [🖥️ Menu OSD](#️-menu-osd-navigation-intelligente)
    - [📱 Application PWA de contrôle à distance](#-pwa--application-de-contrôle-à-distance)
    - [🏠 Home Assistant](#-home-assistant)
-   - [🕹️ Mode Arcade](#️-mode-arcade-batocera-recalbox--replayos)
+   - [🕹️ Mode Arcade](#️-mode-arcade-batocera-recalbox-retrobat--replayos)
    - [🕒 Horloge et Météo](#-horloge-et-météo)
    - [⏰ Minuteur](#-minuteur)
    - [🌐 Multi-langue](#-multi-langue)
@@ -53,7 +53,7 @@ Si la branche 2.x.x a apporté le menu OSD, la version **v3.0.0** a marqué un t
    - [4. Fuseau horaire (TZ)](#4--configuration-du-fuseau-horaire-tz)
    - [5. Clé API Météo](#5-%EF%B8%8F-comment-obtenir-votre-cl%C3%A9-api-m%C3%A9t%C3%A9o)
 5. [📖 Générateur de playlists (Windows)](#-générateur-de-playlists-windows)
-6. [🕹️ Intégration Arcade](#️-intégration-arcade-batocera-recalbox-ou-replayos)
+6. [🕹️ Intégration Arcade](#️-intégration-arcade-batocera-recalbox-retrobat-ou-replayos)
 7. [🏠 Intégration Home Assistant](#-intégration-home-assistant-guide-complet)
 8. [🧠 Architecture interne / Core Lite](#-architecture-interne--core-lite)
 9. [📜 Historique détaillé des modifications](#-historique-détaillé-des-modifications-v300--v313)
@@ -241,9 +241,9 @@ Consultez le [Guide complet d'intégration Home Assistant](#-intégration-home-a
 
 ---
 
-### 🕹️ Mode Arcade (Batocera, Recalbox & ReplayOS)
+### 🕹️ Mode Arcade (Batocera, Recalbox, RetroBat & ReplayOS)
 
-Transforme votre panneau en une marquise dynamique réagissant aux jeux lancés, via deux méthodes : scripts locaux (**Batocera / Recalbox**) ou surveillance réseau (**ReplayOS**).
+Transforme votre panneau en une marquise dynamique réagissant aux jeux lancés, via deux méthodes : scripts locaux (**Batocera / Recalbox / RetroBat **) ou surveillance réseau (**ReplayOS**).
 
 Affiche automatiquement :
 1. **Marquise du jeu :** image `.bmp` 24 bits ou **GIF animé** (y compris des séquences de plusieurs GIFs joués en boucle).
@@ -484,7 +484,7 @@ Le script `Generador de Playlist v1.0.1.bat` crée des sélections personnalisé
 
 ---
 
-## 🕹️ Intégration Arcade (Batocera, Recalbox ou ReplayOS)
+## 🕹️ Intégration Arcade (Batocera, Recalbox, Retrobat ou ReplayOS)
 
 Activez l'option dans `Menu → Lecture → Arcade` pour afficher les marquises de vos jeux :
 
@@ -504,6 +504,8 @@ Activez l'option dans `Menu → Lecture → Arcade` pour afficher les marquises 
 >
 > **[👉 Guide d'installation pour Recalbox](https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/Frances/README_RECALBOX.md)**
 >
+> **[👉 Guide d'installation pour Recalbox](https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/Frances/README_RETROBAT.md)**
+> 
 > **[👉 Guide d'installation pour ReplayOS](https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/Frances/README_REPLAYOS.md)**
 
 ---
