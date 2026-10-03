@@ -1,55 +1,61 @@
 # ==================================================================
-#   INSTALADOR AUTOMATICO ARCADE - RETRO PIXEL LED (v3.1)
+#   INSTALADOR AUTOMATICO ARCADE - RETRO PIXEL LED (v3.2)
 # ==================================================================
-$Host.UI.RawUI.WindowTitle = "Instalador Retro Pixel Universal v3.1"
+$Host.UI.RawUI.WindowTitle = "Instalador Retro Pixel Universal v3.2"
 $OutputEncoding = [System.Text.Encoding]::UTF8
 
 Write-Host "===================================================" -ForegroundColor Magenta
 Write-Host "      INSTALADOR ARCADE RETRO PIXEL LED Lite" -ForegroundColor White
 Write-Host "===================================================" -ForegroundColor Magenta
 
-# 1. SOLICITAR DATOS
+# 1. SOLICITAR IP DEL PANEL (comun a los tres sistemas)
 $IP_PANEL = Read-Host "1. Introduce la IP de tu PANEL LED (ej. 192.168.1.117)"
 $IP_PANEL = $IP_PANEL.Trim()
 
-$INPUT_RUTA = Read-Host "2. Introduce la ruta o IP de la consola (ej. \\192.168.1.119 o D:)"
-$INPUT_RUTA = $INPUT_RUTA.Trim([char]34).TrimEnd([char]92)
+# 2. SELECCION DE SISTEMA OPERATIVO
+# Se pregunta ANTES de pedir ninguna ruta, porque el tipo de ruta a solicitar
+# depende de la respuesta: ruta/IP de red para Batocera y Recalbox, carpeta
+# LOCAL de este mismo PC para RetroBat.
+Write-Host ""
+Write-Host "2. Que sistema vas a configurar?" -ForegroundColor Cyan
+Write-Host "  1) Batocera" -ForegroundColor White
+Write-Host "  2) Recalbox" -ForegroundColor White
+Write-Host "  3) RetroBat (Windows)" -ForegroundColor White
+$opcion = Read-Host "Selecciona una opcion (1, 2 o 3)"
 
-# --- DETECCION DE RUTAS ---
+# --- DETECCION DE RUTAS (solo para Batocera/Recalbox, que son de red) ---
 $RUTA_SYSTEM = ""
 $RUTA_USERSCRIPTS = ""
 $RUTA_BATOCERA_SCRIPTS = ""
 
-if (Test-Path -LiteralPath (Join-Path $INPUT_RUTA "share\system")) {
-    $RUTA_SYSTEM = Join-Path $INPUT_RUTA "share\system"
-    $RUTA_USERSCRIPTS = Join-Path $INPUT_RUTA "share\userscripts"
-    $RUTA_BATOCERA_SCRIPTS = Join-Path $INPUT_RUTA "share\system\configs\emulationstation\scripts"
-} elseif (Test-Path -LiteralPath (Join-Path $INPUT_RUTA "recalbox\system")) {
-    $RUTA_SYSTEM = Join-Path $INPUT_RUTA "recalbox\system"
-    $RUTA_USERSCRIPTS = Join-Path $INPUT_RUTA "recalbox\userscripts"
-} elseif (Test-Path -LiteralPath (Join-Path $INPUT_RUTA "system")) {
-    $RUTA_SYSTEM = Join-Path $INPUT_RUTA "system"
-    $RUTA_BATOCERA_SCRIPTS = Join-Path $INPUT_RUTA "system\configs\emulationstation\scripts"
-    if (Test-Path -LiteralPath (Join-Path $INPUT_RUTA "userscripts")) {
-        $RUTA_USERSCRIPTS = Join-Path $INPUT_RUTA "userscripts"
+if ($opcion -eq "1" -or $opcion -eq "2") {
+    $INPUT_RUTA = Read-Host "Introduce la ruta o IP de la consola (ej. \\192.168.1.119 o D:)"
+    $INPUT_RUTA = $INPUT_RUTA.Trim([char]34).TrimEnd([char]92)
+
+    if (Test-Path -LiteralPath (Join-Path $INPUT_RUTA "share\system")) {
+        $RUTA_SYSTEM = Join-Path $INPUT_RUTA "share\system"
+        $RUTA_USERSCRIPTS = Join-Path $INPUT_RUTA "share\userscripts"
+        $RUTA_BATOCERA_SCRIPTS = Join-Path $INPUT_RUTA "share\system\configs\emulationstation\scripts"
+    } elseif (Test-Path -LiteralPath (Join-Path $INPUT_RUTA "recalbox\system")) {
+        $RUTA_SYSTEM = Join-Path $INPUT_RUTA "recalbox\system"
+        $RUTA_USERSCRIPTS = Join-Path $INPUT_RUTA "recalbox\userscripts"
+    } elseif (Test-Path -LiteralPath (Join-Path $INPUT_RUTA "system")) {
+        $RUTA_SYSTEM = Join-Path $INPUT_RUTA "system"
+        $RUTA_BATOCERA_SCRIPTS = Join-Path $INPUT_RUTA "system\configs\emulationstation\scripts"
+        if (Test-Path -LiteralPath (Join-Path $INPUT_RUTA "userscripts")) {
+            $RUTA_USERSCRIPTS = Join-Path $INPUT_RUTA "userscripts"
+        } else {
+            $RUTA_USERSCRIPTS = Join-Path (Split-Path $INPUT_RUTA -Parent) "userscripts"
+        }
     } else {
-        $RUTA_USERSCRIPTS = Join-Path (Split-Path $INPUT_RUTA -Parent) "userscripts"
+        Write-Host ""
+        Write-Host "[ERROR] No se pudo encontrar la estructura de carpetas de la consola." -ForegroundColor Red
+        Read-Host "Presiona Enter para salir"
+        exit
     }
-} else {
-    Write-Host ""
-    Write-Host "[ERROR] No se pudo encontrar la estructura de carpetas de la consola." -ForegroundColor Red
-    Read-Host "Presiona Enter para salir"
-    exit
 }
 
-# 2. SELECCION DE SISTEMA OPERATIVO
-Write-Host ""
-Write-Host "Que sistema operativo tiene esa ruta?" -ForegroundColor Cyan
-Write-Host "  1) Batocera" -ForegroundColor White
-Write-Host "  2) Recalbox" -ForegroundColor White
-$opcion = Read-Host "Selecciona una opcion (1 o 2)"
-
-# --- FUNCION INTERNA DE PROCESAMIENTO UNIX ---
+# --- FUNCION INTERNA DE PROCESAMIENTO UNIX (Batocera/Recalbox) ---
 # $SubCarpeta: subcarpeta LOCAL (junto al .ps1) donde vive el script de origen,
 # p.ej. "Batocera" o "Recalbox". No afecta al nombre con el que se instala en la consola.
 function Instalar-Script-Unix($FileName, $DestinoPath, $SubCarpeta = "") {
@@ -67,22 +73,22 @@ function Instalar-Script-Unix($FileName, $DestinoPath, $SubCarpeta = "") {
         if (!(Test-Path -LiteralPath $DestinoPath)) {
             $null = New-Item -ItemType Directory -Force -Path $DestinoPath
         }
-        
+
         # SOLUCION: Get-Content tambien requiere -LiteralPath para archivos con corchetes
         $Contenido = Get-Content -LiteralPath $PathOrigen -Raw
-        
+
         # Inyeccion segura de IP usando caracteres ASCII directos
         $Quote = [char]34
         $StringReemplazo = "IP_ESP32=" + $Quote + $IP_PANEL + $Quote
         $Contenido = $Contenido -replace ("IP_ESP32=" + $Quote + ".*" + $Quote), $StringReemplazo
-        
+
         # Forzamos formato Linux (LF)
         $ContenidoFinal = $Contenido -replace "`r`n", "`n"
         $PathFinal = Join-Path $DestinoPath $FileName
-        
+
         $Utf8NoBom = New-Object System.Text.UTF8Encoding($false)
         [System.IO.File]::WriteAllText($PathFinal, $ContenidoFinal, $Utf8NoBom)
-        
+
         Write-Host "   [OK] Configurado e Instalado: $FileName" -ForegroundColor Green
         return $true
     } else {
@@ -91,6 +97,90 @@ function Instalar-Script-Unix($FileName, $DestinoPath, $SubCarpeta = "") {
         Write-Host "   Asegurate de que los .sh/.py esten dentro de las subcarpetas Batocera\ o Recalbox\." -ForegroundColor Yellow
         return $false
     }
+}
+
+# --- FUNCION INTERNA DE PROCESAMIENTO WINDOWS (RetroBat) ---
+# Mismo patron que Instalar-Script-Unix, con dos diferencias: no se fuerza el
+# salto de linea (los .py/.bat de Windows se quedan tal cual ya los tengas) y,
+# si se indica $ArcadeRootValue, tambien se sustituye la linea ARCADE_ROOT
+# ademas de IP_ESP32 (la usan retrobat_marquesina_start.py/stop.py).
+function Instalar-Script-Windows($FileName, $DestinoPath, $SubCarpeta = "", $ArcadeRootValue = $null) {
+    $CurrentDir = $PSScriptRoot
+    if ([string]::IsNullOrEmpty($CurrentDir)) { $CurrentDir = Get-Location }
+
+    if ([string]::IsNullOrEmpty($SubCarpeta)) {
+        $PathOrigen = Join-Path $CurrentDir $FileName
+    } else {
+        $PathOrigen = Join-Path (Join-Path $CurrentDir $SubCarpeta) $FileName
+    }
+
+    if (-not (Test-Path -LiteralPath $PathOrigen)) {
+        Write-Host ""
+        Write-Host "   [ERROR] No se encontro el archivo $FileName en la carpeta '$SubCarpeta' junto al instalador." -ForegroundColor Red
+        return $false
+    }
+
+    if (-not (Test-Path -LiteralPath $DestinoPath)) {
+        $null = New-Item -ItemType Directory -Force -Path $DestinoPath
+    }
+
+    $Contenido = Get-Content -LiteralPath $PathOrigen -Raw
+    $Quote = [char]34
+
+    $StringReemplazoIP = "IP_ESP32=" + $Quote + $IP_PANEL + $Quote
+    $Contenido = $Contenido -replace ("IP_ESP32=" + $Quote + ".*" + $Quote), $StringReemplazoIP
+
+    if ($ArcadeRootValue) {
+        $StringReemplazoArcade = "ARCADE_ROOT = r" + $Quote + $ArcadeRootValue + $Quote
+        $Contenido = $Contenido -replace ("ARCADE_ROOT = r" + $Quote + ".*" + $Quote), $StringReemplazoArcade
+    }
+
+    $PathFinal = Join-Path $DestinoPath $FileName
+    $Utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+    [System.IO.File]::WriteAllText($PathFinal, $Contenido, $Utf8NoBom)
+
+    Write-Host "   [OK] Configurado e Instalado: $FileName" -ForegroundColor Green
+    return $true
+}
+
+# --- FUNCION: comprobar/instalar una dependencia de Windows via winget ---
+function Asegurar-Dependencia-Windows($Comando, $WingetId, $Nombre, $UrlManual) {
+    $existe = Get-Command $Comando -ErrorAction SilentlyContinue
+    if ($existe) {
+        Write-Host "   [OK] $Nombre ya esta instalado." -ForegroundColor Green
+        return $true
+    }
+
+    Write-Host "   $Nombre no se ha encontrado en el PATH. Intentando instalar con winget..." -ForegroundColor Yellow
+    $winget = Get-Command winget -ErrorAction SilentlyContinue
+    if (-not $winget) {
+        Write-Host "   [ERROR] winget no esta disponible en este equipo." -ForegroundColor Red
+        Write-Host "   Instala $Nombre manualmente desde $UrlManual y vuelve a ejecutar este instalador." -ForegroundColor Yellow
+        return $false
+    }
+
+    try {
+        winget install --id $WingetId -e --silent --accept-package-agreements --accept-source-agreements | Out-Null
+    } catch {
+        Write-Host "   [ERROR] Fallo la instalacion automatica de $Nombre." -ForegroundColor Red
+        Write-Host "   Instalalo manualmente desde $UrlManual y vuelve a ejecutar este instalador." -ForegroundColor Yellow
+        return $false
+    }
+
+    # winget puede haber actualizado el PATH de la maquina/usuario sin que esta
+    # sesion de PowerShell se entere todavia; lo refrescamos para poder
+    # detectar el comando sin tener que cerrar y reabrir la ventana.
+    $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
+
+    $existeAhora = Get-Command $Comando -ErrorAction SilentlyContinue
+    if ($existeAhora) {
+        Write-Host "   [OK] $Nombre instalado correctamente." -ForegroundColor Green
+        return $true
+    }
+
+    Write-Host "   [AVISO] $Nombre se instalo pero no se detecta todavia en esta sesion de PowerShell." -ForegroundColor Yellow
+    Write-Host "   Cierra esta ventana, abre una nueva, y relanza este instalador para confirmarlo." -ForegroundColor Yellow
+    return $false
 }
 
 # 3. EJECUCION FILTRADA SEGUN EL SISTEMA
@@ -111,7 +201,7 @@ switch ($opcion) {
             Read-Host "Presiona Enter para salir"
             exit
         }
-        
+
         $RUTA_GAME_START = Join-Path $RUTA_BATOCERA_SCRIPTS "game-start"
         $RUTA_GAME_SELECTED = Join-Path $RUTA_BATOCERA_SCRIPTS "game-selected"
         $RUTA_SYSTEM_SELECTED = Join-Path $RUTA_BATOCERA_SCRIPTS "system-selected"
@@ -228,7 +318,7 @@ switch ($opcion) {
             Write-Host "   reinstalar este script), sin necesidad de tocarlo por SSH otra vez." -ForegroundColor Yellow
         }
     }
-    
+
     "2" {
         Write-Host ""
         Write-Host "--> Configuracion para RECALBOX..." -ForegroundColor Cyan
@@ -246,18 +336,18 @@ switch ($opcion) {
             Write-Host ""
             Write-Host " Ejecutando instalacion de Opcion 1 (Permanente)..." -ForegroundColor Yellow
             $null = Instalar-Script-Unix "Recalbox_1(permanent).sh" $RUTA_USERSCRIPTS "Recalbox"
-            
+
             $conflictivo = Join-Path $RUTA_USERSCRIPTS "Recalbox_2(permanent).sh"
             if (Test-Path -LiteralPath $conflictivo) { Remove-Item -LiteralPath $conflictivo -Force }
-        } 
+        }
         elseif ($modoRecalbox -eq "2") {
             Write-Host ""
             Write-Host " Ejecutando instalacion de Opcion 2 (Por Eventos)..." -ForegroundColor Yellow
             $null = Instalar-Script-Unix "Recalbox_2(permanent).sh" $RUTA_USERSCRIPTS "Recalbox"
-            
+
             $conflictivo = Join-Path $RUTA_USERSCRIPTS "Recalbox_1(permanent).sh"
             if (Test-Path -LiteralPath $conflictivo) { Remove-Item -LiteralPath $conflictivo -Force }
-        } 
+        }
         else {
             Write-Host ""
             Write-Host "[ERROR] Opcion de modo invalida." -ForegroundColor Red
@@ -265,7 +355,84 @@ switch ($opcion) {
             exit
         }
     }
-    
+
+    "3" {
+        Write-Host ""
+        Write-Host "--> Instalando en RETROBAT (Windows)..." -ForegroundColor Cyan
+
+        $RUTA_RETROBAT = Read-Host "Carpeta de instalacion de RetroBat (Enter para usar: C:\RetroBat)"
+        if ([string]::IsNullOrWhiteSpace($RUTA_RETROBAT)) { $RUTA_RETROBAT = "C:\RetroBat" }
+        $RUTA_RETROBAT = $RUTA_RETROBAT.Trim([char]34).TrimEnd([char]92)
+
+        $RUTA_ES_SCRIPTS = Join-Path $RUTA_RETROBAT "emulationstation\.emulationstation\scripts"
+        if (-not (Test-Path -LiteralPath $RUTA_ES_SCRIPTS)) {
+            Write-Host ""
+            Write-Host "[ERROR] No se encontro la carpeta de scripts de EmulationStation en esa ruta." -ForegroundColor Red
+            Write-Host "Se esperaba en: $RUTA_ES_SCRIPTS" -ForegroundColor Yellow
+            Read-Host "Presiona Enter para salir"
+            exit
+        }
+
+        $ARCADE_ROOT_RETROBAT = Read-Host "Carpeta local con las marquesinas Arcade (Enter para usar: C:\RetroPixelLED\Arcade)"
+        if ([string]::IsNullOrWhiteSpace($ARCADE_ROOT_RETROBAT)) { $ARCADE_ROOT_RETROBAT = "C:\RetroPixelLED\Arcade" }
+        $ARCADE_ROOT_RETROBAT = $ARCADE_ROOT_RETROBAT.Trim([char]34).TrimEnd([char]92)
+
+        Write-Host ""
+        Write-Host "Comprobando dependencias (Python y FFmpeg)..." -ForegroundColor Cyan
+        $tienePython = Asegurar-Dependencia-Windows "python" "Python.Python.3.12" "Python" "https://www.python.org/downloads/"
+        $tieneFFmpeg = Asegurar-Dependencia-Windows "ffmpeg" "Gyan.FFmpeg" "FFmpeg" "https://ffmpeg.org/download.html"
+
+        $RUTA_ENGINE = Join-Path $RUTA_ES_SCRIPTS "_engine"
+        $RUTA_GAME_START = Join-Path $RUTA_ES_SCRIPTS "game-start"
+        $RUTA_GAME_END = Join-Path $RUTA_ES_SCRIPTS "game-end"
+
+        Write-Host ""
+        Write-Host "Instalando el motor (Python)..." -ForegroundColor Yellow
+        $inst_streamer = Instalar-Script-Windows "pixel_stream_retrobat.py" $RUTA_ENGINE "RetroBat"
+        $inst_start = Instalar-Script-Windows "retrobat_marquesina_start.py" $RUTA_ENGINE "RetroBat" $ARCADE_ROOT_RETROBAT
+        $inst_stop = Instalar-Script-Windows "retrobat_marquesina_stop.py" $RUTA_ENGINE "RetroBat"
+
+        if ($inst_streamer -and $inst_start -and $inst_stop) {
+            Write-Host ""
+            Write-Host "Generando los hooks de game-start/game-end..." -ForegroundColor Yellow
+
+            if (-not (Test-Path -LiteralPath $RUTA_GAME_START)) { $null = New-Item -ItemType Directory -Force -Path $RUTA_GAME_START }
+            if (-not (Test-Path -LiteralPath $RUTA_GAME_END)) { $null = New-Item -ItemType Directory -Force -Path $RUTA_GAME_END }
+
+            $RutaStartPy = Join-Path $RUTA_ENGINE "retrobat_marquesina_start.py"
+            $RutaStopPy = Join-Path $RUTA_ENGINE "retrobat_marquesina_stop.py"
+
+            $BatInicio = @(
+                "@echo off",
+                ('start "" /B pythonw "' + $RutaStartPy + '" "%~1" "%~2"')
+            ) -join "`r`n"
+
+            $BatFin = @(
+                "@echo off",
+                ('start "" /B pythonw "' + $RutaStopPy + '"')
+            ) -join "`r`n"
+
+            $Utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+            [System.IO.File]::WriteAllText((Join-Path $RUTA_GAME_START "marquesina_iniciar.bat"), $BatInicio, $Utf8NoBom)
+            [System.IO.File]::WriteAllText((Join-Path $RUTA_GAME_END "marquesina_detener.bat"), $BatFin, $Utf8NoBom)
+
+            Write-Host "   [OK] marquesina_iniciar.bat instalado en game-start\" -ForegroundColor Green
+            Write-Host "   [OK] marquesina_detener.bat instalado en game-end\" -ForegroundColor Green
+        }
+
+        if (-not $tienePython -or -not $tieneFFmpeg) {
+            Write-Host ""
+            Write-Host "[AVISO] Alguna dependencia no se pudo confirmar instalada (revisa los mensajes de arriba)." -ForegroundColor Yellow
+            Write-Host "Los scripts ya estan copiados, pero no funcionaran hasta que Python y FFmpeg" -ForegroundColor Yellow
+            Write-Host "esten disponibles en el PATH de este PC." -ForegroundColor Yellow
+        }
+
+        Write-Host ""
+        Write-Host "[IMPORTANTE] Si tu version de RetroBat requiere activar algun ajuste para que" -ForegroundColor Yellow
+        Write-Host "EmulationStation ejecute estos scripts (tipo CustomEventScripts), revisalo en:" -ForegroundColor Yellow
+        Write-Host "  $RUTA_RETROBAT\emulationstation\.emulationstation\es_settings.cfg" -ForegroundColor Yellow
+    }
+
     default {
         Write-Host ""
         Write-Host "[ERROR] Opcion de sistema invalida." -ForegroundColor Red
@@ -281,8 +448,11 @@ Write-Host "=================================================" -ForegroundColor 
 if ($opcion -eq "1") {
     Write-Host "IMPORTANTE: Reinicia Batocera y, la primera vez, activa 'retropixelperms' en"
     Write-Host "AJUSTES DEL SISTEMA > SERVICIOS para que los permisos se apliquen solos."
-} else {
+} elseif ($opcion -eq "2") {
     Write-Host "IMPORTANTE: Reinicia Recalbox."
+} else {
+    Write-Host "IMPORTANTE: Reinicia RetroBat (o al menos cierra y reabre EmulationStation)"
+    Write-Host "para que los hooks de game-start/game-end queden activos."
 }
 Write-Host "--------------------------------------------------"
 Read-Host "Presiona Enter para finalizar"
