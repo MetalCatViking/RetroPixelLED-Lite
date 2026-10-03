@@ -40,7 +40,7 @@ While the 2.x.x branch introduced the OSD Menu, **v3.0.0** was the definitive le
    - [🖥️ OSD Menu](#️-osd-menu-smart-navigation)
    - [📱 PWA Remote Control App](#-pwa--remote-control-app)
    - [🏠 Home Assistant](#-home-assistant)
-   - [🕹️ Arcade Mode](#️-arcade-mode-batocera-recalbox--replayos)
+   - [🕹️ Arcade Mode](#️-arcade-mode-batocera-recalbox-retrobat--replayos)
    - [🕒 Clock & Weather](#-clock--weather)
    - [⏰ Timer](#-timer)
    - [🌐 Multi-language Support](#-multi-language-support)
@@ -50,10 +50,10 @@ While the 2.x.x branch introduced the OSD Menu, **v3.0.0** was the definitive le
    - [1. Flashing the ESP32](#1--flashing-the-esp32-web-installer)
    - [2. Preparing the SD Card](#2--sd-card-preparation)
    - [3. The `config.ini` File](#3--configuration-via-configini)
-   - [4. Time Zone (TZ) Setup](#4--time-zone-tz-configuration)
-   - [5. Weather API Key](#5--how-to-get-your-weather-api-key)
+   - [4. Time Zone (TZ) Setup](#4--time-zone-tz-setup)
+   - [5. Weather API Key](#5-%EF%B8%8F-how-to-get-your-weather-api-key)
 5. [📖 Playlist Generator (Windows)](#-playlist-generator-windows)
-6. [🕹️ Arcade Integration](#️-arcade-integration-batocera-recalbox-or-replayos)
+6. [🕹️ Arcade Integration](#️-arcade-integration-batocera-recalbox-retrobat-or-replayos)
 7. [🏠 Home Assistant Integration](#-home-assistant-integration-complete-guide)
 8. [🧠 Internal Architecture / Core Lite](#-internal-architecture--core-lite)
 9. [📜 Detailed Changelog](#-detailed-changelog-v300--v313)
@@ -242,9 +242,9 @@ See the full [Home Assistant Integration Guide](#-home-assistant-integration-com
 
 ---
 
-### 🕹️ Arcade Mode (Batocera, Recalbox & ReplayOS)
+### 🕹️ Arcade Mode (Batocera, Recalbox, RetroBat & ReplayOS)
 
-Transforms your panel into an active dynamic marquee that responds live to your current game. Features two integration modes: local script execution (**Batocera / Recalbox**) or background network polling (**ReplayOS**).
+Transforms your panel into an active dynamic marquee that responds live to your current game. Features two integration modes: local script execution (**Batocera / Recalbox / RetroBat**) or background network polling (**ReplayOS**).
 
 Displays automatically:
 1. **Game Marquee:** 24-bit `.bmp` image or an **animated GIF** (including sequentially queued multiple GIFs looping seamlessly).
@@ -495,7 +495,7 @@ The batch utility `Generador de Playlist v1.0.1.bat` automates playlist creation
 
 ---
 
-## 🕹️ Arcade Integration (Batocera, Recalbox or ReplayOS)
+## 🕹️ Arcade Integration (Batocera, Recalbox, RetroBat or ReplayOS)
 
 Navigate to `Menu → Playback → Arcade` to set up dynamic game marquee response:
 
@@ -515,6 +515,8 @@ Navigate to `Menu → Playback → Arcade` to set up dynamic game marquee respon
 >
 > **[👉 Recalbox Setup Instructions](https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/Ingles/README_RECALBOX.md)**
 >
+> **[👉 Recalbox Setup Instructions](https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/Ingles/README_RETROBAT.md)**
+> 
 > **[👉 ReplayOS Setup Instructions](https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/Ingles/README_REPLAYOS.md)**
 
 ---
