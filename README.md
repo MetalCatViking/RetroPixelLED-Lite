@@ -40,7 +40,7 @@ Si la rama 2.x.x trajo el Menú OSD, la **v3.0.0** fue el salto definitivo hacia
    - [🖥️ Menú OSD](#️-menú-osd-navegación-inteligente)
    - [📱 PWA — App de control remoto](#-pwa--app-de-control-remoto)
    - [🏠 Home Assistant](#-home-assistant)
-   - [🕹️ Modo Arcade](#️-modo-arcade-batocera-recalbox--replayos)
+   - [🕹️ Modo Arcade](#️-modo-arcade-batocera-recalbox-retrobat--replayos)
    - [🕒 Reloj y Clima](#-reloj-y-clima)
    - [⏰ Temporizador](#-temporizador)
    - [🌐 Multi-idioma](#-multi-idioma)
@@ -53,7 +53,7 @@ Si la rama 2.x.x trajo el Menú OSD, la **v3.0.0** fue el salto definitivo hacia
    - [4. Zona horaria (TZ)](#4--configuración-de-zona-horaria-tz)
    - [5. API key del clima](#5-%EF%B8%8F-c%C3%B3mo-obtener-tu-api-key-de-clima)
 5. [📖 Generador de playlists (Windows)](#-generador-de-playlists-windows)
-6. [🕹️ Integración con Arcade](#️-integración-con-arcade-batocera-recalbox-o-replayos)
+6. [🕹️ Integración con Arcade](#️-integración-con-arcade-batocera-recalbox-retrobat-o-replayos)
 7. [🏠 Integración con Home Assistant](#-integración-con-home-assistant-guía-completa)
 8. [🧠 Arquitectura interna / Core Lite](#-arquitectura-interna--core-lite)
 9. [📜 Historial de cambios detallado](#-historial-de-cambios-detallado-v300--v313)
@@ -242,9 +242,9 @@ Ver la [guía completa de integración con Home Assistant](#-integración-con-ho
 
 ---
 
-### 🕹️ Modo Arcade (Batocera, Recalbox & ReplayOS)
+### 🕹️ Modo Arcade (Batocera, Recalbox, RetroBat & ReplayOS)
 
-Convierte el panel en una marquesina dinámica que reacciona a lo que estás jugando, con dos vías de sincronización: scripts locales (**Batocera / Recalbox**) o monitorización nativa por red (**ReplayOS**).
+Convierte el panel en una marquesina dinámica que reacciona a lo que estás jugando, con dos vías de sincronización: scripts locales (**Batocera / Recalbox / RetroBat**) o monitorización nativa por red (**ReplayOS**).
 
 Muestra automáticamente:
 1. **Marquesina del juego:** imagen `.bmp` de 24 bits, o un **GIF animado** si existe uno para ese juego — incluyendo secuencias de varios GIFs reproducidos uno tras otro en bucle.
@@ -495,7 +495,7 @@ El script `Generador de Playlist v1.0.1.bat` crea colecciones personalizadas sin
 
 ---
 
-## 🕹️ Integración con Arcade (Batocera, Recalbox o ReplayOS)
+## 🕹️ Integración con Arcade (Batocera, Recalbox, RetroBat o ReplayOS)
 
 Activa `Menú → Reproducción → Arcade` para que el panel muestre las marquesinas del juego o sistema en el que estás:
 
@@ -514,6 +514,8 @@ Activa `Menú → Reproducción → Arcade` para que el panel muestre las marque
 > **[👉 Instrucciones de Batocera](https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/README_BATOCERA.md)**
 >
 > **[👉 Instrucciones de Recalbox](https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/README_RECALBOX.md)**
+>
+> **[👉 Instrucciones de RetroBat](https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/README_RETROBAT.md)**
 >
 > **[👉 Instrucciones de ReplayOS](https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/README_REPLAYOS.md)**
 
