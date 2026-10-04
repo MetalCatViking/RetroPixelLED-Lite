@@ -1,5 +1,39 @@
 ## 📝 Changelog (Registre des modifications)
 
+### [v3.1.4] - 2026-10-04
+**Retro Pixel LED Lite : « Fluidité Totale »**
+
+#### ✨ Ajouté
+* **Prise en charge de RetroBat :** lecture automatique du GIF ou de la marquise du jeu que vous lancez sur RetroBat.
+* **Vitesse de lecture de la carte SD configurable :** nouveau paramètre `SD_SPEED` (4, 10, 20 ou 25 MHz) modifiable depuis la PWA (groupe Matériel), depuis le menu OSD (Paramètres avancés) et depuis le fichier `config.ini`. Par défaut à 10 MHz.
+#### ⚙️ Améliorations / Changements internes
+* **Démarrage de la carte SD en deux phases :** la carte démarre d'abord à 4 MHz pour pouvoir lire `config.ini`, puis redémarre à la vitesse configurée. Si la carte ne répond pas, elle bascule automatiquement sur une vitesse inférieure (25 → 20 → 10 → 4 MHz).
+* **Attente entre les images plus précise :** le temps de décodage et d'affichage de chaque image est désormais inclus dans le délai du GIF au lieu d'y être ajouté, offrant ainsi une lecture plus fluide.
+* **Nouveau schéma de partitionnement (Minimal SPIFFS) :** 1,9 Mo pour l'application avec OTA, contre 1,25 Mo auparavant, afin d'offrir une marge de manœuvre pour l'évolution du firmware.
+* **Nouvelle clé de langue `sdspeed` :** ajoutée à la section `SUBMENU_AVANZADO` des fichiers de langue `.json` pour la nouvelle option du menu.
+#### 🛡️ Correctifs
+* **Vitesse de lecture des GIFs :** correction du double temps d'attente entre les images (la bibliothèque attendait le délai et le firmware l'attendait à nouveau), ce qui ralentissait la lecture des GIFs par rapport à leur vitesse réelle.
+#### ⚠️️ Note de mise à jour
+* En raison du changement de schéma de partitionnement, cette version **ne peut pas être installée via OTA** depuis des versions antérieures : réinstallez-la à partir de l'installeur web. Les données de la mémoire interne (playlist active et paramètres du minuteur) seront effacées ; la configuration et les GIFs présent sur la carte SD sont conservés. Pensez également à mettre à jour les fichiers de langue `.json`.
+---
+
+### [v3.1.3] - 2026-09-19
+**Retro Pixel LED Lite : « Arcade ReplayOS »**
+
+#### ✨ Ajouté
+* **Lecture de GIFs avec ReplayOS :** lecture du GIF du jeu que vous lancez sur ReplayOS.
+* **Nouveaux styles d'horloge :** ajout de nouveaux styles pour l'horloge.
+* **Configuration IR via la PWA :** ajout dans la PWA de la fonction permettant de configurer les boutons de la télécommande IR.
+---
+
+### [v3.1.2] - 2026-09-01
+**Retro Pixel LED Lite : « Total Control »**
+
+#### ✨ Ajouté
+* **Sélection du style de police dans la PWA :** choix possible entre les styles Bold, SemiBold, Regular et Light.
+* **Intégration avec Home Assistant :** intégration à Home Assistant via une API REST.
+---
+
 ### [v3.1.0] - 2026-08-02
 **Retro Pixel LED Lite: "PWA Total Control"**
 
