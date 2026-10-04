@@ -55,6 +55,7 @@
     "Speed": "I2sSpeed: ",
     "buffer": "Buffer: ",
     "antighos": "AntiGhost: ",
+	"sdspeed": "SD Reading: ",
 	"mapear": "Map IR Remote",
     "reset": "Factory Reset"
   },
