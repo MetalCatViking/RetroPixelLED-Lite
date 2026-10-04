@@ -1,7 +1,7 @@
 # ✨ Retro Pixel LED Lite
 
 <p align="center">
-  <img alt="Versión" src="https://img.shields.io/badge/versión-3.1.3-blue">
+  <img alt="Versión" src="https://img.shields.io/badge/versión-3.1.4-blue">
   <img alt="Plataforma" src="https://img.shields.io/badge/plataforma-ESP32-informational">
   <img alt="Licencia" src="https://img.shields.io/badge/licencia-MIT-green">
   <img alt="Estado" src="https://img.shields.io/badge/estado-activo-success">
