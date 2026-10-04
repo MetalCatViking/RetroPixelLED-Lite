@@ -1144,6 +1144,8 @@ const CONFIG_SCHEMA = [
     { key:'REFRESH_MIN', label:'Refresco mínimo (Hz)', type:'number', min:30, max:120 },
     { key:'DOUBLE_BUFF', label:'Doble buffer', type:'toggle' },
     { key:'LATCH_BLANK', label:'Anti-ghosting (1-4)', type:'number', min:1, max:4 },
+	{ key:'SD_SPEED', label:'Velocidad lectura SD', type:'select', options:[
+    {v:4,l:'4 MHz (seguro)'},{v:10,l:'10 MHz'},{v:20,l:'20 MHz'},{v:25,l:'25 MHz'}] },
   ]},
   { group: 'Arcade', fields: [
     { key:'ARCADE_ENABLE', label:'Sistema Arcade', type:'select', options:[
