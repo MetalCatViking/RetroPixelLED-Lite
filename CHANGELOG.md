@@ -1,5 +1,21 @@
 ## 📝 Changelog (Registro de Cambios)
 
+### [v3.1.4] - 2026-10-04
+**Retro Pixel LED Lite: "Fluidez Total"**
+
+#### ✨ Añadido
+* **Soporte para RetroBat:** se reproduce automáticamente el GIF o la marquesina del juego que ejecutas en RetroBat.
+* **Velocidad de lectura de la SD configurable:** nuevo parámetro `SD_SPEED` (4, 10, 20 o 25 MHz) que se puede cambiar desde la PWA (grupo Hardware), desde el menú OSD (Ajustes avanzados) y desde `config.ini`. Por defecto 10 MHz.
+#### ⚙️ Mejoras / Cambios Internos
+* **Arranque de la SD en dos fases:** la tarjeta se inicia primero a 4 MHz para poder leer `config.ini` y después se reinicia a la velocidad configurada. Si la tarjeta no responde, baja automáticamente a una velocidad inferior (25 → 20 → 10 → 4 MHz).
+* **Espera entre frames más precisa:** el tiempo de decodificación y dibujo de cada frame ahora cuenta dentro del retardo del GIF en vez de sumarse a él, con una reproducción más fluida.
+* **Nuevo esquema de particiones (Minimal SPIFFS):** 1,9 MB para la aplicación con OTA, frente a los 1,25 MB anteriores, para dar margen al crecimiento del firmware.
+* **Nueva clave de idioma `sdspeed`:** añadida a la sección `SUBMENU_AVANZADO` de los archivos `.json` de idioma para la nueva opción del menú.
+#### 🛡️ Fixes
+* **Velocidad de reproducción de GIFs:** corregida la doble espera entre frames (la librería esperaba el retardo y el firmware lo esperaba de nuevo), que hacía que los GIFs se reprodujeran más lentos que su ritmo real.
+#### ⚠️ Nota de actualización
+* Al cambiar el esquema de particiones, esta versión **no se puede instalar por OTA** desde versiones anteriores: reinstálala desde el instalador web. Se borran los datos de la memoria interna (playlist activa y ajustes del temporizador); la configuración y los GIFs de la SD se conservan. Actualiza también los archivos de idioma `.json`.
+---
 
 ### [v3.1.3] - 2026-09-19
 **Retro Pixel LED Lite: "Arcade ReplayOS"**
