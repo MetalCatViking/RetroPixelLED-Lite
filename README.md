@@ -86,7 +86,7 @@ Si es la primera vez que instalas Retro Pixel LED Lite, este es el camino más c
 3. **Edita `config.ini`** con tu WiFi y tus preferencias — es el único archivo que necesitas tocar para arrancar ([referencia completa](#3--configuración-vía-configini)).
 4. **Enciende el panel.** Sincronizará la hora, cargará tus GIFs y estará listo. ✨
 5. *(Opcional)* Instala la [PWA](#-pwa--app-de-control-remoto) para controlarlo desde el móvil, o [intégralo con Home Assistant](#-integración-con-home-assistant-guía-completa) si usas domótica.
-6. *(Opcional)* Si tienes Batocera, Recalbox, RetroBat o ReplayOS, sigue la [guía de integración Arcade](#️-integración-con-arcade-batocera-recalbox-o-replayos) para marquesinas dinámicas.
+6. *(Opcional)* Si tienes Batocera, Recalbox, RetroBat o ReplayOS, sigue la [guía de integración Arcade](#️-integración-con-arcade-batocera-recalbox-RetroBat-o-replayos) para marquesinas dinámicas.
 
 El resto de este documento es la referencia detallada de cada función — no hace falta leerlo entero para empezar. 🙂
 
