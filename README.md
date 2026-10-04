@@ -34,7 +34,7 @@ Si la rama 2.x.x trajo el Menú OSD, la **v3.0.0** fue el salto definitivo hacia
 
 ## 📑 Índice
 
-1. [🆕 Novedades de la versión actual](#-novedades-de-la-versión-v313-lite)
+1. [🆕 Novedades de la versión actual](#-novedades-de-la-versión-v314-lite)
 2. [🚀 Guía rápida](#-guía-rápida-primeros-pasos)
 3. [🎛️ Funciones principales](#️-funciones-principales)
    - [🖥️ Menú OSD](#️-menú-osd-navegación-inteligente)
@@ -56,7 +56,7 @@ Si la rama 2.x.x trajo el Menú OSD, la **v3.0.0** fue el salto definitivo hacia
 6. [🕹️ Integración con Arcade](#️-integración-con-arcade-batocera-recalbox-retrobat-o-replayos)
 7. [🏠 Integración con Home Assistant](#-integración-con-home-assistant-guía-completa)
 8. [🧠 Arquitectura interna / Core Lite](#-arquitectura-interna--core-lite)
-9. [📜 Historial de cambios detallado](#-historial-de-cambios-detallado-v300--v313)
+9. [📜 Historial de cambios detallado](#-historial-de-cambios-detallado-v300--v314)
 10. [🛒 Lista de materiales](#-lista-de-materiales)
 11. [🔌 Conexiones (Pinout)](#-conexiones)
 12. [🛠️ Roadmap](#️-roadmap)
@@ -64,13 +64,16 @@ Si la rama 2.x.x trajo el Menú OSD, la **v3.0.0** fue el salto definitivo hacia
 
 ---
 
-## 🆕 Novedades de la versión v3.1.3 Lite
+## 🆕 Novedades de la versión v3.1.4 Lite
 
-- **🕹️ Soporte para el sistema RePlayOS:** reproducción automática de GIFs y marquesinas retro al cambiar de juego mediante integración con el frontend RePlayOS.
-- **⏰ Nuevos estilos visuales para el reloj:** más opciones de personalización para la visualización de la hora en el panel LED.
-- **📡 Mapeo de mando IR desde la PWA:** asigna y configura los botones de tu mando a distancia por infrarrojos directamente desde la interfaz web.
+- **🕹️ Soporte para el sistema RetroBat:** reproducción automática de GIFs y marquesinas retro al cambiar de juego mediante integración con el frontend RetroBat.
+- **💾 Velocidad de lectura de la SD configurable:** elige entre 4, 10, 20 o 25 MHz desde la PWA, el menú OSD (Ajustes avanzados) o el parámetro `SD_SPEED` del `config.ini`. Por defecto 10 MHz. Si la tarjeta no arranca a la velocidad elegida, el sistema baja solo a una inferior.
+- **🎞️ Fix de velocidad en los GIFs:** eliminada la doble espera entre frames, con una reproducción más fluida y ajustada al tiempo real de cada frame.
 
-Para el detalle de versiones anteriores (marquesinas GIF en Arcade, reconexión WiFi, IP en el menú OSD...) consulta el [Historial de cambios](#-historial-de-cambios-detallado-v300--v312).
+
+> ⚠️ **Al actualizar desde versiones anteriores:** esta versión usa el esquema de particiones *Minimal SPIFFS* (1,9 MB para la app con OTA) y el firmware ya no cabe en el espacio antiguo. No se puede instalar por OTA: reinstálalo desde el instalador web. Se borran los datos guardados en la memoria interna (playlist activa, ajustes del temporizador); la configuración y los GIFs de la SD se conservan.
+
+Para el detalle de versiones anteriores (marquesinas GIF en Arcade, reconexión WiFi, IP en el menú OSD...) consulta el [Historial de cambios](#-historial-de-cambios-detallado-v300--v314).
 
 ---
 
@@ -83,7 +86,7 @@ Si es la primera vez que instalas Retro Pixel LED Lite, este es el camino más c
 3. **Edita `config.ini`** con tu WiFi y tus preferencias — es el único archivo que necesitas tocar para arrancar ([referencia completa](#3--configuración-vía-configini)).
 4. **Enciende el panel.** Sincronizará la hora, cargará tus GIFs y estará listo. ✨
 5. *(Opcional)* Instala la [PWA](#-pwa--app-de-control-remoto) para controlarlo desde el móvil, o [intégralo con Home Assistant](#-integración-con-home-assistant-guía-completa) si usas domótica.
-6. *(Opcional)* Si tienes Batocera, Recalbox o ReplayOS, sigue la [guía de integración Arcade](#️-integración-con-arcade-batocera-recalbox-o-replayos) para marquesinas dinámicas.
+6. *(Opcional)* Si tienes Batocera, Recalbox, RetroBat o ReplayOS, sigue la [guía de integración Arcade](#️-integración-con-arcade-batocera-recalbox-o-replayos) para marquesinas dinámicas.
 
 El resto de este documento es la referencia detallada de cada función — no hace falta leerlo entero para empezar. 🙂
 
@@ -118,7 +121,7 @@ El sistema se controla mediante un **único botón** (o el mando IR), con una l�
 ├── 📂 Reproducción
 │   ├── 🖼️ Modo: [GIFs / Reloj]
 │   ├── 🔀 Aleatorio: [SI / NO]
-│   ├── 🕹️ Arcade: [OFF / Batocera / Recalbox / ReplayOS]
+│   ├── 🕹️ Arcade: [OFF / Batocera / Recalbox / ReplayOS/ RetroBat]
 │   ├── 💬 Texto: [SI / NO]
 │   └── 🔙 Volver
 ├── ☀️ Brillo
@@ -150,6 +153,7 @@ El sistema se controla mediante un **único botón** (o el mando IR), con una l�
 │   ├── 🔄 Refresco: [30, 60, 90, 120Hz]
 │   ├── 🖼️ Buffer: [SI / NO]
 │   ├── 👻 AntiGhost: [1, 2, 3, 4]
+│   ├── 🚀 Lectura SD: [4, 10, 20, 25MHz]
 │   ├── 🎮 Mapeado mando IR: [On, Off, Menu, Validar, Subir, Bajar, Brillo+, Brillo-]
 │   ├── ⚠️ Reset
 │   └── 🔙 Volver
@@ -368,7 +372,7 @@ El archivo `config.ini` está en la carpeta [Contenido SD](https://github.com/fj
 
 ```ini
 # ============================================================
-# 🕹️ RETRO PIXEL LED LITE v3.1.3 - ARCHIVO DE CONFIGURACIÓN
+# 🕹️ RETRO PIXEL LED LITE v3.1.4 - ARCHIVO DE CONFIGURACIÓN
 # ============================================================
 # Nota: No dejes espacios alrededor del símbolo '='.
 # Ejemplo correcto: BRIGHTNESS=40
@@ -396,13 +400,15 @@ REFRESH_MIN=120
 DOUBLE_BUFF=0
 # Anti-Ghosting: 1 a 4 (Sube si ves brillo fantasma)
 LATCH_BLANK=1
+# Velocidad SD (MHz): 4, 10, 20 o 25. Baja si hay cortes o errores de lectura
+SD_SPEED=10
 
 [LOGIC]
 # Modo de visualizacion: 0=GIFs, 1=Solo Reloj
 PLAY_MODE=0
 # Activa o desactiva la configuracion mediante la APP: 0=OFF, 1=ON (Requiere WiFi)
 CONFI_APP_ENABLE=1
-# Selecciona tu sistema Arcade: 0=OFF, 1=Batocera, 2=Recalbox, 3=ReplayOS
+# Selecciona tu sistema Arcade: 0=OFF, 1=Batocera, 2=Recalbox, 3=ReplayOS, 4=RetroBat
 ARCADE_ENABLE=0
 # Activa o desactiva el texto en scroll: 0=OFF, 1=ON (Requiere WiFi)
 TEXT_ENABLE=1
@@ -504,7 +510,7 @@ Activa `Menú → Reproducción → Arcade` para que el panel muestre las marque
 ├── 📂 Reproducción
 │   ├── 🖼️ Modo: [GIFs / Reloj]
 │   ├── 🔀 Aleatorio: [SI / NO]
-│   ├── 🕹️ Arcade: [OFF / Batocera / Recalbox / ReplayOS]   <-- AQUÍ
+│   ├── 🕹️ Arcade: [OFF / Batocera / Recalbox / ReplayOS / RetroBat]   <-- AQUÍ
 │   └── 🔙 Volver
 ```
 
@@ -564,10 +570,14 @@ Detalles técnicos de cómo funciona el sistema por dentro:
 
 ---
 
-## 📜 Historial de cambios detallado (v3.0.0 → v3.1.3)
+## 📜 Historial de cambios detallado (v3.0.0 → v3.1.4)
 
 | Característica | Detalle técnico | Beneficio |
 | :--- | :--- | :--- |
+| **🕹️ Soporte RetroBat** | Integración con el frontend RetroBat para la detección y reproducción automática de GIFs/marquesinas asociadas a los juegos. | **Experiencia arcade dinámica.** Muestra el marquee del juego activo al cambiar de título en RetroBat. |
+| **💾 Velocidad de lectura SD configurable** | Parámetro `SD_SPEED` (4, 10, 20 o 25 MHz; 10 por defecto) editable desde la PWA, el menú OSD (Ajustes avanzados) y `config.ini`. Arranque en dos fases con *fallback* automático a una velocidad inferior si la tarjeta no responde. | **Carga de GIFs más rápida** y ajustable a la calidad de cada tarjeta, sin recompilar. |
+| **🎞️ Fix de velocidad de reproducción de GIFs** | Eliminada la doble espera entre frames (`playFrame` sincronizado + retardo propio). El tiempo de decodificación ahora se descuenta de la espera. | **Reproducción más fluida** y fiel al tiempo real de cada frame del GIF. |
+| **🧩 Particiones Minimal SPIFFS** | Esquema *Minimal SPIFFS* (1,9 MB de app con OTA) en lugar del esquema por defecto de 1,25 MB. | **Más espacio de firmware** para nuevas funciones. Requiere reinstalar por web desde versiones anteriores. |
 | **🕹️ Soporte RePlayOS** | Integración con el frontend RePlayOS para detección y reproducción automática de GIFs/marquesinas asociadas a los juegos. | **Experiencia arcade dinámica.** Muestra el marquee del juego activo al cambiar de título en el sistema RePlayOS. |
 | **⏰ Nuevos estilos de reloj** | Añadidos nuevos modos de renderizado y diseños visuales seleccionables para la hora. | **Mayor personalización** estética adaptada a distintos gustos y espacios. |
 | **📡 Mapeo IR en PWA** | Interfaz en la PWA para capturar, asignar y guardar códigos de botones del mando a distancia en `config.ini`. | **Configuración intuitiva del mando IR** ahora tambien disponible en la PWA. |
