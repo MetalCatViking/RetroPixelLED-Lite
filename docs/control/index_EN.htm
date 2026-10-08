@@ -243,7 +243,7 @@
   }
   .powerBtn.sleeping{border-color:var(--amber); color:var(--amber); background:rgba(255,176,0,0.08);}
 
-  /* ---------- BRILLO ---------- */
+  /* ---------- BRIGHTNESS ---------- */
   .brightSection{margin-bottom:16px;}
 
   /* ---------- MODE TABS ---------- */
@@ -1144,10 +1144,12 @@ const CONFIG_SCHEMA = [
     { key:'REFRESH_MIN', label:'Minimum refresh rate (Hz)', type:'number', min:30, max:120 },
     { key:'DOUBLE_BUFF', label:'Double buffer', type:'toggle' },
     { key:'LATCH_BLANK', label:'Anti-ghosting (1-4)', type:'number', min:1, max:4 },
+    { key:'SD_SPEED', label:'SD card SPI speed', type:'select', options:[
+        {v:4,l:'4 MHz (most conservative)'},{v:10,l:'10 MHz (default)'},{v:20,l:'20 MHz'},{v:25,l:'25 MHz'}] },
   ]},
   { group: 'Arcade', fields: [
     { key:'ARCADE_ENABLE', label:'Arcade system', type:'select', options:[
-        {v:0,l:'OFF'},{v:1,l:'Batocera'},{v:2,l:'Recalbox'},{v:3,l:'ReplayOS'}] },
+        {v:0,l:'OFF'},{v:1,l:'Batocera'},{v:2,l:'Recalbox'},{v:3,l:'ReplayOS'},{v:4,l:'RetroBat'}] },
   ]},
   { group: 'Scrolling Text', fields: [
     { key:'TEXT_ENABLE', label:'Enable Scrolling Text', type:'toggle' },

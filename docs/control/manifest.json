@@ -1,8 +1,8 @@
 {
   "name": "RetroPixel LED",
   "short_name": "RetroPixelLED",
-  "start_url": "https://fjgordillo86.github.io/RetroPixelLED-Lite/control/",
-  "scope": "https://fjgordillo86.github.io/RetroPixelLED-Lite/control/",
+  "start_url": "https://metalcatviking.github.io/RetroPixelLED-Lite/control/",
+  "scope": "https://metalcatviking.github.io/RetroPixelLED-Lite/control/",
   "display": "standalone",
   "background_color": "#0A0D12", 
   "theme_color": "#0A0D12",
