@@ -221,7 +221,7 @@ Reinicio automático tras guardar, solo si el cambio lo requiere.
 
 1. Abre <https://fjgordillo86.github.io/RetroPixelLED-Lite/control/> desde tu dispositivo.
 2. Toca el icono de conexión (⚙) y escribe la IP local de tu panel (ej. `192.168.1.117`).
-3. *(Opcional)* Instálala como app: Chrome/Edge suele ofrecerlo solo; si no, menú (⋮) → "Instalar aplicación". En Firefox/Safari, compartir (↗) → "Añadir a pantalla de inicio".
+3. *(Opcional)* Instálala como app: Chrome/Edge suele ofrecerlo solo; si no, menú (⋮) → "Instalar aplicación".
 4. Listo — aparece como una app normal, sin escribir URLs cada vez. 🎉
 
 #### 📝 Requisitos
