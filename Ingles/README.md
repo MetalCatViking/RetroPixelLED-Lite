@@ -221,7 +221,7 @@ Triggers an automatic reboot upon saving *only* if hardware changes require it.
 
 1. Open <https://fjgordillo86.github.io/RetroPixelLED-Lite/control/> on your device.
 2. Tap the connection icon (⚙) and enter your display panel's local IP (e.g., `192.168.1.117`).
-3. *(Optional)* Install as a standalone web application: Chrome/Edge will prompt automatically; otherwise, use the browser menu (⋮) → "Install app". On iOS Safari, tap Share (↗) → "Add to Home Screen".
+3. *(Optional)* Install as a standalone web application: Chrome/Edge will prompt automatically; otherwise, use the browser menu (⋮) → "Install app".
 4. Ready — launches like a native app without typing URLs. 🎉
 
 #### 📝 Prerequisites
