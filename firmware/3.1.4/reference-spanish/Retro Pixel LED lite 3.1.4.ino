@@ -18,14 +18,16 @@
 #include "fuente8pt7b_SemiBold.h"
 
 
+
 // ====================================================================
 //                     CONSTANTES & FIRMWARE LITE
 // ====================================================================
-#define FIRMWARE_VERSION "3.1.2" // Adds selectable fonts from the app and REST integration with Home Assistant.
-#define CURRENT_VERSION_NUM 312 // Numeric version used for comparison (2.1.0 -> 210)
+#define FIRMWARE_VERSION "3.1.4" // Mejoras en la reprodución de GIFs y selección de velocidad de lectura SD.
+#define CURRENT_VERSION_NUM 314 // Versión numérica para comparar (2.1.0 -> 210)
 #define GITHUB_VERSION_URL "https://github.com/fjgordillo86/RetroPixelLED-Lite/raw/refs/heads/main/docs/version.json"
 #define GITHUB_RAW_BASE_URL "https://raw.githubusercontent.com/fjgordillo86/RetroPixelLED-Lite/main/Contenido%20SD/idioma/"
 #define CONFIG_FILE "/config.ini"
+#define GIF_DELAY_PCT 150   // 100 = velocidad real del GIF
 
 // --- PINES HUB75 ---
 #define CLK_PIN       16
@@ -85,6 +87,9 @@ int i2sSpeed = 2;
 int refreshMin = 120;
 int latchBlank = 1;
 int doubleBuff = 0;
+int sdSpeed = 10; // MHz: 4, 10, 20 o 25
+const int sdSpeedOpciones[] = {4, 10, 20, 25};
+const int SD_SPEED_NUM = 4;
 char idiomaActivo[8] = "ES";
 
 int clockEnable = 0;
@@ -260,7 +265,6 @@ int pasoMapeo = -1; // -1 significa que estamos navegando, >= 0 significa que es
 unsigned long tiempoInicioMapeo = 0;
 const unsigned long TIMEOUT_MAPEO = 10000; // 10 segundos
 
-
 // ====================================================================
 //                     GESTOR DE CONFIG.INI
 // ====================================================================
@@ -314,6 +318,7 @@ void leerConfigIni() {
         else if (clave == "REFRESH_MIN") refreshMin = valor.toInt();
         else if (clave == "DOUBLE_BUFF") doubleBuff = valor.toInt();
         else if (clave == "LATCH_BLANK") latchBlank = valor.toInt();
+        else if (clave == "SD_SPEED") sdSpeed = valor.toInt();
 
         // [LOGIC]
         else if (clave == "PLAY_MODE") modoVisual = valor.toInt();
@@ -371,6 +376,10 @@ void leerConfigIni() {
         i2sSpeed = 2; // Forzamos 16MHz si el Double Buffer está activo
         Serial.println(F("[SEGURIDAD] Configuración incompatible detectada en SD: Bajando I2S a 16MHz."));
     }
+
+    bool sdSpeedValida = false;
+    for (int k = 0; k < SD_SPEED_NUM; k++) if (sdSpeedOpciones[k] == sdSpeed) sdSpeedValida = true;
+    if (!sdSpeedValida) sdSpeed = 10;
     
     Serial.println(F("[INI] Carga completada."));
 }
@@ -415,14 +424,16 @@ void guardarConfigIni() {
     configFile.println(F("# Doble Buffer: 0=OFF, 1=ON (Elimina parpadeos)"));
     configFile.printf("DOUBLE_BUFF=%d\n", doubleBuff);
     configFile.println(F("# Anti-Ghosting: 1 a 4 (Sube si ves brillo fantasma)"));
-    configFile.printf("LATCH_BLANK=%d\n\n", latchBlank);
+    configFile.printf("LATCH_BLANK=%d\n", latchBlank);
+    configFile.println(F("# Velocidad SD (MHz): 4, 10, 20 o 25. Baja si hay cortes o errores de lectura"));
+    configFile.printf("SD_SPEED=%d\n\n", sdSpeed);
 
     configFile.println(F("[LOGIC]"));
     configFile.println(F("# Modo de visualizacion: 0=GIFs, 1=Solo Reloj"));
     configFile.printf("PLAY_MODE=%d\n", modoVisual);
     configFile.println(F("# Activa o desactiva la configuracion mediante la APP: 0=OFF, 1=ON (Requiere WiFi)"));
     configFile.printf("CONFI_APP_ENABLE=%d\n", confiAppEnable ? 1 : 0);
-    configFile.println(F("# Selecciona tu sistema Arcade: 0=OFF, 1=Batocera, 2=Recalbox, 3=ReplayOS"));
+    configFile.println(F("# Selecciona tu sistema Arcade: 0=OFF, 1=Batocera, 2=Recalbox, 3=ReplayOS, 4=RetroBat"));
     configFile.printf("ARCADE_ENABLE=%d\n", arcadeEnable);
     configFile.println(F("# Activa o desactiva el texto en scroll: 0=OFF, 1=ON (Requiere WiFi)"));
     configFile.printf("TEXT_ENABLE=%d\n", textEnable ? 1 : 0);
@@ -434,7 +445,7 @@ void guardarConfigIni() {
     configFile.printf("AUTO_CLOCK_INT=%d\n", autoClockInt);
     configFile.println(F("# Duracion: Cuantos segundos se muestra el reloj"));
     configFile.printf("CLOCK_DURATION=%d\n", clockDuration);
-    configFile.println(F("# Estilos: 0=Matrix, 1=Solid, 2=Rainbow, 3=Pulse, 4=Gradient"));
+    configFile.println(F("# Estilos: 0=Solid, 1=Aurora, 2=Rainbow, 3=Gradient, 4= Fuego, 5=Glitch"));
     configFile.printf("CLOCK_STYLE=%d\n", clockStyle);
     configFile.println(F("# Activa la transicion del reloj a GIFs con una explosion de particulas : 0=OFF, 1=ON"));
     configFile.printf("TRANSITION_ENABLE=%d\n", transitionEnable);
@@ -558,18 +569,25 @@ void chequearTimeoutMapeo() {
     // Si estamos esperando un código IR (pasoMapeo != -1)
     if (pasoMapeo != -1) {
         if (millis() - tiempoInicioMapeo >= TIMEOUT_MAPEO) {
-            // Feedback visual: mostramos un mensaje de confirmación
-            display->fillScreen(0);
-            printMenuCentrado("FAIL", 12, display->color565(255, 0, 0), offset);
-            display->flipDMABuffer();
+            // El dibujo en el panel (OSD) solo aplica si el mapeo se inició desde el menú físico.
+            // Si se inició desde la PWA, estadoActual no cambia y no tocamos la pantalla.
+            if (estadoActual == ESTADO_SUBMENU_MAPEADO_IR) {
+                display->fillScreen(0);
+                printMenuCentrado("FAIL", 12, display->color565(255, 0, 0), offset);
+                display->flipDMABuffer();
+                delay(1000);
+            }
 
-            delay(1000); 
             Serial.println(F("[IR] Timeout: Cancelando mapeo por inactividad."));
             pasoMapeo = -1;   // Cancelamos el modo mapeo
-            dibujarMenuOSD(); 
+
+            if (estadoActual == ESTADO_SUBMENU_MAPEADO_IR) {
+                dibujarMenuOSD();
+            }
+            
         }
     }
-}
+} 
 
 void gestionarMapeoIR(uint32_t codigoHex) {
     // Si no hay ningún botón seleccionado para mapear, ignoramos
@@ -596,12 +614,18 @@ void gestionarMapeoIR(uint32_t codigoHex) {
     
     delay(1000); // Pausa para que el usuario vea la confirmación
     pasoMapeo = -1; // Volvemos al modo navegación
-    dibujarMenuOSD();
+    
+    if (estadoActual == ESTADO_CONFIG_APP) {
+        mostrarPantallaConfigApp();
+    }else {
+        dibujarMenuOSD();
+    }
 }
 
 void procesarComandoIR(uint32_t codigoHex) {
-    //Solo capturamos si estamos en el submenú Y ya hemos seleccionado un botón para mapear (pasoMapeo != -1)
-    if (estadoActual == ESTADO_SUBMENU_MAPEADO_IR && pasoMapeo != -1) {
+    // Capturamos siempre que haya un botón seleccionado para mapear (pasoMapeo != -1),
+    // venga del submenú OSD o de una petición /ir/learn desde la PWA.
+    if (pasoMapeo != -1) {
         gestionarMapeoIR(codigoHex);
         return;
     }
@@ -941,7 +965,7 @@ void ejecutarAccionConfirmar() {
                 randomMode = !randomMode; // Cambia entre 0 y 1
             } else if (cursorSubmenu == 2) {
                 arcadeEnable++;
-                if (arcadeEnable > 3) arcadeEnable = 0; // 0=OFF, 1=Batocera, 2=Recalbox, 3=ReplayOS
+                if (arcadeEnable > 4) arcadeEnable = 0; // 0=OFF, 1=Batocera, 2=Recalbox, 3=ReplayOS, 4=RetroBat
                 requiereReinicio = true;
             } else if (cursorSubmenu == 3) {
                 textEnable = !textEnable;
@@ -984,7 +1008,7 @@ void ejecutarAccionConfirmar() {
                 if (clockDuration > 30) clockDuration = 5; // Salto de 5s a 30s
             } else if (cursorSubmenu == 3) {
                 clockStyle++;
-                if (clockStyle > 4) clockStyle = 0; // Matrix, Solid, Rainb, Pulse, Grad
+                if (clockStyle > 5) clockStyle = 0;
             } else if (cursorSubmenu == 4) {
                 clockColorIndex = (clockColorIndex + 1) % TOTAL_COLORES;
                 clockColor = listaColores[clockColorIndex].colorRGB;
@@ -1055,16 +1079,21 @@ void ejecutarAccionConfirmar() {
             }else if (cursorSubmenu == 3) {
                 latchBlank++; if (latchBlank > 4) latchBlank = 1;
                 requiereReinicio = true;
-            }else if (cursorSubmenu == 4) {
+            }else if (cursorSubmenu == 4) { // velocidad SD
+                int idx = 0;
+                for (int k = 0; k < SD_SPEED_NUM; k++) if (sdSpeedOpciones[k] == sdSpeed) idx = k;
+                sdSpeed = sdSpeedOpciones[(idx + 1) % SD_SPEED_NUM];
+                requiereReinicio = true;
+            }else if (cursorSubmenu == 5) {
                 estadoActual = ESTADO_SUBMENU_MAPEADO_IR;
                 cursorSubmenu = 0;
-            }else if (cursorSubmenu == 5) {
+            }else if (cursorSubmenu == 6) {
                 Preferences prefs;
                 prefs.begin("retro-lite", false);
                 prefs.remove("lastList"); 
                 prefs.end();
                 ESP.restart(); // Reinicio inmediato para limpiar
-            }else if (cursorSubmenu == 6) {
+            }else if (cursorSubmenu == 7) {
                 estadoActual = ESTADO_MENU_PRINCIPAL;
             }             
             break;
@@ -1280,8 +1309,8 @@ void  ejecutarAccionNavegar(int paso) {
 
         case ESTADO_SUBMENU_AVANZADO:
             cursorSubmenu += paso;
-            if (cursorSubmenu > 6) cursorSubmenu = 0; 
-            if (cursorSubmenu < 0) cursorSubmenu = 6;
+            if (cursorSubmenu > 7) cursorSubmenu = 0; 
+            if (cursorSubmenu < 0) cursorSubmenu = 7;
             break;
 
         case ESTADO_SUBMENU_MAPEADO_IR:
@@ -1453,9 +1482,9 @@ void dibujarMenuOSD() {
                 case 1: display->printf("%s%s", msg("SUBMENU_REPRODUCCION", "aleatorio"), (randomMode ? msg("ESTADOS", "si") : msg("ESTADOS", "no"))); break;
                 case 2: 
                     {
-                        const char* nombresArcade[] = {"OFF", "Batocera", "Recalbox", "ReplayOS"};
+                        const char* nombresArcade[] = {"OFF", "Batocera", "Recalbox", "ReplayOS", "RetroBat"};
                         // Aseguramos que el índice no se salga del array por seguridad
-                        int indexArcade = (arcadeEnable >= 0 && arcadeEnable <= 3) ? arcadeEnable : 0;
+                        int indexArcade = (arcadeEnable >= 0 && arcadeEnable <= 4) ? arcadeEnable : 0;
                         display->printf("%s%s", msg("SUBMENU_REPRODUCCION", "arcade"), nombresArcade[indexArcade]);
                     }
                     break;
@@ -1566,7 +1595,7 @@ void dibujarMenuOSD() {
                 case 2: display->printf("%s%ds", msg("SUBMENU_RELOJ", "ver"), clockDuration); break; 
                 case 3:
                     {
-                        const char* nombresEstilos[] = {"Matrix", "Solid", "Rainbow", "Pulse", "Gradient"};
+                        const char* nombresEstilos[] = {"Solid", "Aurora", "Rainbow", "Gradient", "Fuego", "Glitch"};
                         display->printf("%s%s", msg("SUBMENU_RELOJ", "estilo"), nombresEstilos[clockStyle]); 
                     }
                     break;
@@ -1665,7 +1694,7 @@ void dibujarMenuOSD() {
         int inicio = pagAv * 3;
         for (int i = 0; i < 3; i++) {
             int itemIndex = inicio + i;
-            if (itemIndex > 6) break; 
+            if (itemIndex > 7) break; 
 
             int yPos = 9 + (i * 8);
             
@@ -1687,9 +1716,10 @@ void dibujarMenuOSD() {
                 case 1: display->printf("%s%dHz", msg("SUBMENU_AVANZADO", "refresco"), refreshMin); break;
                 case 2: display->printf("%s%s", msg("SUBMENU_AVANZADO", "buffer"), doubleBuff ? msg("ESTADOS", "on") : msg("ESTADOS", "off")); break;
                 case 3: display->printf("%s%d", msg("SUBMENU_AVANZADO", "antighos"), latchBlank); break;
-                case 4: display->print(msg("SUBMENU_AVANZADO", "mapear")); break;
-                case 5: display->print(msg("SUBMENU_AVANZADO", "reset")); break;
-                case 6: display->print(msg("ESTADOS", "volver")); break;
+                case 4: display->printf("%s%dMHz", msg("SUBMENU_AVANZADO", "sdspeed"), sdSpeed); break;
+                case 5: display->print(msg("SUBMENU_AVANZADO", "mapear")); break;
+                case 6: display->print(msg("SUBMENU_AVANZADO", "reset")); break;
+                case 7: display->print(msg("ESTADOS", "volver")); break;
             }
         }
     }
@@ -1943,7 +1973,9 @@ void mostrarRelojLite(bool conTransicion = false) {
     unsigned long lastColorMs = 0;
 
     // Solo los estilos animados necesitan actualizarse más de 1Hz
-    const bool esAnimado = (clockStyle == 0 || clockStyle == 2 || clockStyle == 3);
+    // 1=Aurora 2=Rainbow, 4=Fuego, 5=Glitch
+    const bool esAnimado = (clockStyle == 1 || clockStyle == 2 || clockStyle == 4 ||
+                            clockStyle == 5);
 
     // TRANSICIÓN DE ENTRADA (GIF → RELOJ)
     if (conTransicion) transicionParticulasFormanRelojLite();
@@ -1986,14 +2018,34 @@ void mostrarRelojLite(bool conTransicion = false) {
                     int xPos = startX + (i * 16);
                     uint16_t color;
                     switch (clockStyle) {
-                        case 0: color = display->color565(0, 255, 0); break;
-                        case 1: color = display->color565((clockColor>>16)&0xFF,(clockColor>>8)&0xFF,clockColor&0xFF); break;
+                        case 0: color = display->color565((clockColor>>16)&0xFF,(clockColor>>8)&0xFF,clockColor&0xFF); break;
+                        case 1: {
+                            float onda = sinf((ms / 900.0f) + i * 0.6f);
+                            int hue = ((int)(160 + onda * 50) + 360) % 360;
+                            color = hsvTo565(hue, 200, 220);
+                        } break;
                         case 2: color = hsvTo565((ms / 25 + xPos) % 360, 255, 255); break;
-                        case 3: color = hsvTo565((int)(5 + sin(ms / 500.0) * 10) % 360, 255, 200); break;
-                        case 4: {
+                        case 3: {
                             uint8_t r1=(clockColor>>16)&0xFF,g1=(clockColor>>8)&0xFF,b1=clockColor&0xFF;
                             float ratio = i / 8.75f;
                             color = display->color565(r1+(255-r1)*ratio,g1+(255-g1)*ratio,b1+(255-b1)*ratio);
+                        } break;
+                        case 4: {
+                            uint8_t r = 200 + random(0, 56);
+                            uint8_t g = 40 + random(0, 90);
+                            color = display->color565(r, g, 0);
+                        } break;
+                        case 5: {
+                            bool fallo = (random(0, 100) < 5);
+                            if (fallo) {
+                                uint8_t variante = random(0, 3);
+                                color = (variante == 0) ? display->color565(255,0,60)
+                                       : (variante == 1) ? display->color565(255,0,255)
+                                                          : display->color565(255,255,255);
+                            } else {
+                                uint8_t verde = 150 + random(0, 100);
+                                color = display->color565(0, verde, 40);
+                            }
                         } break;
                         default: color = 0xFFFF; break;
                     }
@@ -2016,8 +2068,29 @@ void mostrarRelojLite(bool conTransicion = false) {
                     int xPos = startX + (i * 16);
                     uint16_t color;
                     switch (clockStyle) {
+                        case 1: {
+                            float onda = sinf((ms / 900.0f) + i * 0.6f);
+                            int hue = ((int)(160 + onda * 50) + 360) % 360;
+                            color = hsvTo565(hue, 200, 220);
+                        } break;
                         case 2: color = hsvTo565((ms / 25 + xPos) % 360, 255, 255); break;
-                        case 3: color = hsvTo565((int)(5 + sin(ms / 500.0) * 10) % 360, 255, 200); break;
+                        case 4: {
+                            uint8_t r = 200 + random(0, 56);
+                            uint8_t g = 40 + random(0, 90);
+                            color = display->color565(r, g, 0);
+                        } break;
+                        case 5: {
+                            bool fallo = (random(0, 100) < 5);
+                            if (fallo) {
+                                uint8_t variante = random(0, 3);
+                                color = (variante == 0) ? display->color565(255,0,60)
+                                       : (variante == 1) ? display->color565(255,0,255)
+                                                          : display->color565(255,255,255);
+                            } else {
+                                uint8_t verde = 150 + random(0, 100);
+                                color = display->color565(0, verde, 40);
+                            }
+                        } break;
                         default: continue; // otros estilos no animan — no hace falta redibuja aquí
                     }
                     drawCustomChar(xPos, startY, fullTimeStr[i] - '0', color, 3);
@@ -2200,14 +2273,34 @@ static void renderRelojABuffer(uint16_t* buf) {
         int xPos = startX + (i * 16);
         uint16_t color;
         switch (clockStyle) {
-            case 0: color = display->color565(0, 255, 0); break;
-            case 1: color = display->color565((clockColor>>16)&0xFF,(clockColor>>8)&0xFF,clockColor&0xFF); break;
+            case 0: color = display->color565((clockColor>>16)&0xFF,(clockColor>>8)&0xFF,clockColor&0xFF); break;
+            case 1: {
+                float onda = sinf((ms / 900.0f) + i * 0.6f);
+                int hue = ((int)(160 + onda * 50) + 360) % 360;
+                color = hsvTo565(hue, 200, 220);
+            } break;
             case 2: color = hsvTo565((ms / 25 + xPos) % 360, 255, 255); break;
-            case 3: color = hsvTo565((int)(5 + sin(ms / 500.0) * 10) % 360, 255, 200); break;
-            case 4: {
-                uint8_t r1=(clockColor>>16)&0xFF, g1=(clockColor>>8)&0xFF, b1=clockColor&0xFF;
+            case 3: {
+                uint8_t r1=(clockColor>>16)&0xFF,g1=(clockColor>>8)&0xFF,b1=clockColor&0xFF;
                 float ratio = i / 8.75f;
-                color = display->color565(r1+(255-r1)*ratio, g1+(255-g1)*ratio, b1+(255-b1)*ratio);
+                color = display->color565(r1+(255-r1)*ratio,g1+(255-g1)*ratio,b1+(255-b1)*ratio);
+            } break;
+            case 4: {
+                uint8_t r = 200 + random(0, 56);
+                uint8_t g = 40 + random(0, 90);
+                color = display->color565(r, g, 0);
+            } break;
+            case 5: {
+                bool fallo = (random(0, 100) < 5);
+                if (fallo) {
+                    uint8_t variante = random(0, 3);
+                    color = (variante == 0) ? display->color565(255,0,60)
+                            : (variante == 1) ? display->color565(255,0,255)
+                                                : display->color565(255,255,255);
+                } else {
+                    uint8_t verde = 150 + random(0, 100);
+                    color = display->color565(0, verde, 40);
+                }
             } break;
             default: color = 0xFFFF; break;
         }
@@ -3000,37 +3093,96 @@ void ejecutarModoFTP() {
 // ====================================================================
 //                MOTOR DE REPRODUCCIÓN ARCADE REPLAYOS
 // ====================================================================
+bool marqueeEsGif = false;              // true si la marquesina actual es GIF, false si es BMP
+std::vector<String> marqueeGifSecuencia; // rutas de los .gif a reproducir en bucle (base + _01, _02...)
+int marqueeGifIndiceSecuencia = 0;       // qué elemento de la secuencia toca ahora
+
+bool buscarSecuenciaGif(const char* rutaBase, std::vector<String>& out) {
+    out.clear();
+    char ruta[100];
+    snprintf(ruta, sizeof(ruta), "%s.gif", rutaBase);
+    if (!SD.exists(ruta)) return false;
+    out.push_back(String(ruta));
+    for (int i = 1; i < 100; i++) {
+        snprintf(ruta, sizeof(ruta), "%s_%02d.gif", rutaBase, i);
+        if (!SD.exists(ruta)) break;
+        out.push_back(String(ruta));
+    }
+    return true;
+}
+
 bool buscarJuegoEnIndice_ReplayOS(const char* sistema, const char* juego) {
     char rutaIndice[80];
     snprintf(rutaIndice, sizeof(rutaIndice), "/Arcade/%s.txt", sistema);
 
-    if (!SD.exists(rutaIndice)) return false;
-
     File archivo = SD.open(rutaIndice);
     if (!archivo) return false;
 
-    char juegoBusca[64];
-    strlcpy(juegoBusca, juego, sizeof(juegoBusca));
-    for (char* p = juegoBusca; *p; p++) *p = tolower((unsigned char)*p);
-
+    long lo = 0;
+    long hi = archivo.size();
     char linea[80];
-    bool encontrado = false;
 
-    while (archivo.available()) {
+    // Fase 1: saltos binarios hasta acotar una ventana pequeña (~512 bytes).
+    // No exigimos alineación perfecta en cada salto (fuente de bugs con
+    // líneas de longitud variable): solo nos acercamos, el ajuste fino
+    // lo hace la Fase 2.
+    while (hi - lo > 512) {
+        long mid = lo + (hi - lo) / 2;
+        archivo.seek(mid);
+        while (archivo.position() < hi && archivo.read() != '\n') {} // alinear a inicio de línea
+
+        long pos = archivo.position();
+        if (pos >= hi) break; // sin más saltos de línea útiles: pasamos a la Fase 2
+
         int len = archivo.readBytesUntil('\n', linea, sizeof(linea) - 1);
         linea[len] = '\0';
-
         int l = strlen(linea);
         if (l > 0 && linea[l - 1] == '\r') linea[l - 1] = '\0';
 
-        if (strcasecmp(linea, juegoBusca) == 0) {
-            encontrado = true;
-            break;
-        }
+        if (strcasecmp(linea, juego) < 0) lo = archivo.position();
+        else hi = pos;
+    }
+
+    // Fase 2: barrido lineal de la ventana ya acotada (siempre pocas líneas)
+    archivo.seek(lo);
+    if (lo > 0) { while (archivo.position() < hi && archivo.read() != '\n') {} }
+
+    bool encontrado = false;
+    while (archivo.position() < hi && archivo.available()) {
+        int len = archivo.readBytesUntil('\n', linea, sizeof(linea) - 1);
+        linea[len] = '\0';
+        int l = strlen(linea);
+        if (l > 0 && linea[l - 1] == '\r') linea[l - 1] = '\0';
+        if (strcasecmp(linea, juego) == 0) { encontrado = true; break; }
     }
 
     archivo.close();
     return encontrado;
+}
+
+void reproducirMarquesinaGIF_ReplayOS() {
+    if (marqueeGifSecuencia.empty()) { marqueeEsGif = false; return; }
+    interrumpirReproduccion = false; // limpiamos la señal que nos trajo aquí
+
+    String gifPath = marqueeGifSecuencia[marqueeGifIndiceSecuencia];
+    if (gif.open(gifPath.c_str(), GIFOpenFile, GIFCloseFile, GIFReadFile, GIFSeekFile, GIFDraw)) {
+        x_offset = (offset - gif.getCanvasWidth()) / 2;
+        y_offset = (PANEL_RES_Y - gif.getCanvasHeight()) / 2;
+        int delayMs;
+        while (gif.playFrame(true, &delayMs)) {
+            display->flipDMABuffer();
+            verificarReplayOSLite(); // respeta su propio throttle (replayOSIntervaloActual)
+            if (digitalRead(PIN_BOTON_MENU) == LOW || interrumpirReproduccion || estadoActual != ESTADO_ARCADE) {
+                gif.close();
+                return; // cambio de juego, fin de partida o menú
+            }
+            delay(delayMs > 0 ? delayMs : 10);
+        }
+        gif.close();
+    } else {
+        Serial.printf("[ReplayOS] Error abriendo GIF: %s\n", gifPath.c_str());
+    }
+    marqueeGifIndiceSecuencia = (marqueeGifIndiceSecuencia + 1) % marqueeGifSecuencia.size();
 }
 
 void mostrarMarquesinaBMP(const char* path) {
@@ -3117,17 +3269,12 @@ void verificarReplayOSLite() {
 
     int httpCode = http.GET();
 
-    // Gestión de fallos
     if (httpCode != HTTP_CODE_OK) {
         http.end();
         replayOSFallosConsecutivos++;
-
-        // Backoff progresivo: 3s -> 6s -> 12s -> máx 30s
-        // Evita martillear la red si ReplayOS está apagado o reiniciando
         if (replayOSFallosConsecutivos > 1) {
             replayOSIntervaloActual = min(3000UL * (1UL << min(replayOSFallosConsecutivos - 1, 3)), 30000UL);
         }
-
         if (httpCode > 0) {
             Serial.printf(PSTR("[ReplayOS] Fallo HTTP: %d (intento %d, próximo en %lums)\n"),
                           httpCode, replayOSFallosConsecutivos, replayOSIntervaloActual);
@@ -3138,7 +3285,6 @@ void verificarReplayOSLite() {
         return;
     }
 
-    // Éxito: resetear backoff a la cadencia normal
     replayOSFallosConsecutivos = 0;
     replayOSIntervaloActual = 3000;
 
@@ -3164,6 +3310,8 @@ void verificarReplayOSLite() {
         if (ultimoJuegoCargado.length() > 0) {
             Serial.println(F("[ReplayOS] Fuera de juego. Restableciendo a modo normal."));
             ultimoJuegoCargado = "";
+            marqueeEsGif = false;
+            marqueeGifSecuencia.clear();
             estadoActual = ESTADO_GIFS;
             saliendoAGifs = true;
             interrumpirReproduccion = true;
@@ -3194,16 +3342,45 @@ void verificarReplayOSLite() {
 
     Serial.printf(PSTR("[ReplayOS] Nuevo juego detectado: %s [%s]\n"), juegoLimpio, rawSystem);
 
+    // --- GIF: (juego -> sistema -> _default) ---
+    char baseSubcarpeta[96], baseDirecta[80], baseSistema[80];
+    snprintf(baseSubcarpeta, sizeof(baseSubcarpeta), "/arcade/%s/%s", rawSystem, juegoLimpio);
+    snprintf(baseDirecta,    sizeof(baseDirecta),    "/arcade/%s", juegoLimpio);
+    snprintf(baseSistema,    sizeof(baseSistema),    "/arcade/%s", rawSystem);
+    const char* baseDefault = "/arcade/_default";
+
+    std::vector<String> secuenciaGif;
+    bool esGif = false;
+    bool juegoIndexado = buscarJuegoEnIndice_ReplayOS(rawSystem, juegoLimpio);
+
+    if (juegoIndexado) {
+        esGif = buscarSecuenciaGif(baseSubcarpeta, secuenciaGif) ||
+                buscarSecuenciaGif(baseDirecta, secuenciaGif);
+    }
+    if (!esGif) esGif = buscarSecuenciaGif(baseSistema, secuenciaGif);
+    if (!esGif) esGif = buscarSecuenciaGif(baseDefault, secuenciaGif);
+
+    if (esGif) {
+        marqueeGifSecuencia = secuenciaGif;
+        marqueeGifIndiceSecuencia = 0;
+        marqueeEsGif = true;
+        estadoActual = ESTADO_ARCADE;
+        return;
+    }
+    marqueeEsGif = false;
+    // --- FIN GIF ---
+
+    // --- BMP: (juego -> sistema -> _default) ---
     char rutaSubcarpeta[96], rutaDirecta[80], rutaSistema[80];
     snprintf(rutaSubcarpeta, sizeof(rutaSubcarpeta), "/arcade/%s/%s.bmp", rawSystem, juegoLimpio);
     snprintf(rutaDirecta,    sizeof(rutaDirecta),    "/arcade/%s.bmp", juegoLimpio);
     snprintf(rutaSistema,    sizeof(rutaSistema),    "/arcade/%s.bmp", rawSystem);
+    const char* rutaDefault = "/arcade/_default.bmp";
 
     bool cargadoConExito = false;
     const char* rutaFinalBMP = nullptr;
 
-    // A. Buscar el juego indexado
-    if (buscarJuegoEnIndice_ReplayOS(rawSystem, juegoLimpio)) {
+    if (juegoIndexado) {
         if (SD.exists(rutaSubcarpeta)) {
             rutaFinalBMP = rutaSubcarpeta;
             cargadoConExito = true;
@@ -3213,13 +3390,16 @@ void verificarReplayOSLite() {
         }
     }
 
-    // B. FALLBACK: logo del sistema
     if (!cargadoConExito && SD.exists(rutaSistema)) {
         rutaFinalBMP = rutaSistema;
         cargadoConExito = true;
     }
 
-    // C. Aplicar estado
+    if (!cargadoConExito && SD.exists(rutaDefault)) {
+        rutaFinalBMP = rutaDefault;
+        cargadoConExito = true;
+    }
+
     if (cargadoConExito) {
         estadoActual = ESTADO_ARCADE;
         display->fillScreen(0);
@@ -3231,9 +3411,8 @@ void verificarReplayOSLite() {
         saliendoAGifs = true;
     }
 }
-
 // ====================================================================
-//          MOTOR DE REPRODUCCIÓN ARCADE BATOCERA / RECALBOX
+//     MOTOR DE REPRODUCCIÓN ARCADE BATOCERA / RECALBOX / RETROBAT
 // ====================================================================
 // --- Estado persistente del streaming de marquesina/animación por TCP ---
 static WiFiClient marqueeClient;
@@ -3403,15 +3582,16 @@ void ejecutarModoGifLite() {
         display->clearScreen(); 
 
         int delayMs;
+        unsigned long t0 = millis();
         // Bucle de frames del GIF
-        while (gif.playFrame(true, &delayMs)) {
+        while (gif.playFrame(false, &delayMs)) {
 
             leerControlRemoto();
 
             // 1. Escuchamos siempre el servidor web (PWA, Ajustes, Temporizador...)
              server.handleClient();
             if (arcadeEnable > 0) {
-                verificarMarquesinaTCP(); // Batocera y Recalbox
+                verificarMarquesinaTCP(); // Batocera, Recalbox y RetroBat
                 if (arcadeEnable == 3) verificarReplayOSLite(); // ReplayOS
             }
 
@@ -3423,9 +3603,9 @@ void ejecutarModoGifLite() {
             
             display->flipDMABuffer();
 
-            // 3. Reemplazamos delay(delayMs) por un bucle "atento"
-            unsigned long tiempoInicio = millis();
-            while (millis() - tiempoInicio < (unsigned long)delayMs) {
+            // 3. Espera solo lo que falta, contando desde t0
+            unsigned long esperaMs = ((unsigned long)delayMs * GIF_DELAY_PCT) / 100;
+            while (millis() - t0 < esperaMs) {
 
                  leerControlRemoto();
                  server.handleClient();
@@ -3442,6 +3622,8 @@ void ejecutarModoGifLite() {
                 yield(); // Mantiene estable el WiFi
             }
             if (interrumpirReproduccion) break;
+            
+            t0 = millis();
         }
         
         gif.close();
@@ -3454,6 +3636,23 @@ void ejecutarModoGifLite() {
     } else {
         Serial.printf("Error abriendo GIF: %s\n", gifPath.c_str());
     }
+}
+
+// ====================================================================
+//                     SISTEMA DE GESTION SD
+// ====================================================================
+bool iniciarSD(int mhzDeseado) {
+    const int escalera[] = {25, 20, 10, 4};
+    for (int i = 0; i < 4; i++) {
+        if (escalera[i] > mhzDeseado) continue;
+        SD.end();
+        if (SD.begin(SD_CS_PIN, SPI, escalera[i] * 1000000UL)) {
+            Serial.printf("[SD] OK a %d MHz\n", escalera[i]);
+            return true;
+        }
+        Serial.printf("[SD] Fallo a %d MHz\n", escalera[i]);
+    }
+    return false;
 }
 
 // ====================================================================
@@ -3473,12 +3672,18 @@ void setup() {
     bool sdOk = true;
 
     SPI.begin(VSPI_SCLK, VSPI_MISO, VSPI_MOSI, SD_CS_PIN);
-    if (!SD.begin(SD_CS_PIN)) {
+    if (!SD.begin(SD_CS_PIN)) { // 4 MHz: solo para poder leer config.ini
         Serial.println(F("Error FATAL: No se detecta SD."));
         sdOk = false;
     } else {
         leerConfigIni();
         cargarAjustesTimer();
+        if (sdSpeed != 4) { // reinicia a la velocidad configurada
+            if (!iniciarSD(sdSpeed)) {
+                Serial.println(F("Error FATAL: la SD no responde tras cambiar la velocidad."));
+                sdOk = false;
+            }
+        }
     }
 
     // 2. Comprobacion para entrar en Modo FTP
@@ -3584,9 +3789,9 @@ void setup() {
                     Serial.print(F("[WIFI] Manteniendo conexión activa por:"));
     
                     if (arcadeEnable > 0) {
-                     const char* nombresArcade[] = {"OFF", "Batocera", "Recalbox", "ReplayOS"};
-                        // Aseguramos que el índice esté en rango (1 a 3)
-                        int indexArcade = (arcadeEnable >= 1 && arcadeEnable <= 3) ? arcadeEnable : 0;
+                     const char* nombresArcade[] = {"OFF", "Batocera", "Recalbox", "ReplayOS", "RetroBat"};
+                        // Aseguramos que el índice esté en rango (1 a 4)
+                        int indexArcade = (arcadeEnable >= 1 && arcadeEnable <= 4) ? arcadeEnable : 0;
                         Serial.printf(PSTR(" Modo Arcade [%s]"), nombresArcade[indexArcade]);
                     }
     
@@ -3901,7 +4106,8 @@ void loop() {
     }
 
     if (estadoActual == ESTADO_ARCADE) {
-        delay(50); 
+        if (marqueeEsGif) reproducirMarquesinaGIF_ReplayOS();
+        else delay(50);
         return;  
     }
 

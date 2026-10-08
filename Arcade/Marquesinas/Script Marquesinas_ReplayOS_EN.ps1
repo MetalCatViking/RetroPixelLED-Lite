@@ -2,36 +2,38 @@
 .SYNOPSIS
     RetroPixelLED - ReplayOS Toolkit v5.1
 .DESCRIPTION
-    Herramienta unificada para preparar marquesinas de arcade para RetroPixelLED-Lite
-    cuando el frontend es ReplayOS. Sustituye al script anterior (un solo flujo lineal)
-    por un menu con tres operaciones independientes:
+    Unified tool for preparing arcade marquees for RetroPixelLED-Lite
+    when the frontend is ReplayOS. Replaces the previous script (a single
+    linear workflow) with a menu containing three independent operations:
 
-      1) Scrapear sistema(s): descarga recursos crudos (PNG/JPG/etc) desde ArcadeDB o
-         TheGamesDB a una CACHE local reutilizable, organizados por sistema y tipo de
-         recurso. No genera BMP todavia.
+      1) Scrape system(s): downloads raw resources (PNG/JPG/etc) from ArcadeDB or
+         TheGamesDB to a reusable local CACHE, organized by system and resource
+         type. Does not generate BMP files yet.
 
-      2) Generar imagenes: convierte, 100% offline (sin tocar la red), los recursos ya
-         cacheados a BMP 128x32 (con dithering RGB565 Floyd-Steinberg si el destino es
-         ReplayOS) listos para copiar a Arcade/<sistema>/. Puedes repetir esta opcion
-         cuantas veces quieras para probar ajustes distintos sin volver a descargar nada.
+      2) Generate images: converts the already cached resources to 128x32 BMPs
+         100% offline (without accessing the network), using Floyd-Steinberg RGB565
+         dithering if the destination is ReplayOS. You can repeat this option
+         as many times as you like to test different settings without downloading
+         anything again.
 
-      3) Generar / auditar listados: escanea Arcade/<sistema>/ en busca de .bmp y .gif
-         (agrupando secuencias tipo mslug_01.gif, mslug_02.gif... como un unico romset)
-         y construye o revisa el <sistema>.txt que el ESP32 usa para saber que romsets
-         tienen marquesina. Si ya existe un .txt, primero te avisa de huerfanos (en el
-         listado pero sin archivo) y de archivos sin indexar (colocados a mano, tipico
-         al anadir GIFs sueltos sin pasar por el scraper).
+      3) Generate / audit lists: scans Arcade/<system>/ for .bmp and .gif files
+         (grouping sequences such as mslug_01.gif, mslug_02.gif... as a single
+         romset) and builds or checks the <system>.txt file that the ESP32 uses
+         to determine which romsets have a marquee. If a .txt already exists,
+         it first warns about orphaned entries (listed but without a file) and
+         unindexed files (manually added, typically when adding individual GIFs
+         without going through the scraper).
 
 #>
 
-$Host.UI.RawUI.WindowTitle = "RetroPixelLED - ReplayOS Toolkit v5.1"
+$Host.UI.RawUI.WindowTitle = "RetroPixelLED - ReplayOS Toolkit v5.0"
 $OutputEncoding = [System.Text.Encoding]::UTF8
 $ErrorActionPreference = "Stop"
 
 Add-Type -AssemblyName System.Drawing
 
 # ============================================================
-#   CONFIGURACION PERSISTENTE (rutas y API key por defecto)
+#   PERSISTENT CONFIGURATION (default paths and API key)
 # ============================================================
 $ConfigPath = Join-Path $PSScriptRoot "RetroPixelLED_Config.json"
 
@@ -42,7 +44,7 @@ function Load-Config {
             $obj = $json | ConvertFrom-Json
             if ($null -ne $obj) { return $obj }
         } catch {
-            Write-Host "Aviso: no se pudo leer $ConfigPath, se usaran valores por defecto." -ForegroundColor DarkYellow
+            Write-Host "Warning: could not read $ConfigPath, using default values." -ForegroundColor DarkYellow
         }
     }
     return [PSCustomObject]@{}
@@ -55,15 +57,15 @@ function Save-Config($cfg) {
 
 $script:Config = Load-Config
 
-# Pide un valor con un default sugerido (de la config o, si no hay, uno fijo), y lo
-# guarda en la config para la proxima ejecucion.
+# Prompts for a value with a suggested default (from the config or, if none exists,
+# a fixed value), and saves it to the config for the next run.
 function Get-ConfigValue([string]$key, [string]$defaultValue, [string]$prompt) {
     $cfg = $script:Config
     $current = $null
     if ($cfg.PSObject.Properties.Name -contains $key) { $current = $cfg.$key }
     if ([string]::IsNullOrWhiteSpace($current)) { $current = $defaultValue }
 
-    $entrada = Read-Host "$prompt (Enter para usar: $current)"
+    $entrada = Read-Host "$prompt (Press Enter to use: $current)"
     if ([string]::IsNullOrWhiteSpace($entrada)) { $entrada = $current }
     $entrada = $entrada.Trim()
 
@@ -77,12 +79,12 @@ function Get-ConfigValue([string]$key, [string]$defaultValue, [string]$prompt) {
 }
 
 # ============================================================
-#   HELPERS DE MENU
+#   MENU HELPERS
 # ============================================================
 
-# Seleccion multiple por comas (ej: 1,3,5) o TODOS. $labelProp indica que propiedad de
-# cada elemento de $items se muestra como texto (los sistemas usan "Nombre", los tipos
-# de recurso usan "Name").
+# Multiple selection separated by commas (e.g. 1,3,5) or ALL. $labelProp specifies
+# which property of each $items element is displayed as text (systems use "Nombre",
+# resource types use "Name").
 function Select-Multiple([array]$items, [string]$labelProp, [string]$promptTitle) {
     Write-Host ""
     Write-Host $promptTitle -ForegroundColor Cyan
@@ -90,10 +92,10 @@ function Select-Multiple([array]$items, [string]$labelProp, [string]$promptTitle
         Write-Host ("  {0,2}) {1}" -f ($i + 1), $items[$i].$labelProp) -ForegroundColor White
     }
     Write-Host ""
-    Write-Host "Escribe los numeros separados por comas (ej: 1,3,5) o TODOS" -ForegroundColor DarkGray
-    $entrada = Read-Host "Seleccion"
+    Write-Host "Enter numbers separated by commas (e.g. 1,3,5) or ALL" -ForegroundColor DarkGray
+    $entrada = Read-Host "Selection"
 
-    if ($entrada.Trim().ToUpper() -eq "TODOS") {
+    if ($entrada.Trim().ToUpper() -eq "ALL") {
         return $items
     }
 
@@ -106,7 +108,7 @@ function Select-Multiple([array]$items, [string]$labelProp, [string]$promptTitle
     return $seleccion
 }
 
-# Lista las subcarpetas directas de una ruta como elementos seleccionables (Nombre/Ruta).
+# Lists the direct subfolders of a path as selectable items (Nombre/Ruta).
 function Get-SystemFolders([string]$root) {
     if (-not (Test-Path $root)) { return @() }
     return Get-ChildItem -Path $root -Directory | Sort-Object Name | ForEach-Object {
@@ -115,7 +117,7 @@ function Get-SystemFolders([string]$root) {
 }
 
 # ============================================================
-#   TABLA DE RECURSOS (ArcadeDB query_mame_media / TheGamesDB)
+#   RESOURCE TABLE (ArcadeDB query_mame_media / TheGamesDB)
 # ============================================================
 $script:AllMediaTypes = @(
     @{ Name = "MARQUEE";           FolderSuffix = "Marquees";  ArcadeKey = "url_image_marquee";        TgdbKeys = @("banner");      DefExt = "png" }
@@ -146,7 +148,7 @@ $script:AllMediaTypes = @(
 )
 
 # ============================================================
-#   DITHERING RGB565 (Floyd-Steinberg) - identico al script anterior
+#   RGB565 DITHERING (Floyd-Steinberg) - identical to the previous script
 # ============================================================
 function Get-QuantizedValue([double]$valor, [int]$bits) {
     $niveles = [math]::Pow(2, $bits) - 1
@@ -229,9 +231,9 @@ function Convert-ToRGB565Dithered([System.Drawing.Bitmap]$bmp) {
 }
 
 # ============================================================
-#   TheGamesDB: normaliza la respuesta a la misma forma que ArcadeDB
-#   ($item.NombreDelRecurso -> objeto con Url y Ext), para que el bucle
-#   principal de descarga trate ambas fuentes de forma identica.
+#   TheGamesDB: normalizes the response to the same format used by ArcadeDB
+#   ($item.NombreDelRecurso -> object with Url and Ext), so the main download
+#   loop can handle both sources identically.
 # ============================================================
 function Get-TgdbItem($game, $apiKey) {
     $cleanTitle = $game.title -replace '\.zip$', '' -replace ' - .*$', '' -replace '\(.*?\)', '' -replace '\[.*?\]', ''
@@ -268,52 +270,52 @@ function Get-TgdbItem($game, $apiKey) {
 }
 
 # ============================================================
-#   OPCION 1: SCRAPEAR SISTEMA(S)
+#   OPTION 1: SCRAPE SYSTEM(S)
 # ============================================================
 function Invoke-ScrapeSistemas {
     Write-Host ""
     Write-Host "===================================================" -ForegroundColor Magenta
-    Write-Host "  OPCION 1: SCRAPEAR SISTEMA(S)" -ForegroundColor Cyan
+    Write-Host "  OPTION 1: SCRAPE SYSTEM(S)" -ForegroundColor Cyan
     Write-Host "===================================================" -ForegroundColor Magenta
 
-    $romsRoot = Get-ConfigValue "RomsRoot" "D:\ROMS" "Ruta de la carpeta ROMS de ReplayOS"
-    $cacheRoot = Get-ConfigValue "CacheRoot" (Join-Path $PSScriptRoot "Cache") "Ruta de la carpeta de cache de recursos"
+    $romsRoot = Get-ConfigValue "RomsRoot" "D:\ROMS" "Path to the ReplayOS ROM folder"
+    $cacheRoot = Get-ConfigValue "CacheRoot" (Join-Path $PSScriptRoot "Cache") "Path to the resource cache folder"
 
     $sistemas = Get-SystemFolders $romsRoot
     if ($sistemas.Count -eq 0) {
-        Write-Host "No se encontraron subcarpetas de sistemas en $romsRoot" -ForegroundColor Red
+        Write-Host "No system subfolders were found in $romsRoot" -ForegroundColor Red
         return
     }
 
-    $elegidos = Select-Multiple $sistemas "Nombre" "Sistemas encontrados en ROMS (el nombre exacto de la carpeta es el codigo de sistema que usara ReplayOS):"
+    $elegidos = Select-Multiple $sistemas "Nombre" "Systems found in ROMS (the exact folder name is the system code used by ReplayOS):"
     if ($elegidos.Count -eq 0) {
-        Write-Host "No se selecciono ningun sistema." -ForegroundColor Yellow
+        Write-Host "No system was selected." -ForegroundColor Yellow
         return
     }
 
     Write-Host ""
-    Write-Host "Selecciona la fuente de descarga:" -ForegroundColor Cyan
-    Write-Host "  1) ArcadeDB / ArcadeItalia (Catalogo ampliado - Sin API Key)" -ForegroundColor White
-    Write-Host "  2) TheGamesDB (Requiere API Key)" -ForegroundColor White
-    $sourceOpt = Read-Host "Opcion (1 o 2)"
+    Write-Host "Select the download source:" -ForegroundColor Cyan
+    Write-Host "  1) ArcadeDB / ArcadeItalia (Extended catalog - No API Key)" -ForegroundColor White
+    Write-Host "  2) TheGamesDB (Requires API Key)" -ForegroundColor White
+    $sourceOpt = Read-Host "Option (1 or 2)"
 
     $TheGamesDbApiKey = ""
     if ($sourceOpt -eq "2") {
         $Source = "TGDB"
-        $TheGamesDbApiKey = Get-ConfigValue "TgdbApiKey" "" "API Key de TheGamesDB"
+        $TheGamesDbApiKey = Get-ConfigValue "TgdbApiKey" "" "TheGamesDB API Key"
         if ([string]::IsNullOrWhiteSpace($TheGamesDbApiKey)) {
-            Write-Host "Se requiere una API Key para usar TheGamesDB." -ForegroundColor Red
+            Write-Host "An API Key is required to use TheGamesDB." -ForegroundColor Red
             return
         }
     } else {
         $Source = "ArcadeDB"
     }
 
-    $mediaSeleccionados = Select-Multiple $script:AllMediaTypes "Name" "Selecciona el/los recursos a descargar (fuente: $Source):"
+    $mediaSeleccionados = Select-Multiple $script:AllMediaTypes "Name" "Select the resource(s) to download (source: $Source):"
     if ($mediaSeleccionados.Count -eq 0) { $mediaSeleccionados = @($script:AllMediaTypes[0]) }
 
-    $forzarOpt = Read-Host "Reintentar tambien romsets marcados anteriormente como sin recursos? (S/N)"
-    $forzarReintento = ($forzarOpt.Trim().ToUpper() -eq "S")
+    $forzarOpt = Read-Host "Retry romsets previously marked as having no resources? (Y/N)"
+    $forzarReintento = ($forzarOpt.Trim().ToUpper() -eq "Y")
 
     foreach ($sistema in $elegidos) {
         Invoke-ScrapeUnSistema -SystemCode $sistema.Nombre -RomFolder $sistema.Ruta -CacheRoot $cacheRoot -Source $Source -ApiKey $TheGamesDbApiKey -MediaList $mediaSeleccionados -Forzar $forzarReintento
@@ -333,7 +335,7 @@ function Invoke-ScrapeUnSistema {
 
     Write-Host ""
     Write-Host "---------------------------------------------------" -ForegroundColor DarkCyan
-    Write-Host "Sistema: $SystemCode" -ForegroundColor Cyan
+    Write-Host "System: $SystemCode" -ForegroundColor Cyan
     Write-Host "---------------------------------------------------" -ForegroundColor DarkCyan
 
     $sistemaCacheDir = Join-Path $CacheRoot $SystemCode
@@ -346,8 +348,8 @@ function Invoke-ScrapeUnSistema {
         if (-not (Test-Path $dirPath)) { New-Item -ItemType Directory -Path $dirPath -Force | Out-Null }
     }
 
-    # Romsets = nombres de fichero (sin extension) de los .zip o .7z en la carpeta de ROMS
-    # de este sistema. Se excluyen los sets de BIOS compartidos habituales.
+    # Romsets = filenames (without extension) of the .zip or .7z files in this system's ROM folder.
+    # Common shared BIOS sets are excluded.
     $files = Get-ChildItem -Path $RomFolder -File -ErrorAction SilentlyContinue | Where-Object { $_.Extension -in ".zip", ".7z" }
     $seenRomsets = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
     $bioNames = @("neogeo", "cps1", "cps2", "cps3", "pgm", "naomi", "naomibios")
@@ -361,11 +363,11 @@ function Invoke-ScrapeUnSistema {
     }
     $games = $games | Sort-Object romset
 
-    Write-Host "Romsets encontrados: $($games.Count)" -ForegroundColor Green
+    Write-Host "Romsets found: $($games.Count)" -ForegroundColor Green
     if ($games.Count -eq 0) { return }
 
-    # Cache de "sin recursos": romsets que ya sabemos que no devuelven NADA en esta
-    # fuente, para no volver a preguntar por ellos en cada ejecucion.
+    # "No resources" cache: romsets that we already know return NOTHING from this
+    # source, so we don't query them again on every run.
     $failCachePath = Join-Path $sistemaCacheDir "_sin_recursos_$($Source.ToLower()).txt"
     $sinRecursosPrevios = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
     if ((-not $Forzar) -and (Test-Path $failCachePath)) {
@@ -383,7 +385,7 @@ function Invoke-ScrapeUnSistema {
         $count++
 
         if ($sinRecursosPrevios.Contains($game.romset)) {
-            Write-Host "[$count/$($games.Count)] [OMITIDO - sin recursos previamente] $($game.romset)" -ForegroundColor DarkGray
+            Write-Host "[$count/$($games.Count)] [SKIPPED - previously no resources] $($game.romset)" -ForegroundColor DarkGray
             [void]$sinRecursosNuevo.Add($game.romset)
             continue
         }
@@ -395,17 +397,17 @@ function Invoke-ScrapeUnSistema {
             $dirPath = Join-Path $sistemaCacheDir $media.FolderSuffix
             $existente = Get-ChildItem -Path $dirPath -Filter "$($game.romset).*" -ErrorAction SilentlyContinue
             if ($existente) {
-                Write-Host "[$count/$($games.Count)] [EXISTE EN CACHE] [$($media.Name)] $($game.romset)" -ForegroundColor Gray
+                Write-Host "[$count/$($games.Count)] [EXISTS IN CACHE] [$($media.Name)] $($game.romset)" -ForegroundColor Gray
             } else {
                 $neededMedia += $media
             }
         }
         if ($neededMedia.Count -eq 0) { continue }
 
-        Write-Host "[$count/$($games.Count)] Consultando: $($game.romset)" -ForegroundColor Cyan
+        Write-Host "[$count/$($games.Count)] Querying: $($game.romset)" -ForegroundColor Cyan
 
-        # Backoff: hasta 3 intentos ante ERRORES (red, timeout, etc). Un resultado vacio
-        # "de verdad" (sin excepcion) NO se reintenta, se trata como NO ENCONTRADO directo.
+        # Backoff: up to 3 attempts for ERRORS (network, timeout, etc.). A "truly" empty result
+        # (without an exception) is NOT retried and is treated directly as NOT FOUND.
         $item = $null
         $intentos = 0
         $maxIntentos = 3
@@ -425,10 +427,10 @@ function Invoke-ScrapeUnSistema {
                 $huboError = $true
                 if ($intentos -lt $maxIntentos) {
                     $espera = 2000 * $intentos
-                    Write-Host "   [REINTENTO $intentos/$maxIntentos] $($game.romset): $_ (esperando ${espera}ms)" -ForegroundColor DarkYellow
+                    Write-Host "   [RETRY $intentos/$maxIntentos] $($game.romset): $_ (waiting ${espera}ms)" -ForegroundColor DarkYellow
                     Start-Sleep -Milliseconds $espera
                 } else {
-                    Write-Host "   [ERROR CONSULTA] $($game.romset): $_" -ForegroundColor Red
+                    Write-Host "   [QUERY ERROR] $($game.romset): $_" -ForegroundColor Red
                     $errors.Add($game.romset)
                     $huboErrorFinal = $true
                 }
@@ -438,7 +440,7 @@ function Invoke-ScrapeUnSistema {
 
         if ($null -eq $item) {
             if (-not $huboErrorFinal) {
-                Write-Host "   [NO ENCONTRADO] $($game.romset)" -ForegroundColor DarkYellow
+                Write-Host "   [NOT FOUND] $($game.romset)" -ForegroundColor DarkYellow
                 foreach ($m in $neededMedia) { $missing.Add("$($game.romset) [$($m.Name)]") }
                 [void]$sinRecursosNuevo.Add($game.romset)
             }
@@ -461,7 +463,7 @@ function Invoke-ScrapeUnSistema {
             }
 
             if ([string]::IsNullOrWhiteSpace($url)) {
-                Write-Host "   [SIN $label] $($game.romset)" -ForegroundColor DarkYellow
+                Write-Host "   [NO $label] $($game.romset)" -ForegroundColor DarkYellow
                 $missing.Add("$($game.romset) [$label]")
                 continue
             }
@@ -471,7 +473,7 @@ function Invoke-ScrapeUnSistema {
                 Invoke-WebRequest -Uri $url.Trim() -OutFile $dest -TimeoutSec 90
                 Write-Host "   [OK] [$label] $($game.romset).$ext" -ForegroundColor Green
             } catch {
-                Write-Host "   [ERROR DESCARGA] [$label] $($game.romset): $_" -ForegroundColor Red
+                Write-Host "   [DOWNLOAD ERROR] [$label] $($game.romset): $_" -ForegroundColor Red
                 $errors.Add("$($game.romset) [$label]")
             }
         }
@@ -488,33 +490,33 @@ function Invoke-ScrapeUnSistema {
     $sinRecursosNuevo | Sort-Object -Unique | Out-File -FilePath $failCachePath -Encoding utf8
 
     Write-Host ""
-    Write-Host "Resumen [$SystemCode]: $conRecursos de $($games.Count) romsets con datos en $Source." -ForegroundColor Green
-    Write-Host "Cache actualizada en: $sistemaCacheDir" -ForegroundColor White
+    Write-Host "Summary [$SystemCode]: $conRecursos of $($games.Count) romsets with data in $Source." -ForegroundColor Green
+    Write-Host "Cache updated at: $sistemaCacheDir" -ForegroundColor White
 }
 
 # ============================================================
-#   OPCION 2: GENERAR IMAGENES (offline, desde cache)
+#   OPTION 2: GENERATE IMAGES (offline, from cache)
 # ============================================================
 function Invoke-GenerarImagenes {
     Write-Host ""
     Write-Host "===================================================" -ForegroundColor Magenta
-    Write-Host "  OPCION 2: GENERAR IMAGENES (offline, desde cache)" -ForegroundColor Cyan
+    Write-Host "  OPTION 2: GENERATE IMAGES (offline, from cache)" -ForegroundColor Cyan
     Write-Host "===================================================" -ForegroundColor Magenta
 
-    $cacheRoot = Get-ConfigValue "CacheRoot" (Join-Path $PSScriptRoot "Cache") "Ruta de la carpeta de cache de recursos"
-    $arcadeRoot = Get-ConfigValue "ArcadeRoot" "D:\Arcade" "Ruta de la carpeta Arcade de salida (raiz, para copiar a la SD)"
+    $cacheRoot = Get-ConfigValue "CacheRoot" (Join-Path $PSScriptRoot "Cache") "Path to the resource cache folder"
+    $arcadeRoot = Get-ConfigValue "ArcadeRoot" "D:\Arcade" "Path to the output Arcade folder (root, for copying to the SD card)"
 
     $sistemas = Get-SystemFolders $cacheRoot
     if ($sistemas.Count -eq 0) {
-        Write-Host "No hay ningun sistema en la cache ($cacheRoot). Ejecuta antes la Opcion 1." -ForegroundColor Red
+        Write-Host "No systems found in the cache ($cacheRoot). Run Option 1 first." -ForegroundColor Red
         return
     }
 
-    $elegidos = Select-Multiple $sistemas "Nombre" "Sistemas disponibles en cache (elige uno o varios):"
+    $elegidos = Select-Multiple $sistemas "Nombre" "Systems available in cache (select one or more):"
     if ($elegidos.Count -eq 0) { return }
 
-    $replayOpt = Read-Host "El sistema que usa tu Arcade es ReplayOS? (S/N)"
-    $esReplayOS = ($replayOpt.Trim().ToUpper() -eq "S")
+    $replayOpt = Read-Host "Does your Arcade use ReplayOS? (Y/N)"
+    $esReplayOS = ($replayOpt.Trim().ToUpper() -eq "Y")
     $aplicarDithering = $esReplayOS
 
     $anchoBmp = 128
@@ -533,7 +535,7 @@ function Invoke-GenerarImagenesUnSistema {
 
     Write-Host ""
     Write-Host "---------------------------------------------------" -ForegroundColor DarkCyan
-    Write-Host "Sistema: $SystemCode" -ForegroundColor Cyan
+    Write-Host "System: $SystemCode" -ForegroundColor Cyan
     Write-Host "---------------------------------------------------" -ForegroundColor DarkCyan
 
     $imageExtRegex = '^\.(png|jpg|jpeg|bmp|gif)$'
@@ -542,17 +544,17 @@ function Invoke-GenerarImagenesUnSistema {
     })
 
     if ($carpetasRecurso.Count -eq 0) {
-        Write-Host "No hay imagenes cacheadas para este sistema." -ForegroundColor Yellow
+        Write-Host "No cached images were found for this system." -ForegroundColor Yellow
         return
     }
 
     Write-Host ""
-    Write-Host "Que recurso quieres usar como fuente de las marquesinas de [$SystemCode]?" -ForegroundColor Yellow
+    Write-Host "Which resource do you want to use as the source for the marquees of [$SystemCode]?" -ForegroundColor Yellow
     for ($i = 0; $i -lt $carpetasRecurso.Count; $i++) {
         $n = (Get-ChildItem -Path $carpetasRecurso[$i].FullName -File | Where-Object { $_.Extension -match $imageExtRegex }).Count
-        Write-Host ("  {0}) {1}  ({2} imagenes)" -f ($i + 1), $carpetasRecurso[$i].Name, $n) -ForegroundColor White
+        Write-Host ("  {0}) {1}  ({2} images)" -f ($i + 1), $carpetasRecurso[$i].Name, $n) -ForegroundColor White
     }
-    $srcOpt = Read-Host "Selecciona una opcion (1-$($carpetasRecurso.Count))"
+    $srcOpt = Read-Host "Select an option (1-$($carpetasRecurso.Count))"
     $srcIdx = 0
     if ($srcOpt -match '^\d+$' -and [int]$srcOpt -ge 1 -and [int]$srcOpt -le $carpetasRecurso.Count) {
         $srcIdx = [int]$srcOpt - 1
@@ -564,7 +566,7 @@ function Invoke-GenerarImagenesUnSistema {
 
     $imagenes = Get-ChildItem -Path $marqueeDir -File | Where-Object { $_.Extension -match $imageExtRegex }
     Write-Host ""
-    Write-Host "Convirtiendo $($imagenes.Count) imagenes a ${Ancho}x${Alto} BMP..." -ForegroundColor Yellow
+    Write-Host "Converting $($imagenes.Count) images to ${Ancho}x${Alto} BMP..." -ForegroundColor Yellow
 
     $contadorExito = 0
     foreach ($img in $imagenes) {
@@ -596,7 +598,7 @@ function Invoke-GenerarImagenesUnSistema {
             $contadorExito++
         } catch {
             Write-Host "[ERROR]" -ForegroundColor Red
-            Write-Host "    Detalle: $_" -ForegroundColor Yellow
+            Write-Host "    Details: $_" -ForegroundColor Yellow
             if ($null -ne $oldImg) { $oldImg.Dispose() }
             if ($null -ne $g) { $g.Dispose() }
             if ($null -ne $bmp) { $bmp.Dispose() }
@@ -604,29 +606,29 @@ function Invoke-GenerarImagenesUnSistema {
     }
 
     Write-Host ""
-    Write-Host "Imagenes convertidas: $contadorExito de $($imagenes.Count)" -ForegroundColor Green
-    Write-Host "Carpeta lista en: $((Resolve-Path $bmpOutDir).Path)" -ForegroundColor White
-    Write-Host "Recuerda: ejecuta la Opcion 3 para generar/actualizar el listado $SystemCode.txt" -ForegroundColor Yellow
+    Write-Host "Images converted: $contadorExito of $($imagenes.Count)" -ForegroundColor Green
+    Write-Host "Output folder ready at: $((Resolve-Path $bmpOutDir).Path)" -ForegroundColor White
+    Write-Host "Remember: run Option 3 to generate/update the $SystemCode.txt list" -ForegroundColor Yellow
 }
 
 # ============================================================
-#   OPCION 3: GENERAR / AUDITAR LISTADOS
+#   OPTION 3: GENERATE / AUDIT LISTS
 # ============================================================
 function Invoke-GenerarListados {
     Write-Host ""
     Write-Host "===================================================" -ForegroundColor Magenta
-    Write-Host "  OPCION 3: GENERAR / AUDITAR LISTADOS" -ForegroundColor Cyan
+   Write-Host "  OPTION 3: GENERATE / AUDIT LISTS" -ForegroundColor Cyan
     Write-Host "===================================================" -ForegroundColor Magenta
 
-    $arcadeRoot = Get-ConfigValue "ArcadeRoot" "D:\Arcade" "Ruta de la carpeta Arcade (raiz)"
+    $arcadeRoot = Get-ConfigValue "ArcadeRoot" "D:\Arcade" "Path to the Arcade folder (root)"
 
     $sistemas = Get-SystemFolders $arcadeRoot
     if ($sistemas.Count -eq 0) {
-        Write-Host "No se encontraron subcarpetas de sistemas en $arcadeRoot" -ForegroundColor Red
+        Write-Host "No system subfolders were found in $arcadeRoot" -ForegroundColor Red
         return
     }
 
-    $elegidos = Select-Multiple $sistemas "Nombre" "Sistemas encontrados en Arcade (elige uno o varios):"
+    $elegidos = Select-Multiple $sistemas "Nombre" "Systems found in Arcade (select one or more):"
     if ($elegidos.Count -eq 0) { return }
 
     foreach ($sistema in $elegidos) {
@@ -634,10 +636,10 @@ function Invoke-GenerarListados {
     }
 }
 
-# Detecta romsets a partir de .bmp y .gif en una carpeta, agrupando secuencias
-# tipo mslug_01.gif / mslug_02.gif como un unico romset "mslug". Ignora el
-# comodin "_default" (no se indexa: el ESP32 lo comprueba directo, sin pasar
-# por el listado).
+# Detects romsets from .bmp and .gif files in a folder, grouping sequences
+# such as mslug_01.gif / mslug_02.gif as a single romset "mslug". Ignores the
+# "_default" wildcard (not indexed: the ESP32 checks it directly without going
+# through the list).
 function Get-RomsetsDesdeCarpeta([string]$dir) {
     $romsets = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
 
@@ -664,11 +666,11 @@ function Invoke-AuditarListadoUnSistema {
 
     Write-Host ""
     Write-Host "---------------------------------------------------" -ForegroundColor DarkCyan
-    Write-Host "Sistema: $SystemCode" -ForegroundColor Cyan
+    Write-Host "System: $SystemCode" -ForegroundColor Cyan
     Write-Host "---------------------------------------------------" -ForegroundColor DarkCyan
 
     $romsetsEnDisco = Get-RomsetsDesdeCarpeta $SistemaDir
-    Write-Host "Romsets con marquesina en disco (bmp o gif): $($romsetsEnDisco.Count)" -ForegroundColor Green
+    Write-Host "Romsets with a marquee on disk (bmp or gif): $($romsetsEnDisco.Count)" -ForegroundColor Green
 
     $txtPath = Join-Path $ArcadeRoot "$SystemCode.txt"
     if (Test-Path $txtPath) {
@@ -679,24 +681,24 @@ function Invoke-AuditarListadoUnSistema {
         $sinIndexar = @($romsetsEnDisco | Where-Object { -not $enIndice.Contains($_) })
 
         if ($huerfanos.Count -gt 0) {
-            Write-Host "En el listado pero SIN archivo (huerfanos): $($huerfanos.Count)" -ForegroundColor DarkYellow
+            Write-Host "In the list but WITHOUT a file (orphans): $($huerfanos.Count)" -ForegroundColor DarkYellow
             $huerfanos | ForEach-Object { Write-Host "    - $_" -ForegroundColor DarkYellow }
         }
         if ($sinIndexar.Count -gt 0) {
-            Write-Host "Con archivo pero SIN indexar (colocados a mano): $($sinIndexar.Count)" -ForegroundColor DarkYellow
+            Write-Host "With a file but NOT indexed (manually added): $($sinIndexar.Count)" -ForegroundColor DarkYellow
             $sinIndexar | ForEach-Object { Write-Host "    - $_" -ForegroundColor DarkYellow }
         }
         if ($huerfanos.Count -eq 0 -and $sinIndexar.Count -eq 0) {
-            Write-Host "El listado ya esta al dia, no hace falta regenerarlo." -ForegroundColor Green
+            Write-Host "The list is already up to date; it does not need to be regenerated." -ForegroundColor Green
             return
         }
     } else {
-        Write-Host "No existe todavia $SystemCode.txt (se generara desde cero)." -ForegroundColor Yellow
+        Write-Host "$SystemCode.txt does not exist yet (it will be generated from scratch)." -ForegroundColor Yellow
     }
 
-    $confirmar = Read-Host "Generar/actualizar $SystemCode.txt con los $($romsetsEnDisco.Count) romsets detectados? (S/N)"
-    if ($confirmar.Trim().ToUpper() -ne "S") {
-        Write-Host "Cancelado, no se ha tocado el listado." -ForegroundColor Yellow
+    $confirmar = Read-Host "Generate/update $SystemCode.txt with the $($romsetsEnDisco.Count) detected romsets? (Y/N)"
+    if ($confirmar.Trim().ToUpper() -ne "Y") {
+        Write-Host "Cancelled; the list was not modified." -ForegroundColor Yellow
         return
     }
 
@@ -704,40 +706,40 @@ function Invoke-AuditarListadoUnSistema {
     [array]::Sort($listadoFinal, [System.StringComparer]::OrdinalIgnoreCase)
     [System.IO.File]::WriteAllLines($txtPath, $listadoFinal, (New-Object System.Text.UTF8Encoding($false)))
 
-    Write-Host "Listado actualizado: $txtPath" -ForegroundColor Green
+    Write-Host "List updated: $txtPath" -ForegroundColor Green
 }
 
 # ============================================================
-#   MENU PRINCIPAL
+#   MAIN MENU
 # ============================================================
 do {
     Clear-Host
     Write-Host "===================================================" -ForegroundColor Magenta
-    Write-Host "     Retro Pixel LED - ReplayOS TOOLKIT v5.1" -ForegroundColor White
+    Write-Host "     RETROPIXELLED - REPLAYOS TOOLKIT v5.1" -ForegroundColor White
     Write-Host "===================================================" -ForegroundColor Magenta
     Write-Host ""
-    Write-Host "  1) Scrapear sistema(s) desde ROMS" -ForegroundColor White
-    Write-Host "  2) Generar imagenes BMP (offline, desde cache)" -ForegroundColor White
-    Write-Host "  3) Generar / auditar listados .txt" -ForegroundColor White
-    Write-Host "  4) Salir" -ForegroundColor White
+    Write-Host "  1) Scrape system(s) from ROMS" -ForegroundColor White
+    Write-Host "  2) Generate BMP images (offline, from cache)" -ForegroundColor White
+    Write-Host "  3) Generate / audit .txt lists" -ForegroundColor White
+    Write-Host "  4) Exit" -ForegroundColor White
     Write-Host ""
-    $opcion = Read-Host "Elige una opcion (1-4)"
+    $opcion = Read-Host "Choose an option (1-4)"
 
     switch ($opcion) {
         "1" { Invoke-ScrapeSistemas }
         "2" { Invoke-GenerarImagenes }
         "3" { Invoke-GenerarListados }
         "4" { }
-        Default { Write-Host "Opcion no valida." -ForegroundColor Red }
+        Default { Write-Host "Invalid option." -ForegroundColor Red }
     }
 
     if ($opcion -ne "4") {
         Write-Host ""
-        Read-Host "Presiona Enter para volver al menu principal"
+        Read-Host "Press Enter to return to the main menu"
     }
 } while ($opcion -ne "4")
 
 Write-Host ""
 Write-Host "===================================================" -ForegroundColor Magenta
-Write-Host "             PROCESO FINALIZADO" -ForegroundColor Green
+Write-Host "             PROCESS COMPLETED" -ForegroundColor Green
 Write-Host "===================================================" -ForegroundColor Magenta

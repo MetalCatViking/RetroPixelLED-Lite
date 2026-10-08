@@ -1,29 +1,38 @@
 <#
 .SYNOPSIS
-    RetroPixelLED - Renombrador de GIFs Arcade v2.1
+    RetroPixelLED - Arcade GIF Renamer v2.0
 .DESCRIPTION
-    Sustituye al renombrado "a ciegas" del script anterior (que asumia que limpiar el
-    nombre humano del archivo ya daba el romset de MAME, cosa que casi nunca es cierta)
-    por resolucion contra una fuente autorizada:
+    Replaces the "blind" renaming of the previous script (which assumed that cleaning the
+    human-readable name of the file already gave the MAME romset, which is almost never true)
+    with resolution against an authoritative source:
 
-      1) Renombrar GIFs: para cada .gif, intenta resolver su romset real de MAME en
-         este orden de prioridad:
-           a) Diccionario manual ($mapeoEspecial) - para casos ya conocidos/forzados.
-           b) MAME.dat (libretro-database) - busqueda EXACTA contra el titulo real,
-              probando varias formas del nombre (con espacios, sin espacios, con
-              sufijos de secuencia/decoracion eliminados, con numeros en cifra o en
-              palabra).
-           c) Si el modo aproximado esta activado: mejor coincidencia por solapamiento
-              de palabras contra los titulos de MAME.dat, con umbral minimo.
-         Si no se resuelve por ninguna via, el GIF se mueve (sin tocar el nombre) a una
-         carpeta SinResolver\ para que lo revises y renombres a mano.
+      1) Rename GIFs: for each .gif, attempts to resolve its real MAME romset in
+         this order of priority:
+           a) Manual dictionary ($mapeoEspecial) - for already known/forced cases.
+           b) MAME.dat (libretro-database) - EXACT search against the real title,
+              trying several forms of the name (with spaces, without spaces, with
+              sequence/decoration suffixes removed, with numbers as digits or
+              as words).
+           c) If approximate mode is enabled: best match by word overlap
+              against the MAME.dat titles, with a minimum threshold.
+         If it is not resolved by any method, the GIF is moved (without touching the name) to a
+         SinResolver\ folder so that you can review it and rename it manually.
 
-      2) Copiar GIFs a carpetas de sistema: dada la carpeta ROMS y la carpeta Arcade,
-         eliges un sistema (o varios) y el script copia a Arcade/<sistema>/ los GIFs ya
-         renombrados cuyo nombre coincide con un romset presente en ese sistema.
+      2) Copy GIFs to system folders: given the ROMS folder and the Arcade folder,
+         you choose a system (or several) and the script copies to Arcade/<sistema>/ the
+         already renamed GIFs whose name matches a romset present in that system.
+
+    DESIGN NOTES (consistent with the rest of the toolkit):
+    - Without accents or special characters in any console text.
+    - Uses the same RetroPixelLED_Config.json (ROMS/Arcade/cache paths) as the
+      RetroPixelLED_ReplayOS_Toolkit.ps1, so you do not have to repeat paths.
+    - MAME.dat is downloaded once to the cache and reused (an update can be forced). It is a DAT
+      in ClrMamePro format maintained by the libretro/RetroArch team, not an official MAME source,
+      but it is the most complete and accessible public source of "real title -> romset name"
+      that exists.
 #>
 
-$Host.UI.RawUI.WindowTitle = "RetroPixelLED - Renombrador de GIFs v2.1"
+$Host.UI.RawUI.WindowTitle = "RetroPixelLED - GIF Renamer v2.0"
 $OutputEncoding = [System.Text.Encoding]::UTF8
 $ErrorActionPreference = "Stop"
 
@@ -36,7 +45,7 @@ function Load-Config {
             $obj = $json | ConvertFrom-Json
             if ($null -ne $obj) { return $obj }
         } catch {
-            Write-Host "Aviso: no se pudo leer $ConfigPath, se usaran valores por defecto." -ForegroundColor DarkYellow
+            Write-Host "Warning: could not read $ConfigPath, using default values." -ForegroundColor DarkYellow
         }
     }
     return [PSCustomObject]@{}
@@ -55,7 +64,7 @@ function Get-ConfigValue([string]$key, [string]$defaultValue, [string]$prompt) {
     if ($cfg.PSObject.Properties.Name -contains $key) { $current = $cfg.$key }
     if ([string]::IsNullOrWhiteSpace($current)) { $current = $defaultValue }
 
-    $entrada = Read-Host "$prompt (Enter para usar: $current)"
+    $entrada = Read-Host "$prompt (Press Enter to use: $current)"
     if ([string]::IsNullOrWhiteSpace($entrada)) { $entrada = $current }
     $entrada = $entrada.Trim()
 
@@ -75,10 +84,10 @@ function Select-Multiple([array]$items, [string]$labelProp, [string]$promptTitle
         Write-Host ("  {0,2}) {1}" -f ($i + 1), $items[$i].$labelProp) -ForegroundColor White
     }
     Write-Host ""
-    Write-Host "Escribe los numeros separados por comas (ej: 1,3,5) o TODOS" -ForegroundColor DarkGray
-    $entrada = Read-Host "Seleccion"
+    Write-Host "Enter numbers separated by commas (e.g. 1,3,5) or ALL" -ForegroundColor DarkGray
+    $entrada = Read-Host "Selection"
 
-    if ($entrada.Trim().ToUpper() -eq "TODOS") { return $items }
+    if ($entrada.Trim().ToUpper() -eq "ALL") { return $items }
 
     $nums = $entrada -split "," | ForEach-Object { $_.Trim() } | Where-Object { $_ -match '^\d+$' }
     $seleccion = @()
@@ -96,58 +105,13 @@ function Get-SystemFolders([string]$root) {
     }
 }
 
-# Crea una ruta de carpetas anidadas NIVEL A NIVEL en vez de pedirle a New-Item -Force
-# que cree varios niveles nuevos de golpe. Sobre rutas de red (UNC, \\equipo\recurso\...)
-# esa creacion "de golpe" puede fallar con "no se ha encontrado la ruta de acceso de la
-# red" incluso cuando el recurso compartido es accesible, si faltan varios niveles a la
-# vez. Yendo nivel a nivel identificamos exactamente cual falla.
-function New-CarpetaAnidada([string]$rutaCompleta) {
-    if (Test-Path $rutaCompleta) { return $true }
-
-    $partes = $rutaCompleta -split '\\' | Where-Object { $_ -ne '' }
-    if ($partes.Count -eq 0) { return $false }
-
-    if ($rutaCompleta.StartsWith('\\')) {
-        if ($partes.Count -lt 2) {
-            Write-Host "Ruta de red incompleta: $rutaCompleta" -ForegroundColor Red
-            return $false
-        }
-        $actual = '\\' + $partes[0] + '\' + $partes[1]
-        $resto = @()
-        if ($partes.Count -gt 2) { $resto = $partes[2..($partes.Count - 1)] }
-    } else {
-        $actual = $partes[0]
-        $resto = @()
-        if ($partes.Count -gt 1) { $resto = $partes[1..($partes.Count - 1)] }
-    }
-
-    if (-not (Test-Path $actual)) {
-        Write-Host "No se puede acceder a la ruta base: $actual (comprueba que el recurso compartido esta accesible desde este PC)" -ForegroundColor Red
-        return $false
-    }
-
-    foreach ($nivel in $resto) {
-        $actual = Join-Path $actual $nivel
-        if (-not (Test-Path $actual)) {
-            try {
-                New-Item -ItemType Directory -Path $actual -ErrorAction Stop | Out-Null
-            } catch {
-                Write-Host "No se pudo crear la carpeta: $actual" -ForegroundColor Red
-                Write-Host "  Detalle: $_" -ForegroundColor DarkYellow
-                return $false
-            }
-        }
-    }
-    return $true
-}
-
-# Devuelve un nombre de archivo "<baseName>.gif" libre en $carpeta, probando
-# _01, _02... si hace falta. Comprueba el DISCO directamente (no un contador en
-# memoria), asi que es seguro relanzar el script sobre una carpeta que ya tiene
-# GIFs de una ejecucion anterior sin que choque con ellos. $rutaActual (opcional)
-# es la ruta del propio archivo que se esta renombrando: si el nombre libre
-# encontrado coincide con su propia ruta actual, se considera disponible (ya
-# tiene ese nombre, no es un choque con OTRO archivo).
+# Returns an available "<baseName>.gif" filename in $carpeta, trying
+# _01, _02... if needed. Checks the DISK directly (not a counter in
+# memory), so it is safe to rerun the script on a folder that already contains
+# GIFs from a previous run without conflicting with them. $rutaActual (optional)
+# is the path of the file currently being renamed: if the available name
+# found matches its own current path, it is considered available (it already
+# has that name, so it is not a conflict with ANOTHER file).
 function Get-NombreDisponible([string]$carpeta, [string]$baseName, [string]$rutaActual = "") {
     $candidato = "$baseName.gif"
     $candidatoPath = Join-Path $carpeta $candidato
@@ -161,7 +125,7 @@ function Get-NombreDisponible([string]$carpeta, [string]$baseName, [string]$ruta
 }
 
 # ============================================================
-#   DICCIONARIO MANUAL (prioridad 1, por encima de MAME.dat)
+#   MANUAL DICTIONARY (priority 1, above MAME.dat)
 # ============================================================
 $mapeoEspecial = [ordered]@{
     "fatalfuryspecial|fatal_fury_special"       = "fatfursp"
@@ -212,7 +176,7 @@ $mapeoEspecial = [ordered]@{
     "xevious"                                   = "xevious"
     "xexex"                                     = "xexex"
 
-    # --- Anadidas a partir de la revision de sin_resolver.txt (verificadas contra MAME.dat) ---
+    # --- Added from the review of sin_resolver.txt (verified against MAME.dat) ---
     "streetfighteralpha2"                       = "sfa2"
     "streetfighterii|streetfighter_ii"          = "sf2"
     "aero_fighters_2|aerofighters2"             = "sonicwi2"
@@ -288,14 +252,14 @@ $mapeoEspecial = [ordered]@{
 }
 
 # ============================================================
-#   MAME.dat: descarga/cache + parseo a diccionario titulo->romset
+#   MAME.dat: download/cache + parsing into a title->romset dictionary
 # ============================================================
 $MameDatUrl = "https://raw.githubusercontent.com/libretro/libretro-database/master/metadat/mame/MAME.dat"
 
-# Palabras que penalizan una entrada como candidata "principal" para un titulo
-# (conversiones a otro hardware, sets no oficiales...), y palabras que la
-# favorecen (regiones estandar). Usadas solo para decidir cual romset asociar
-# cuando varias entradas de MAME.dat comparten el mismo titulo limpio.
+# Words that penalize an entry as the "main" candidate for a title
+# (conversions to other hardware, unofficial sets...), and words that
+# favor it (standard regions). Used only to decide which romset to associate
+# when several MAME.dat entries share the same cleaned title.
 $PalabrasMalas = @("mega-tech", "mega-play", "playchoice", "nintendo vs", "vs. system", "bootleg", "hack", "prototype")
 $PalabrasBuenas = @("world", " usa", " us)", " u)", "europe", "euro")
 
@@ -328,7 +292,7 @@ function Get-CandidateScore([string]$originalTitle, [string]$romset) {
     elseif ($esBueno) { $tier = 1 }
     else { $tier = 2 }
 
-    # Puntuacion combinada: tier primero, longitud del romset como desempate.
+    # Combined score: tier first, romset length as the tiebreaker.
     return ($tier * 1000) + $romset.Length
 }
 
@@ -339,20 +303,20 @@ function Get-MameDat([string]$cacheRoot) {
 
     $descargar = $true
     if (Test-Path $datPath) {
-        $actualizar = Read-Host "Ya existe MAME.dat en cache. Descargar version actualizada? (S/N)"
-        $descargar = ($actualizar.Trim().ToUpper() -eq "S")
+        $actualizar = Read-Host "MAME.dat already exists in the cache. Download an updated version? (Y/N)"
+        $descargar = ($actualizar.Trim().ToUpper() -eq "Y")
     }
 
     if ($descargar) {
-        Write-Host "Descargando MAME.dat (libretro-database, puede tardar unos segundos)..." -ForegroundColor Cyan
+        Write-Host "Downloading MAME.dat (libretro-database, may take a few seconds)..." -ForegroundColor Cyan
         try {
             Invoke-WebRequest -Uri $MameDatUrl -OutFile $datPath -TimeoutSec 120
-            Write-Host "Descarga completada." -ForegroundColor Green
+            Write-Host "Download completed." -ForegroundColor Green
         } catch {
             if (Test-Path $datPath) {
-                Write-Host "No se pudo descargar, se usara la copia en cache existente." -ForegroundColor DarkYellow
+                Write-Host "Could not download; using the existing cached copy." -ForegroundColor DarkYellow
             } else {
-                throw "No se pudo descargar MAME.dat y no hay copia en cache: $_"
+                throw "Could not download MAME.dat and no cached copy exists: $_"
             }
         }
     }
@@ -360,10 +324,10 @@ function Get-MameDat([string]$cacheRoot) {
     return $datPath
 }
 
-# Parsea MAME.dat y devuelve dos hashtables: por titulo "con espacios" y por
-# titulo "sin espacios" (concatenado), cada una title-normalizado -> romset.
+# Parses MAME.dat and returns two hashtables: one for titles "with spaces" and
+# one for titles "without spaces" (concatenated), each mapping normalized title -> romset.
 function Build-MameIndex([string]$datPath) {
-    Write-Host "Analizando MAME.dat (puede tardar un momento)..." -ForegroundColor Cyan
+    Write-Host "Parsing MAME.dat (this may take a moment)..." -ForegroundColor Cyan
     $texto = [System.IO.File]::ReadAllText($datPath)
 
     $patron = '(?s)game\s*\(\s*name\s+"([^"]+)".*?rom\s*\(\s*name\s+(\S+?)\.zip'
@@ -396,12 +360,12 @@ function Build-MameIndex([string]$datPath) {
         }
     }
 
-    Write-Host "MAME.dat: $($coincidencias.Count) romsets, $($porEspacio.Count) titulos unicos." -ForegroundColor Green
+    Write-Host "MAME.dat: $($coincidencias.Count) romsets, $($porEspacio.Count) unique titles." -ForegroundColor Green
     return [PSCustomObject]@{ PorEspacio = $porEspacio; PorConcat = $porConcat }
 }
 
 # ============================================================
-#   GENERACION DE CANDIDATOS A PARTIR DEL NOMBRE DE ARCHIVO
+#   GENERATING CANDIDATES FROM THE FILENAME
 # ============================================================
 $regexFirmas = "(_RattenJager|_RattenJagger|_RatteJager|_clivefrog|_wolfsoft|_Wolfsoft|_shabazz|_Shabazz|_2vinci|_hellbent|_raph|_vybyvy|_nicko51|_zzoomm|_sephirot68|_Qris|_Venoim|_Mitchbucannon|_INVERT|_SCROLL|_Div\d+|_DIV\d+)+$"
 $palabrasDecorativas = "Title|Go|Scroll|Ending|Boss\d*|Intro|Demo|Attract|Continue|GameOver|Start|Select|Stage"
@@ -415,10 +379,10 @@ function Get-CandidatosTitulo([string]$baseName) {
     $n = $n -replace $regexFirmas, ''
 
     $candidatosCrudos = [System.Collections.Generic.List[string]]::new()
-    $candidatosCrudos.Add($n)                                                          # tal cual
-    $candidatosCrudos.Add(($n -replace '(_?\d{1,2})$', ''))                             # sin sufijo numerico final
-    $candidatosCrudos.Add(($n -replace "(_?($palabrasDecorativas)\d*)$", ''))  # sin palabra decorativa + digitos (case-insensitive por defecto)
-    $candidatosCrudos.Add(($n -replace '(_?\d{1,2}[A-Za-z]+)$', ''))                     # sin digitos+letras pegados al final (ej: 04Go)
+    $candidatosCrudos.Add($n)                                                          # as-is
+    $candidatosCrudos.Add(($n -replace '(_?\d{1,2})$', ''))                             # without final numeric suffix
+    $candidatosCrudos.Add(($n -replace "(_?($palabrasDecorativas)\d*)$", ''))  # without decorative word + digits (case-insensitive by default)
+    $candidatosCrudos.Add(($n -replace '(_?\d{1,2}[A-Za-z]+)$', ''))                     # without trailing digits+letters (e.g. 04Go)
 
     $resultado = [System.Collections.Generic.List[string]]::new()
     foreach ($c in $candidatosCrudos) {
@@ -426,8 +390,8 @@ function Get-CandidatosTitulo([string]$baseName) {
         $espaciado = ConvertTo-CamelSpaced ($c -replace '_', ' ')
         if (-not $resultado.Contains($espaciado)) { [void]$resultado.Add($espaciado) }
 
-        # Variante con el primer numero (1-9) sustituido por su palabra en ingles,
-        # para titulos tipo "3 Wonders" -> "Three Wonders"
+        # Variant with the first number (1-9) replaced by its English word,
+        # for titles such as "3 Wonders" -> "Three Wonders"
         if ($espaciado -match '^(\d)(\s|$)') {
             $digito = $matches[1]
             if ($NumerosPalabra.ContainsKey($digito)) {
@@ -439,8 +403,8 @@ function Get-CandidatosTitulo([string]$baseName) {
     return $resultado
 }
 
-# Busca en el indice de MAME.dat (exacta: espaciada y concatenada) para cada
-# candidato, en orden. Devuelve el romset o $null.
+# Searches the MAME.dat index (spaced and concatenated) for each candidate,
+# in order. Returns the romset or $null.
 function Resolve-ExactoMame($candidatos, $indiceMame) {
     foreach ($c in $candidatos) {
         $ks = Get-NormalizedSpaced $c
@@ -451,10 +415,9 @@ function Resolve-ExactoMame($candidatos, $indiceMame) {
     return $null
 }
 
-# Coincidencia aproximada: solapamiento de palabras contra los titulos "con
-# espacios" de MAME.dat. Umbral: al menos el 70% de palabras en comun
-# (respecto al mas largo de los dos), y minimo 2 palabras coincidentes salvo
-# que el candidato tenga una sola palabra.
+# Approximate matching: word overlap against the "spaced" titles in MAME.dat.
+# Threshold: at least 70% of words in common (relative to the longer of the two),
+# and at least 2 matching words unless the candidate contains only one word.
 function Resolve-AproximadoMame([string]$candidatoPrincipal, $indiceMame) {
     $ks = Get-NormalizedSpaced $candidatoPrincipal
     if (-not $ks) { return $null }
@@ -486,29 +449,29 @@ function Resolve-AproximadoMame([string]$candidatoPrincipal, $indiceMame) {
 }
 
 # ============================================================
-#   OPCION 1: RENOMBRAR GIFS
+#   OPTION 1: RENAME GIFS
 # ============================================================
 function Invoke-RenombrarGifs {
     Write-Host ""
     Write-Host "===================================================" -ForegroundColor Magenta
-    Write-Host "  OPCION 1: RENOMBRAR GIFS" -ForegroundColor Cyan
+    Write-Host "  OPTION 1: RENAME GIFS" -ForegroundColor Cyan
     Write-Host "===================================================" -ForegroundColor Magenta
 
-    $cacheRoot = Get-ConfigValue "CacheRoot" (Join-Path $PSScriptRoot "Cache") "Ruta de la carpeta de cache (para MAME.dat)"
-    $origenPath = Get-ConfigValue "GifSourceRoot" "" "Ruta de la carpeta que contiene los GIFs a renombrar"
+    $cacheRoot = Get-ConfigValue "CacheRoot" (Join-Path $PSScriptRoot "Cache") "Cache folder path (for MAME.dat)"
+    $origenPath = Get-ConfigValue "GifSourceRoot" "" "Path to the folder containing the GIFs to rename"
 
     if (-not (Test-Path -Path $origenPath -PathType Container)) {
-        Write-Host "Error: la ruta especificada no existe o no es una carpeta valida." -ForegroundColor Red
+        Write-Host "Error: the specified path does not exist or is not a valid folder." -ForegroundColor Red
         return
     }
 
-    $modoOpt = Read-Host "Modo de resolucion: 1) Solo coincidencia EXACTA  2) Exacta + APROXIMADA (revisa mas casos, algo de riesgo)"
+    $modoOpt = Read-Host "Resolution mode: 1) EXACT MATCH only  2) Exact + APPROXIMATE (checks more cases, with some risk)"
     $usarAproximada = ($modoOpt.Trim() -eq "2")
 
     $datPath = Get-MameDat $cacheRoot
     $indiceMame = Build-MameIndex $datPath
 
-    # --- Deteccion y clasificacion de logos de sistema/empresa ---
+    # --- System/company logo detection and classification ---
     $patronesLogos = @(
         "acclaim", "activision", "atari", "bust_a_move", "capcom", "defender", "irem",
         "namco", "neogeocd", "neogeo_logonb", "neogeo_logosnk", "neogeo_mvs-aes", "neogeo_snk",
@@ -522,7 +485,7 @@ function Invoke-RenombrarGifs {
     $archivosGIF = Get-ChildItem -Path $origenPath -Filter "*.gif" | Sort-Object Name
 
     Write-Host ""
-    Write-Host "Procesando $($archivosGIF.Count) GIFs..." -ForegroundColor Cyan
+    Write-Host "Processing $($archivosGIF.Count) GIFs..." -ForegroundColor Cyan
 
     $numLogos = 0
     $numExacta = 0
@@ -533,7 +496,7 @@ function Invoke-RenombrarGifs {
     foreach ($archivo in $archivosGIF) {
         $nombreMin = $archivo.Name.ToLower()
 
-        # PASO 1: logos de empresa/sistema
+        # STEP 1: company/system logos
         $esLogoSystem = $false
         $nombreEmpresa = $null
         if ($nombreMin -like "arcade_logo_*") {
@@ -557,7 +520,7 @@ function Invoke-RenombrarGifs {
             continue
         }
 
-        # PASO 2: resolver romset real
+        # STEP 2: resolve the actual romset
         $romNameTarget = $null
         $origenResolucion = $null
 
@@ -585,7 +548,7 @@ function Invoke-RenombrarGifs {
             if (-not (Test-Path -Path $carpetaSinResolver)) { New-Item -ItemType Directory -Path $carpetaSinResolver | Out-Null }
             $destinoRuta = Join-Path -Path $carpetaSinResolver -ChildPath $archivo.Name
             Move-Item -Path $archivo.FullName -Destination $destinoRuta -Force
-            Write-Host "[SIN RESOLVER] '$($archivo.Name)' -> movido a SinResolver\ para revision manual" -ForegroundColor Red
+            Write-Host "[UNRESOLVED] '$($archivo.Name)' -> moved to SinResolver\ for manual review" -ForegroundColor Red
             $sinResolver.Add($archivo.Name)
             $numSinResolver++
             continue
@@ -612,61 +575,61 @@ function Invoke-RenombrarGifs {
 
     Write-Host ""
     Write-Host "===================================================" -ForegroundColor Magenta
-    Write-Host "Resumen:" -ForegroundColor White
-    Write-Host "  Logos movidos:            $numLogos" -ForegroundColor Yellow
-    Write-Host "  Resueltos (manual):       $numManual" -ForegroundColor Green
-    Write-Host "  Resueltos (exacta):       $numExacta" -ForegroundColor Green
-    Write-Host "  Resueltos (aproximada):   $numAproximada" -ForegroundColor Green
-    Write-Host "  Sin resolver (revisar):   $numSinResolver" -ForegroundColor Red
+    Write-Host "Summary:" -ForegroundColor White
+    Write-Host "  Logos moved:               $numLogos" -ForegroundColor Yellow
+    Write-Host "  Resolved (manual):         $numManual" -ForegroundColor Green
+    Write-Host "  Resolved (exact):          $numExacta" -ForegroundColor Green
+    Write-Host "  Resolved (approximate):    $numAproximada" -ForegroundColor Green
+    Write-Host "  Unresolved (review):       $numSinResolver" -ForegroundColor Red
     Write-Host "===================================================" -ForegroundColor Magenta
     if ($numSinResolver -gt 0) {
-        Write-Host "Revisa la carpeta SinResolver\ y sin_resolver.txt" -ForegroundColor Yellow
+        Write-Host "Check the SinResolver\ folder and sin_resolver.txt" -ForegroundColor Yellow
     }
 }
 
 # ============================================================
-#   OPCION 2: COPIAR GIFS RENOMBRADOS A CARPETAS DE SISTEMA
+#   OPTION 2: COPY RENAMED GIFS TO SYSTEM FOLDERS
 # ============================================================
 function Invoke-CopiarGifsASistemas {
     Write-Host ""
     Write-Host "===================================================" -ForegroundColor Magenta
-    Write-Host "  OPCION 2: COPIAR GIFS A CARPETAS DE SISTEMA" -ForegroundColor Cyan
+    Write-Host "  OPTION 2: COPY GIFS TO SYSTEM FOLDERS" -ForegroundColor Cyan
     Write-Host "===================================================" -ForegroundColor Magenta
 
-    $romsRoot = Get-ConfigValue "RomsRoot" "D:\ROMS" "Ruta de la carpeta ROMS de ReplayOS"
-    $gifSourceRoot = Get-ConfigValue "GifSourceRoot" "" "Ruta de la carpeta con los GIFs ya renombrados"
+    $romsRoot = Get-ConfigValue "RomsRoot" "D:\ROMS" "Path to the ReplayOS ROMS folder"
+    $gifSourceRoot = Get-ConfigValue "GifSourceRoot" "" "Path to the folder containing the renamed GIFs"
 
     Write-Host ""
-    Write-Host "A que sistema van destinados estos GIFs?" -ForegroundColor Cyan
-    Write-Host "  1) ReplayOS (SD de RetroPixelLED)" -ForegroundColor White
-    Write-Host "  2) Batocera (marquesinas/Arcade en el recurso de red)" -ForegroundColor White
-    Write-Host "  3) Recalbox (marquesinas/Arcade en el recurso de red)" -ForegroundColor White
-    $destinoOpt = Read-Host "Opcion (1-3)"
+    Write-Host "Which system are these GIFs for?" -ForegroundColor Cyan
+    Write-Host "  1) ReplayOS (RetroPixelLED SD card)" -ForegroundColor White
+    Write-Host "  2) Batocera (marquees/Arcade on the network share)" -ForegroundColor White
+    Write-Host "  3) Recalbox (marquees/Arcade on the network share)" -ForegroundColor White
+    $destinoOpt = Read-Host "Option (1-3)"
 
     switch ($destinoOpt) {
         "2" {
-            $arcadeRoot = Get-ConfigValue "ArcadeRoot_Batocera" "\\BATOCERA\roms\marquesinas\Arcade" "Ruta de marquesinas/Arcade de Batocera (recurso de red)"
+            $arcadeRoot = Get-ConfigValue "ArcadeRoot_Batocera" "\\BATOCERA\roms\marquesinas\Arcade" "Batocera marquee/Arcade path (network share)"
         }
         "3" {
-            $arcadeRoot = Get-ConfigValue "ArcadeRoot_Recalbox" "\\RECALBOX\share\marquesinas\Arcade" "Ruta de marquesinas/Arcade de Recalbox (recurso de red)"
+            $arcadeRoot = Get-ConfigValue "ArcadeRoot_Recalbox" "\\RECALBOX\share\marquesinas\Arcade" "Recalbox marquee/Arcade path (network share)"
         }
         Default {
-            $arcadeRoot = Get-ConfigValue "ArcadeRoot" "D:\Arcade" "Ruta de la carpeta Arcade de destino (SD de ReplayOS)"
+            $arcadeRoot = Get-ConfigValue "ArcadeRoot" "D:\Arcade" "Destination Arcade folder path (ReplayOS SD card)"
         }
     }
 
     if (-not (Test-Path -Path $gifSourceRoot -PathType Container)) {
-        Write-Host "Error: la carpeta de GIFs no existe." -ForegroundColor Red
+        Write-Host "Error: the GIF folder does not exist." -ForegroundColor Red
         return
     }
 
     $sistemas = Get-SystemFolders $romsRoot
     if ($sistemas.Count -eq 0) {
-        Write-Host "No se encontraron subcarpetas de sistemas en $romsRoot" -ForegroundColor Red
+        Write-Host "No system subfolders were found in $romsRoot" -ForegroundColor Red
         return
     }
 
-    $elegidos = Select-Multiple $sistemas "Nombre" "Sistemas encontrados en ROMS (elige a cuales copiar GIFs):"
+    $elegidos = Select-Multiple $sistemas "Nombre" "Systems found in ROMS (choose which ones to copy GIFs to):"
     if ($elegidos.Count -eq 0) { return }
 
     $gifsDisponibles = Get-ChildItem -Path $gifSourceRoot -Filter "*.gif" -File
@@ -674,71 +637,68 @@ function Invoke-CopiarGifsASistemas {
     foreach ($sistema in $elegidos) {
         Write-Host ""
         Write-Host "---------------------------------------------------" -ForegroundColor DarkCyan
-        Write-Host "Sistema: $($sistema.Nombre)" -ForegroundColor Cyan
+        Write-Host "System: $($sistema.Nombre)" -ForegroundColor Cyan
         Write-Host "---------------------------------------------------" -ForegroundColor DarkCyan
 
         $romsets = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
-        Get-ChildItem -Path $sistema.Ruta -File -ErrorAction SilentlyContinue | Where-Object { $_.Extension -in ".zip", ".7z" } | ForEach-Object {
+        Get-ChildItem -Path $sistema.Ruta -File -Filter "*.zip" -ErrorAction SilentlyContinue | ForEach-Object {
             [void]$romsets.Add([System.IO.Path]::GetFileNameWithoutExtension($_.Name))
         }
 
         if ($romsets.Count -eq 0) {
-            Write-Host "No se encontraron romsets .zip en este sistema." -ForegroundColor Yellow
+            Write-Host "No .zip romsets were found in this system." -ForegroundColor Yellow
             continue
         }
 
         $destinoDir = Join-Path $arcadeRoot $sistema.Nombre
-        if (-not (New-CarpetaAnidada $destinoDir)) {
-            Write-Host "Se omite el sistema [$($sistema.Nombre)] por no poder crear/acceder a su carpeta de destino." -ForegroundColor Red
-            continue
-        }
+        if (-not (Test-Path $destinoDir)) { New-Item -ItemType Directory -Path $destinoDir -Force | Out-Null }
 
         $copiados = 0
         foreach ($gif in $gifsDisponibles) {
             $baseRomset = $gif.BaseName -replace '_\d{2}$', ''
             if ($romsets.Contains($baseRomset)) {
                 Copy-Item -Path $gif.FullName -Destination (Join-Path $destinoDir $gif.Name) -Force
-                Write-Host "  [COPIADO] $($gif.Name) -> $($sistema.Nombre)\" -ForegroundColor Green
+                Write-Host "  [COPIED] $($gif.Name) -> $($sistema.Nombre)\" -ForegroundColor Green
                 $copiados++
             }
         }
 
-        Write-Host "GIFs copiados a [$($sistema.Nombre)]: $copiados" -ForegroundColor White
+        Write-Host "GIFs copied to [$($sistema.Nombre)]: $copiados" -ForegroundColor White
         if ($copiados -gt 0) {
-            Write-Host "Recuerda: ejecuta la Opcion 3 del Script Marquesinas_ReplayOS $($sistema.Nombre).txt" -ForegroundColor Yellow
+            Write-Host "Remember: run Option 3 of the main toolkit to update $($sistema.Nombre).txt" -ForegroundColor Yellow
         }
     }
 }
 
 # ============================================================
-#   MENU PRINCIPAL
+#   MAIN MENU
 # ============================================================
 do {
     Clear-Host
     Write-Host "===================================================" -ForegroundColor Magenta
-    Write-Host "   Retro Pixel LED lite - RENOMBRADOR DE GIFS v2.1" -ForegroundColor White
+    Write-Host "   RETROPIXELLED - GIF RENAMER v2.0" -ForegroundColor White
     Write-Host "===================================================" -ForegroundColor Magenta
     Write-Host ""
-    Write-Host "  1) Renombrar GIFs (MAME.dat + diccionario manual)" -ForegroundColor White
-    Write-Host "  2) Copiar GIFs renombrados a carpetas de sistema" -ForegroundColor White
-    Write-Host "  3) Salir" -ForegroundColor White
+    Write-Host "  1) Rename GIFs (MAME.dat + manual dictionary)" -ForegroundColor White
+    Write-Host "  2) Copy renamed GIFs to system folders" -ForegroundColor White
+    Write-Host "  3) Exit" -ForegroundColor White
     Write-Host ""
-    $opcion = Read-Host "Elige una opcion (1-3)"
+    $opcion = Read-Host "Choose an option (1-3)"
 
     switch ($opcion) {
         "1" { Invoke-RenombrarGifs }
         "2" { Invoke-CopiarGifsASistemas }
         "3" { }
-        Default { Write-Host "Opcion no valida." -ForegroundColor Red }
+        Default { Write-Host "Invalid option." -ForegroundColor Red }
     }
 
     if ($opcion -ne "3") {
         Write-Host ""
-        Read-Host "Presiona Enter para volver al menu principal"
+        Read-Host "Press Enter to return to the main menu"
     }
 } while ($opcion -ne "3")
 
 Write-Host ""
 Write-Host "===================================================" -ForegroundColor Magenta
-Write-Host "             PROCESO FINALIZADO" -ForegroundColor Green
+Write-Host "             PROCESS COMPLETED" -ForegroundColor Green
 Write-Host "===================================================" -ForegroundColor Magenta
