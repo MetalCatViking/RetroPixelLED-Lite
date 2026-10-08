@@ -221,7 +221,7 @@ Redémarrage automatique après enregistrement si la modification le nécessite.
 
 1. Ouvrez <https://fjgordillo86.github.io/RetroPixelLED-Lite/control/> depuis votre appareil.
 2. Cliquez sur l'icône de connexion (⚙) et entrez l'adresse IP locale de votre panneau (ex : `192.168.1.117`).
-3. *(Optionnel)* Installez l'application : Chrome/Edge le proposera automatiquement ; sinon, menu (⋮) → "Installer l'application". Sur Safari iOS, Partager (↗) → "Sur l'écran d'accueil".
+3. *(Optionnel)* Installez l'application : Chrome/Edge le proposera automatiquement ; sinon, menu (⋮) → "Installer l'application".
 4. Terminé — l'application est prête à être utilisée. 🎉
 
 #### 📝 Prérequis
