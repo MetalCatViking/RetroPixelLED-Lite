@@ -44,7 +44,7 @@ An **Intelligent Installer PowerShell Script** handles the entire setup process 
 
 1. Connect your **PC** and **Recalbox** to the same local network (or connect Recalbox's physical storage directly to your PC).
 2. Know the **local IP address of your Retro Pixel LED panel** (e.g., `192.168.1.117`).
-3. Download the full `Instalador Automático` folder from this repository [here](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/Instalador%20Automatico).
+3. Download the full `Instalador Automático` folder from this repository [here](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/Instalador%20Automatico).
    
 > [!IMPORTANT]
 > If you downloaded the repository as a `.zip` file, **extract it completely** before running the installer.
@@ -83,7 +83,7 @@ An **Intelligent Installer PowerShell Script** handles the entire setup process 
 > A complete system reboot is **mandatory**. Once restarted, the panel will automatically respond whenever you navigate menus, launch games, or exit games.
 
 ### 3. 🛠️ Marquees Setup
-Use the script located in the project's `Arcade/Marquesinas/` folder [here](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/Marquesinas). It consists of two files: `Ejecutar Script Marquesinas Recalbox.bat` and `Script Marquesinas Recalbox.ps1`.
+Use the script located in the project's `Arcade/Marquesinas/` folder [here](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/Marquesinas). It consists of two files: `Ejecutar Script Marquesinas Recalbox.bat` and `Script Marquesinas Recalbox.ps1`.
 
 1. **Execute** `Ejecutar Script Marquesinas Recalbox.bat` (Launcher script designed to prevent Windows execution blocks).
 2. **Path Configuration:**
@@ -142,7 +142,7 @@ share/marquesinas/Arcade/neogeo/mslug_02.gif
 
 #### Where to Find GIFs?
 
-If you have a collection of arcade GIFs named with title strings instead of MAME romset shortnames (e.g., `ARCADE_NEOGEO_MetalSlugStory.gif` instead of `mslug.gif`), download the renaming tool from [here](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/GIFs) and follow these steps:
+If you have a collection of arcade GIFs named with title strings instead of MAME romset shortnames (e.g., `ARCADE_NEOGEO_MetalSlugStory.gif` instead of `mslug.gif`), download the renaming tool from [here](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/GIFs) and follow these steps:
 
 1. Execute `Ejecutar Script_RetroPixelLED_GIF_Renamer.bat`.
 
@@ -155,10 +155,10 @@ If you have a collection of arcade GIFs named with title strings instead of MAME
 You can also generate your own — files must be **128×32 pixels**. If your system includes scraped preview videos (`<video>` tags in `gamelist.xml`), tools like [dmd_gif_converter](https://github.com/red77290/dmd_gif_converter) can convert and automatically frame videos down to 128×32 resolution.
 
  ### 5. 🛠️ System Logos
- Pre-sized logos are available in the `Arcade/Logos Sistemas/` repository directory [here](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/Logos%20Sistemas).
+ Pre-sized logos are available in the `Arcade/Logos Sistemas/` repository directory [here](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/Logos%20Sistemas).
  1. **Copying:** Copy the `Logos` folder and contents to `share\marquesinas` on your Recalbox storage as indicated in section 6.
 
-To process custom logos (e.g., from an active system theme), use the script in `Arcade/Logos Sistemas/` [here](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/Logos%20Sistemas):
+To process custom logos (e.g., from an active system theme), use the script in `Arcade/Logos Sistemas/` [here](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/Logos%20Sistemas):
 
 1. Execute `Ejecutar Script Logos.bat`.
 2. **Path Configuration:**

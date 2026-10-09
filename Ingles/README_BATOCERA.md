@@ -44,7 +44,7 @@ I have developed a **Smart PowerShell Installer Script** that performs the entir
 
 1. Have your **PC** and **Batocera** connected to the same local network (or connect Batocera's physical storage directly to the PC).
 2. Know the **local IP address of your Retro Pixel LED panel** (e.g., `192.168.1.117`).
-3. Download the full `Instalador Automático` folder from this repository, located [here](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/Instalador%20Automatico).
+3. Download the full `Instalador Automático` folder from this repository, located [here](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/Instalador%20Automatico).
 
 > [!IMPORTANT]
 > If you downloaded the repository as a `.zip` file, make sure to **extract it completely** before running the installer.
@@ -83,7 +83,7 @@ I have developed a **Smart PowerShell Installer Script** that performs the entir
 > A full system reboot is **mandatory**. During this boot process, the `custom.sh` script will set up internal execution permissions. From then on, every time you browse the menu, launch, or exit a game, the panel will react automatically.
 
 ### 3. 🛠️ Marquees
-We will use the script located in the `Arcade/Marquesinas/` folder of the project [here](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/Marquesinas). It consists of two files: `Ejecutar Script Marquesinas Batocera.bat` and `Script Marquesinas Batocera.ps1`.
+We will use the script located in the `Arcade/Marquesinas/` folder of the project [here](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/Marquesinas). It consists of two files: `Ejecutar Script Marquesinas Batocera.bat` and `Script Marquesinas Batocera.ps1`.
 
 1. **Run the file** `Ejecutar Script Marquesinas Batocera.bat` (Launcher to prevent Windows execution blocks).
 2. **Path configuration:**
@@ -141,7 +141,7 @@ roms/marquesinas/Arcade/neogeo/mslug_02.gif
 
 #### Where do I get GIFs from?
 
-If you already have (or downloaded) an arcade GIF collection with human-readable names instead of romset names (e.g., `ARCADE_NEOGEO_MetalSlugStory.gif` instead of `mslug.gif`), use the following script to rename them. Download it from [here](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/GIFs) and follow these steps:
+If you already have (or downloaded) an arcade GIF collection with human-readable names instead of romset names (e.g., `ARCADE_NEOGEO_MetalSlugStory.gif` instead of `mslug.gif`), use the following script to rename them. Download it from [here](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/GIFs) and follow these steps:
 
 1. Run `Ejecutar Script_RetroPixelLED_GIF_Renamer.bat`.
 
@@ -154,10 +154,10 @@ If you already have (or downloaded) an arcade GIF collection with human-readable
 You can also create them yourself — the panel only requires the final file resolution to be **128×32 pixels**. As a reference, if your Batocera collection already has scraped preview videos (`<video>` in `gamelist.xml`), you can convert them to GIF using a tool like [dmd_gif_converter](https://github.com/red77290/dmd_gif_converter), which includes automatic framing to keep action visible when downscaling large videos. It is a third-party project independent of this repository — any method producing a 128×32 `.gif` file will work equally well.
 
  ### 5. 🛠️ System Logos
- You can use pre-resized system logos found in the `Arcade/Logos Sistemas/` folder [here](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/Logos%20Sistemas).
+ You can use pre-resized system logos found in the `Arcade/Logos Sistemas/` folder [here](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/Logos%20Sistemas).
  1. **Copy:** Copy the `Logos` folder and all its contents to the SD or SSD where Batocera is installed under `roms/marquesinas/`, as shown in step `6. File structure on Batocera SD or SSD`.
     
- If you prefer using custom logos (such as those from your installed theme), use the script located in `Arcade/Logos Sistemas/` [here](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/Logos%20Sistemas). It consists of `Ejecutar Script Logos.bat` and `Script Logos.ps1`.
+ If you prefer using custom logos (such as those from your installed theme), use the script located in `Arcade/Logos Sistemas/` [here](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/Logos%20Sistemas). It consists of `Ejecutar Script Logos.bat` and `Script Logos.ps1`.
 
 1. **Run the file** `Ejecutar Script Logos.bat` (Launcher to bypass Windows execution policies).
 2. **Path configuration:**

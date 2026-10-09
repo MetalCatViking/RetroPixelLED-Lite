@@ -8,11 +8,13 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/README.md">🇪🇸 Español</a> ·
-  <a href="https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/Frances/README.md">🇫🇷 Français</a> ·
-  <a href="https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/Ingles/README.md">🇬🇧 English</a> ·
+  <a href="../Espanol/README.md">🇪🇸 Español</a> ·
+  <a href="README.md">🇫🇷 Français</a> ·
+  <a href="../README.md">🇬🇧 English</a> ·
   <a href="https://t.me/RetroPixelLed">✈️ Groupe Telegram</a>
 </p>
+
+> **Remarque :** cette traduction décrit encore principalement la version 3.1.3. Pour les changements de la version 3.1.4 et la documentation la plus récente, consultez la [documentation en anglais](../README.md).
 
 <p align="center">
   <a href="https://paypal.me/fjgordillo"><img alt="Faire un don avec PayPal" src="https://img.shields.io/badge/☕_Offrez--moi_un_café-PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white"></a>
@@ -174,7 +176,7 @@ Le système se contrôle via un **bouton unique** (ou la télécommande IR), ave
 
 ### 📱 PWA — Application de contrôle à distance
 
-**[👉 Installer ou tester Retro Pixel LED Control](https://fjgordillo86.github.io/RetroPixelLED-Lite/control/)**
+**[👉 Installer ou tester Retro Pixel LED Control](https://metalcatviking.github.io/RetroPixelLED-Lite/control/)**
 
 Application web moderne, installable sur n'importe quel appareil (téléphone, tablette, PC) connecté au même réseau local que le panneau LED. Elle ne nécessite aucun serveur externe et fonctionne hors ligne une fois installée. 📴
 
@@ -215,7 +217,7 @@ Redémarrage automatique après enregistrement si la modification le nécessite.
 
 #### ⚙️ Installation de l'application PWA
 
-1. Ouvrez <https://fjgordillo86.github.io/RetroPixelLED-Lite/control/> depuis votre appareil.
+1. Ouvrez <https://metalcatviking.github.io/RetroPixelLED-Lite/control/> depuis votre appareil.
 2. Cliquez sur l'icône de connexion (⚙) et entrez l'adresse IP locale de votre panneau (ex : `192.168.1.117`).
 3. *(Optionnel)* Installez l'application : Chrome/Edge le proposera automatiquement ; sinon, menu (⋮) → "Installer l'application". Sur Safari iOS, Partager (↗) → "Sur l'écran d'accueil".
 4. Terminé — l'application est prête à être utilisée. 🎉
@@ -321,7 +323,7 @@ Mise à jour sans fil sans raccorder le panneau au PC :
 
 Flashez le firmware directement depuis votre navigateur :
 
-**[👉 Ouvrir l'installateur web Retro Pixel LED Lite](https://fjgordillo86.github.io/RetroPixelLED-Lite/)**
+**[👉 Ouvrir l'installateur web Retro Pixel LED Lite](https://metalcatviking.github.io/RetroPixelLED-Lite/)**
 
 1. Utilisez un navigateur compatible (**Google Chrome** ou **Microsoft Edge**).
 2. Connectez votre ESP32 en USB.
@@ -334,7 +336,7 @@ Flashez le firmware directement depuis votre navigateur :
 
 ### 2. 📂 Préparation de la carte SD
 
-Formatez votre carte MicroSD en **FAT32** et copiez-y le contenu du dossier [Contenido SD](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Contenido%20SD) à la racine :
+Formatez votre carte MicroSD en **FAT32** et copiez-y le contenu du dossier [Contenido SD](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Contenido%20SD) à la racine :
 
 ```text
 / (Racine de la SD)
@@ -357,7 +359,7 @@ Formatez votre carte MicroSD en **FAT32** et copiez-y le contenu du dossier [Con
 
 ### 3. 📝 Configuration via `config.ini`
 
-Le fichier `config.ini` se trouve dans le dossier [Contenido SD](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Contenido%20SD) — copiez-le à la racine de la SD et adaptez les paramètres :
+Le fichier `config.ini` se trouve dans le dossier [Contenido SD](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Contenido%20SD) — copiez-le à la racine de la SD et adaptez les paramètres :
 
 ```ini
 # ============================================================
@@ -472,7 +474,7 @@ Pour que l'**horloge** et le **minuteur** fonctionnent correctement, la variable
 
 ## 📖 Générateur de playlists (Windows)
 
-Le script `Generador de Playlist v1.0.1.bat` crée des sélections personnalisées de GIFs. Il se trouve dans le dossier [Contenido SD](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Contenido%20SD).
+Le script `Generador de Playlist v1.0.1.bat` crée des sélections personnalisées de GIFs. Il se trouve dans le dossier [Contenido SD](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Contenido%20SD).
 
 1. Placer le fichier `.bat` à la racine de la SD à côté du dossier `gifs`.
 2. Double-cliquez pour exécuter l'outil.
@@ -500,11 +502,11 @@ Activez l'option dans `Menu → Lecture → Arcade` pour afficher les marquises 
 > [!IMPORTANT]
 > Pour installer les scripts requis sur votre système d'émulation, suivez la documentation dédiée :
 >
-> **[👉 Guide d'installation pour Batocera](https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/Frances/README_BATOCERA.md)**
+> **[👉 Guide d'installation pour Batocera](https://github.com/MetalCatViking/RetroPixelLED-Lite/blob/main/Frances/README_BATOCERA.md)**
 >
-> **[👉 Guide d'installation pour Recalbox](https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/Frances/README_RECALBOX.md)**
+> **[👉 Guide d'installation pour Recalbox](https://github.com/MetalCatViking/RetroPixelLED-Lite/blob/main/Frances/README_RECALBOX.md)**
 >
-> **[👉 Guide d'installation pour ReplayOS](https://github.com/fjgordillo86/RetroPixelLED-Lite/blob/main/Frances/README_REPLAYOS.md)**
+> **[👉 Guide d'installation pour ReplayOS](https://github.com/MetalCatViking/RetroPixelLED-Lite/blob/main/Frances/README_REPLAYOS.md)**
 
 ---
 
@@ -520,7 +522,7 @@ Fonctionnalités :
 
 ### 📦 Installation dans Home Assistant
 
-Si vous utilisez des "packages", copiez `retropixel.yaml` depuis le dossier **[Home Assistant](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Home%20Asisstant)** vers `/config/packages/`. Sinon, collez son contenu dans votre `configuration.yaml`.
+Si vous utilisez des "packages", copiez `retropixel.yaml` depuis le dossier **[Home Assistant](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Home%20Asisstant)** vers `/config/packages/`. Sinon, collez son contenu dans votre `configuration.yaml`.
 
 > ⚠️ **Important :** Remplacez l'adresse IP `192.168.31.210` par celle de votre ESP32, et adaptez le nom des playlists.
 
