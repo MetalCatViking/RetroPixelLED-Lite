@@ -53,20 +53,16 @@ An **Intelligent Installer PowerShell Script** handles the entire setup process 
 
 ### 💻 Step-by-Step
 
-1. Open the `Instalador Automatico` folder on your PC. Inside you will find two files and two folders:
-   * `Ejecutar Script Instalador Arcade.bat`
-   * `Script_Instalador_Arcade.ps1`
-   * `Batocera`
-   * `Recalbox`
+1. Open the Instalador Automatico folder on your PC. It contains both Spanish and English installer launchers/scripts, plus the Batocera, Recalbox, and RetroBat subfolders. For English prompts, use Ejecutar Script Instalador Arcade EN.bat.
 
-2. **Click** on `Ejecutar Script Instalador Arcade.bat`.
+2. **Click** on `Ejecutar Script Instalador Arcade EN.bat`.
 
 3. Follow the console prompt instructions:
    * **Step 1:** Enter the IP of your LED panel and press `Enter`.
-   * **Step 2:** Enter the path to your Recalbox system. This can be a network path (e.g., `\\192.168.1.118`) or a physical drive letter if connected directly to your PC (e.g., `E:`).
+   * **Step 2:** Select **2 Recalbox**.
+   * **Step 3:** Enter the path to your Recalbox system. This can be a network path (e.g., \\192.168.1.118) or a physical drive letter if connected directly to your PC (e.g., E:).
 
 4. The script will request the following options:
-   * System selection: Select **2 Recalbox**.
    * Preferred operating mode:
      * **Option 1:** Menus and Games (Displays system logos while browsing + marquees when playing).
      * **Option 2:** Games Only (Displays fixed marquee/clock in menus, switches only when playing).
@@ -74,7 +70,7 @@ An **Intelligent Installer PowerShell Script** handles the entire setup process 
 > [!NOTE]
 > **Animated** marquees function identically in both modes — the difference between Option 1 and Option 2 is limited to system navigation behavior and does not affect game launching.
 
-5. The script processes all files in seconds. Upon completion, the message `INSTALACIÓN COMPLETADA!` will appear. Press any key to exit.
+5. The script processes all files in seconds. Upon completion, the message `INSTALLATION COMPLETED!` will appear. Press any key to exit.
 
 <img width="1102" height="532" alt="image" src="https://github.com/user-attachments/assets/3e367c0a-d305-475e-95c9-ed9d3ae352e9" />
 
@@ -83,9 +79,9 @@ An **Intelligent Installer PowerShell Script** handles the entire setup process 
 > A complete system reboot is **mandatory**. Once restarted, the panel will automatically respond whenever you navigate menus, launch games, or exit games.
 
 ### 3. 🛠️ Marquees Setup
-Use the script located in the project's `Arcade/Marquesinas/` folder [here](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/Marquesinas). It consists of two files: `Ejecutar Script Marquesinas Recalbox.bat` and `Script Marquesinas Recalbox.ps1`.
+Use the script located in the project's `Arcade/Marquesinas/` folder [here](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/Marquesinas). It consists of two files: `Ejecutar Script Marquesinas Recalbox EN.bat` and `Script_Marquesinas_Recalbox_EN.ps1`.
 
-1. **Execute** `Ejecutar Script Marquesinas Recalbox.bat` (Launcher script designed to prevent Windows execution blocks).
+1. **Execute** `Ejecutar Script Marquesinas Recalbox EN.bat` (Launcher script designed to prevent Windows execution blocks).
 2. **Path Configuration:**
     * **Source:** Enter the path to your Recalbox ROMs (e.g., `\\192.168.1.118\share\roms`).
     * **Destination:** Enter `C:\marquesinas`.
@@ -144,7 +140,7 @@ share/marquesinas/Arcade/neogeo/mslug_02.gif
 
 If you have a collection of arcade GIFs named with title strings instead of MAME romset shortnames (e.g., `ARCADE_NEOGEO_MetalSlugStory.gif` instead of `mslug.gif`), download the renaming tool from [here](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/GIFs) and follow these steps:
 
-1. Execute `Ejecutar Script_RetroPixelLED_GIF_Renamer.bat`.
+1. Execute `Run RetroPixelLED GIF Renamer EN.bat`.
 
 2. **Option 1 — Rename GIFs:** Point to your GIF folder. The script cross-references a public MAME database ([`MAME.dat`](https://github.com/libretro/libretro-database)) and an internal dictionary to identify corresponding romset names. Unidentified files move to a `SinResolver\` folder for manual review.
    <img width="1090" height="830" alt="image" src="https://github.com/user-attachments/assets/58ba389f-367c-4114-b6e1-533018f50e77" />
@@ -160,7 +156,7 @@ You can also generate your own — files must be **128×32 pixels**. If your sys
 
 To process custom logos (e.g., from an active system theme), use the script in `Arcade/Logos Sistemas/` [here](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/Logos%20Sistemas):
 
-1. Execute `Ejecutar Script Logos.bat`.
+1. Execute `Run System Logo Converter EN.bat`.
 2. **Path Configuration:**
     * **Source:** Enter your theme logo path (e.g., `\\192.168.1.119\share\themes\Animatics-DX-master\art\logos`).
     * **Destination:** Enter `C:\Logos`.

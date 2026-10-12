@@ -35,7 +35,7 @@ I have developed a **Smart PowerShell Installer Script** that performs the entir
 * **IP Configuration:** Automatically injects the IP address of your LED panel into all communication scripts.
 * **Format Correction:** Forces the **Unix (LF)** line ending format. This prevents scripts from failing if they were accidentally edited with Windows Notepad.
 * **File Organization:** Creates the required directory structure in Batocera and copies the files to their proper destination.
-* **Auto-Permissions (No PuTTY needed):** Generates a system script (`custom.sh`) that makes Batocera grant execution permissions (`chmod +x`) to the folders on every startup.
+* **Automatic permissions:** Creates the native retropixelperms service to grant execute permissions to marquee scripts on boot. After a full reboot, enable it once under Main Menu > System Settings > Services.
 * **Animated Marquees:** Installs the GIF playback engine (`pixel_stream.py`) and the `game-start` event handler, responsible for detecting and playing the animated marquee of the game you just launched.
 
 ---
@@ -53,39 +53,39 @@ I have developed a **Smart PowerShell Installer Script** that performs the entir
 
 ### 💻 Step-by-Step
 
-1. Open the `Instalador Automatico` folder on your PC. Inside you will find two files and two folders:
-   * `Ejecutar Script Instalador Arcade.bat`
-   * `Script_Instalador_Arcade.ps1`
-   * `Batocera`
-   * `Recalbox`
+1. Open the Instalador Automatico folder on your PC. It contains both Spanish and English installer launchers/scripts, plus the Batocera, Recalbox, and RetroBat subfolders. For English prompts, use Ejecutar Script Instalador Arcade EN.bat.
 
-2. **Click** on `Ejecutar Script Instalador Arcade.bat`.
+2. **Click** on `Ejecutar Script Instalador Arcade EN.bat`.
 
 3. Follow the instructions in the console window:
    * **Step 1:** Enter the IP address of your LED panel and press `Enter`.
-   * **Step 2:** Enter the path to your Batocera. This can be a network path (e.g., `\\192.168.1.120` or `\\BATOCERA`) or a drive letter if you connected the drive/SD card directly to your PC (e.g., `E:`).
+   * **Step 2:** Select **1 Batocera**.
+   * **Step 3:** Enter the path to your Batocera. This can be a network path (e.g., `\\192.168.1.120` or `\\BATOCERA`) or a drive letter if you connected the drive/SD card directly to your PC (e.g., `E:`).
 
 4. The script will ask:
-    * Which system you are using: select **1 Batocera**.
-    * Which operating mode you want to activate?
+    * Which operating mode do you want to activate?
        * **Option 1:** Menus and Games (Displays systems while browsing + launched game)
        * **Option 2:** Games Only (Static marquee/clock in menus, changes only when playing)
 
 > [!NOTE]
 > **Animated** marquees work the same way in both modes — the difference between Option 1 and Option 2 is only whether the panel reacts when browsing systems; it does not affect whether GIFs play when launching a game.
 
-5. The script will process the files in seconds. Once finished, you will see the message `INSTALACIÓN COMPLETADA!`. Press any key to exit.
+5. The script will process the files in seconds. Once finished, you will see the message `INSTALLATION COMPLETED!`. Press any key to exit.
 
 <img width="1103" height="686" alt="image" src="https://github.com/user-attachments/assets/d94c2a67-c40a-451e-9c61-981a188a294d" />
 
-6. **Reboot your Batocera system completely.**
+6. **Fully reboot your Batocera system.**
 > [!CAUTION]
-> A full system reboot is **mandatory**. During this boot process, the `custom.sh` script will set up internal execution permissions. From then on, every time you browse the menu, launch, or exit a game, the panel will react automatically.
+> A full reboot is required for the permissions service to appear in the menu.
+
+7. **Enable it (first time only):** go to Main Menu > System Settings > Services and enable retropixelperms.
+> [!NOTE]
+> This service replaces the old custom.sh permission setup. It grants execute permissions to the marquee scripts on every boot and remains enabled if you run the installer again.
 
 ### 3. 🛠️ Marquees
-We will use the script located in the `Arcade/Marquesinas/` folder of the project [here](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/Marquesinas). It consists of two files: `Ejecutar Script Marquesinas Batocera.bat` and `Script Marquesinas Batocera.ps1`.
+We will use the script located in the `Arcade/Marquesinas/` folder of the project [here](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/Marquesinas). It consists of two files: `Ejecutar Script Marquesinas Batocera EN.bat` and `Script_Marquesinas_Batocera_EN.ps1`.
 
-1. **Run the file** `Ejecutar Script Marquesinas Batocera.bat` (Launcher to prevent Windows execution blocks).
+1. **Run the file** `Ejecutar Script Marquesinas Batocera EN.bat` (Launcher to prevent Windows execution blocks).
 2. **Path configuration:**
     * **Source:** Enter the path to your Batocera ROMs (e.g., `\\192.168.1.119\share\roms`).
     * **Destination:** Enter the path `C:\marquesinas`.
@@ -143,7 +143,7 @@ roms/marquesinas/Arcade/neogeo/mslug_02.gif
 
 If you already have (or downloaded) an arcade GIF collection with human-readable names instead of romset names (e.g., `ARCADE_NEOGEO_MetalSlugStory.gif` instead of `mslug.gif`), use the following script to rename them. Download it from [here](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/GIFs) and follow these steps:
 
-1. Run `Ejecutar Script_RetroPixelLED_GIF_Renamer.bat`.
+1. Run `Run RetroPixelLED GIF Renamer EN.bat`.
 
 2. **Option 1 — Rename GIFs:** Specify the folder where your GIFs are located. The script queries a public MAME catalog ([`MAME.dat`](https://github.com/libretro/libretro-database)) to identify which romset corresponds to each title, along with an internal dictionary for common cases. You can choose between exact matching only, or exact + approximate matching (resolves more cases with slightly higher risk). Unidentified items are moved to a `SinResolver\` folder for manual review — it never renames blindly.
    <img width="1090" height="830" alt="image" src="https://github.com/user-attachments/assets/58ba389f-367c-4114-b6e1-533018f50e77" />
@@ -157,9 +157,9 @@ You can also create them yourself — the panel only requires the final file res
  You can use pre-resized system logos found in the `Arcade/Logos Sistemas/` folder [here](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/Logos%20Sistemas).
  1. **Copy:** Copy the `Logos` folder and all its contents to the SD or SSD where Batocera is installed under `roms/marquesinas/`, as shown in step `6. File structure on Batocera SD or SSD`.
     
- If you prefer using custom logos (such as those from your installed theme), use the script located in `Arcade/Logos Sistemas/` [here](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/Logos%20Sistemas). It consists of `Ejecutar Script Logos.bat` and `Script Logos.ps1`.
+ If you prefer using custom logos (such as those from your installed theme), use the script located in `Arcade/Logos Sistemas/` [here](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/Logos%20Sistemas). It consists of `Run System Logo Converter EN.bat` and `Script_Logos_EN.ps1`.
 
-1. **Run the file** `Ejecutar Script Logos.bat` (Launcher to bypass Windows execution policies).
+1. **Run the file** `Run System Logo Converter EN.bat` (Launcher to bypass Windows execution policies).
 2. **Path configuration:**
     * **Source:** Enter the path where your logos are stored (e.g., `\\192.168.1.119\userdata\themes\Animatics-DX-master\art\logos`).
     * **Destination:** Enter the path `C:\Logos`.

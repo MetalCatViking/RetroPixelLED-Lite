@@ -52,20 +52,16 @@ J'ai développé un **Script d'Installation Intelligent en PowerShell** qui réa
 
 ### 💻 Pas à Pas
 
-1. Ouvrez le dossier `Instalador Automatico` sur votre PC. À l'intérieur, vous trouverez deux fichiers et deux dossiers :
-   * `Ejecutar Script Instalador Arcade.bat`
-   * `Script_Instalador_Arcade.ps1`
-   * `Batocera`
-   * `Recalbox`
+1. Ouvrez le dossier Instalador Automatico sur votre PC. Il contient les lanceurs/scripts espagnols et les sous-dossiers Batocera, Recalbox et RetroBat.
 
 2. Faites **clic** sur `Ejecutar Script Instalador Arcade.bat`.
 
 3. Suivez les instructions dans la fenêtre de la console :
    * **Étape 1 :** Entrez l'IP de votre panneau LED et appuyez sur `Entrée`.
-   * **Étape 2 :** Entrez le chemin de votre Recalbox. Cela peut être un chemin réseau (ex : `\192.168.1.118`) ou la lettre d'un lecteur physique si vous avez connecté le disque/SD au PC (ex : `E:`).
+   * **Étape 2 :** Sélectionnez 2 Recalbox.
+   * **Étape 3 :** Entrez le chemin de votre Recalbox. Le chemin peut être réseau ou une lettre de lecteur si le support est connecté directement au PC.
 
 4. Le script nous demandera :
-   * Le système que nous utilisons, nous sélectionnerons 2 Recalbox.
    * Quel mode de fonctionnement souhaitez-vous activer ?
      * Option 1 : Menus et Jeux (Affiche les systèmes lors de la navigation + le jeu lancé)
      * Option 2 : Seulement Jeux (Marquise fixe/horloge dans les menus, change uniquement en jouant)
@@ -83,9 +79,9 @@ J'ai développé un **Script d'Installation Intelligent en PowerShell** qui réa
 > Le redémarrage complet du système est **obligatoire**. À partir de ce moment, chaque fois que vous naviguerez dans le menu, lancerez ou fermerez un jeu, le panneau réagira automatiquement.
 
 ### 3. 🛠️ Marquises.
-Nous utiliserons le script qui se trouve dans le dossier `Arcade/Marquesinas/` du projet [ici](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/Marquesinas). Il se compose de deux fichiers `Ejecutar Script Marquesinas Recalbox.bat` et `Script Marquesinas Recalbox.ps1`.
+Nous utiliserons le script qui se trouve dans le dossier `Arcade/Marquesinas/` du projet [ici](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/Marquesinas). Il se compose de deux fichiers `Ejecutar Script Marquesinas_Recalbox.bat` et `Script_Marquesinas_Recalbox.ps1`.
 
-1. **Exécutez le fichier** `Ejecutar Script Marquesinas Recalbox.bat` (Lanceur pour éviter les blocages de Windows).
+1. **Exécutez le fichier** `Ejecutar Script Marquesinas_Recalbox.bat` (Lanceur pour éviter les blocages de Windows).
 2. **Configuration des chemins :**
     * **Origine :** Entrez le chemin de vos ROMs Recalbox (ex : `\192.168.1.118\share
 oms`).

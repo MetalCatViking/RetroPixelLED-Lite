@@ -40,7 +40,7 @@ While the 2.x.x branch introduced the OSD Menu, **v3.0.0** was the definitive le
    - [🖥️ OSD Menu](#️-osd-menu-smart-navigation)
    - [📱 PWA Remote Control App](#-pwa--remote-control-app)
    - [🏠 Home Assistant](#-home-assistant)
-   - [🕹️ Arcade Mode](#️-arcade-mode-batocera-recalbox--replayos)
+   - [🕹️ Arcade Mode](#️-arcade-mode-batocera-recalbox-replayos--retrobat)
    - [🕒 Clock & Weather](#-clock--weather)
    - [⏰ Timer](#-timer)
    - [🌐 Multi-language Support](#-multi-language-support)
@@ -53,7 +53,7 @@ While the 2.x.x branch introduced the OSD Menu, **v3.0.0** was the definitive le
    - [4. Time Zone (TZ) Setup](#4--time-zone-tz-configuration)
    - [5. Weather API Key](#5--how-to-get-your-weather-api-key)
 5. [📖 Playlist Generator (Windows)](#-playlist-generator-windows)
-6. [🕹️ Arcade Integration](#️-arcade-integration-batocera-recalbox-or-replayos)
+6. [🕹️ Arcade Integration](#️-arcade-integration-batocera-recalbox-replayos-or-retrobat)
 7. [🏠 Home Assistant Integration](#-home-assistant-integration-complete-guide)
 8. [🧠 Internal Architecture / Core Lite](#-internal-architecture--core-lite)
 9. [📜 Detailed Changelog](#-detailed-changelog-v300--v314)
@@ -66,6 +66,7 @@ While the 2.x.x branch introduced the OSD Menu, **v3.0.0** was the definitive le
 
 ## 🆕 What's New in v3.1.4 Lite
 
+- **🕹️ RetroBat support:** adds Windows game-start/game-end hooks for animated or static game marquees and system-logo fallback.
 - **⚙️ Configurable SD card speed:** the SD interface speed can be selected in Advanced settings.
 - **🧩 Updated partition layout:** v3.1.4 uses a changed partition scheme. Install it with the web installer rather than OTA when upgrading from an earlier version.
 - **💾 Data preservation:** the installation erases settings stored in internal memory; files and settings on the SD card are preserved.
@@ -89,7 +90,7 @@ If this is your first time installing Retro Pixel LED Lite, follow these steps t
 3. **Edit `config.ini`** with your WiFi details and preferences — this is the only file you need to edit to get running ([full reference](#3--configuration-via-configini)).
 4. **Power on the panel.** It will synchronize the time, load your GIFs, and be ready to go. ✨
 5. *(Optional)* Install the [PWA](#-pwa--remote-control-app) to control it from your phone, or [integrate it with Home Assistant](#-home-assistant-integration-complete-guide) for home automation.
-6. *(Optional)* If you run Batocera, Recalbox, or ReplayOS, follow the [Arcade Integration Guide](#️-arcade-integration-batocera-recalbox-or-replayos) for dynamic game marquees.
+6. *(Optional)* If you use Batocera, Recalbox, ReplayOS, or RetroBat, follow the [Arcade Integration Guide](#️-arcade-integration-batocera-recalbox-replayos-or-retrobat) for dynamic game marquees.
 
 The remainder of this document serves as a detailed reference guide for each feature. 🙂
 
@@ -124,7 +125,7 @@ The system is operated via a **single push button** (or IR remote) using input l
 ├── 📂 Playback
 │   ├── 🖼️ Mode: [GIFs / Clock]
 │   ├── 🔀 Shuffle: [YES / NO]
-│   ├── 🕹️ Arcade: [OFF / Batocera / Recalbox / ReplayOS]
+│   ├── 🕹️ Arcade: [OFF / Batocera / Recalbox / ReplayOS / RetroBat]
 │   ├── 💬 Text: [YES / NO]
 │   └── 🔙 Back
 ├── ☀️ Brightness
@@ -139,7 +140,7 @@ The system is operated via a **single push button** (or IR remote) using input l
 │   ├── 🔄 Toggle: [YES / NO]
 │   ├── 🖼️ Interval: Every [1...20] GIFs
 │   ├── ⏳ Duration: Show [5...30] sec
-│   ├── 🎨 Clock Style: [Matrix, Solid, Rainbow, Pulse, Gradient]
+│   ├── 🎨 Clock Style: [Solid, Aurora, Rainbow, Gradient, Fire, Glitch]
 │   ├── 🎨 Color: [White, Red, Green, Blue, Yellow, Cyan, Magenta, Orange, Pink]
 │   ├── 🔄 Transition: [YES / NO]
 │   └── 🔙 Back
@@ -192,7 +193,7 @@ The interface is structured into **5 main sections**:
 - **☀️ Brightness Control:** 0–100% instant adjustment slider with zero delay and no reboot required.
 - **🎛️ Mode Switcher:** Real-time toggling between GIF, Clock, and Text modes.
   - **GIF Mode:** displays active playlist with shuffle controls.
-  - **Clock Mode:** select from 5 styles (Matrix, Solid, Rainbow, Pulse, Gradient) and 9 color themes.
+  - **Clock Mode:** select from 6 styles (Solid, Aurora, Rainbow, Gradient, Fire, Glitch) and 9 color themes.
   - **Text Mode:** live matrix preview while typing, customizable text color, font, and scroll speed.
 - **🔌 Connection Status:** visual status indicator (green/red) for local WiFi connectivity.
 
@@ -248,21 +249,21 @@ See the full [Home Assistant Integration Guide](#-home-assistant-integration-com
 
 ---
 
-### 🕹️ Arcade Mode (Batocera, Recalbox & ReplayOS)
+### 🕹️ Arcade Mode (Batocera, Recalbox, ReplayOS & RetroBat)
 
-Transforms your panel into an active dynamic marquee that responds live to your current game. Features two integration modes: local script execution (**Batocera / Recalbox**) or background network polling (**ReplayOS**).
+Transforms your panel into a dynamic marquee that responds to your current game. Batocera and Recalbox use local event scripts, ReplayOS uses its network integration, and RetroBat uses Windows game-start/game-end hooks. RetroBat reacts when a game launches or exits; it does not provide the same menu-browsing events as Batocera/Recalbox.
 
 Displays automatically:
 1. **Game Marquee:** 24-bit `.bmp` image or an **animated GIF** (including sequentially queued multiple GIFs looping seamlessly).
-2. **System Logo:** fallbacks to system `.bmp` graphics while browsing games.
+2. **System Logo:** falls back to system .bmp graphics when a game marquee is unavailable, including during RetroBat game launches.
 
-Enable via `Menu → Playback → Arcade`. For setup instructions, refer to the [Arcade Integration Section](#️-arcade-integration-batocera-recalbox-or-replayos).
+Enable via `Menu → Playback → Arcade`. For setup instructions, refer to the [Arcade Integration Section](#️-arcade-integration-batocera-recalbox-replayos-or-retrobat).
 
 ---
 
 ### 🕒 Clock & Weather
 
-- **Clock Display:** 5 styles (Matrix, Solid, Rainbow, Pulse, Gradient) and 9 color presets, featuring particle explosion transitions. Automatically interrupts the GIF playback stream every *x* GIFs for *x* seconds, resuming precisely where it left off.
+- **Clock Display:** 6 styles (Solid, Aurora, Rainbow, Gradient, Fire, Glitch) and 9 color presets, featuring particle explosion transitions. Automatically interrupts the GIF playback stream every *x* GIFs for *x* seconds, resuming precisely where it left off.
 - **Weather Display:** integrated via free OpenWeatherMap API key. Displays current temperature, animated status icon, and a customizable text header (`WEATHER_MSG`). See [How to Get Your Weather API Key](#5--how-to-get-your-weather-api-key).
 
 ---
@@ -410,7 +411,7 @@ LATCH_BLANK=1
 PLAY_MODE=0
 # Enable App Configuration Interface: 0=OFF, 1=ON (Requires WiFi)
 CONFI_APP_ENABLE=1
-# Arcade Integration: 0=OFF, 1=Batocera, 2=Recalbox, 3=ReplayOS
+# Arcade Integration: 0=OFF, 1=Batocera, 2=Recalbox, 3=ReplayOS, 4=RetroBat
 ARCADE_ENABLE=0
 # Enable Ticker Text: 0=OFF, 1=ON (Requires WiFi)
 TEXT_ENABLE=1
@@ -422,7 +423,7 @@ RANDOM_MODE=1
 AUTO_CLOCK_INT=6
 # Clock Duration: Show clock for X seconds
 CLOCK_DURATION=10
-# Clock Visual Style: 0=Matrix, 1=Solid, 2=Rainbow, 3=Pulse, 4=Gradient
+# Clock Visual Style: 0=Solid, 1=Aurora, 2=Rainbow, 3=Gradient, 4=Fire, 5=Glitch
 CLOCK_STYLE=2
 # Particle Explosion Transition Effect: 0=OFF, 1=ON
 TRANSITION_ENABLE=1
@@ -479,7 +480,7 @@ For accurate **clock** and **timer** operation, the `TZ` environment string must
 ### 5. ☁️ How to Get Your Weather API Key
 
 1. Visit [OpenWeatherMap.org](https://openweathermap.org/) and create a free user account.
-2. Navigate to your account profile → **"My API Keys"**.
+2. For Batocera, Recalbox, and ReplayOS, configure the integration under your account profile → **"My API Keys"**.
 3. Generate a new key (e.g., named "RetroPixel").
 4. **Note:** Newly generated API keys take 30 to 120 minutes to activate globally. If the display shows `0.0C`, allow time for key activation. ⏳
 5. Copy the generated key string into `API_KEY=` inside `config.ini`.
@@ -503,16 +504,16 @@ The batch utility `Generador de Playlist v1.0.1.bat` automates playlist creation
 
 ---
 
-## 🕹️ Arcade Integration (Batocera, Recalbox or ReplayOS)
+## 🕹️ Arcade Integration (Batocera, Recalbox, ReplayOS or RetroBat)
 
-Navigate to `Menu → Playback → Arcade` to set up dynamic game marquee response:
+Configure the integration under Menu → Playback → Arcade. RetroBat uses Windows game-start/game-end hooks, so it reacts when games launch or exit rather than while browsing menus.
 
 ```text
 🏠 MAIN MENU
 ├── 📂 Playback
 │   ├── 🖼️ Mode: [GIFs / Clock]
 │   ├── 🔀 Shuffle: [YES / NO]
-│   ├── 🕹️ Arcade: [OFF / Batocera / Recalbox / ReplayOS]   <-- SELECT HERE
+│   ├── 🕹️ Arcade: [OFF / Batocera / Recalbox / ReplayOS / RetroBat]   <-- SELECT HERE
 │   └── 🔙 Back
 ```
 
@@ -524,6 +525,11 @@ Navigate to `Menu → Playback → Arcade` to set up dynamic game marquee respon
 > **[👉 Recalbox Setup Instructions](https://github.com/MetalCatViking/RetroPixelLED-Lite/blob/main/Ingles/README_RECALBOX.md)**
 >
 > **[👉 ReplayOS Setup Instructions](https://github.com/MetalCatViking/RetroPixelLED-Lite/blob/main/Ingles/README_REPLAYOS.md)**
+>
+> **[👉 RetroBat Setup Instructions](https://github.com/MetalCatViking/RetroPixelLED-Lite/blob/main/Ingles/README_RETROBAT.md)**
+
+> [!NOTE]
+> RetroBat is selected as option 4 in the firmware OSD. Its Windows integration uses game-start/game-end hooks, so it reacts when games launch or exit rather than while browsing menus.
 
 ---
 
@@ -558,7 +564,7 @@ Engine design and technical specifications:
 - **Anti-Panic RAM Guard:** active real-time dynamic heap memory allocation guard. If WiFi allocation prevents DMA double-buffering, it dynamically degrades to single-buffering to avoid system crash events.
 - **Binary Search Engine (Arcade):** dynamic binary search index parsing thousands of marquee assets in milliseconds directly off the SD card.
 - **Adaptive Memory Management:** uses Double Buffering for high frame rate GIF playback and smoothly transitions to Single Buffering during high-resolution bitmap rendering in Arcade mode.
-- **Real-Time HTTP API:** embedded REST request handlers for external synchronization with Batocera, Recalbox, ReplayOS, and Home Assistant.
+- **Real-Time HTTP API:** embedded REST request handlers for external synchronization with Batocera, Recalbox, ReplayOS, RetroBat, and Home Assistant.
 - **Smart Text Centering Engine:** calculates string pixel length and centers text automatically across panel bounds (`offset + 64px`).
 - **WiFi Stealth Mode:** network interfaces activate transiently for NTP time sync and weather fetches before going **100% offline**, achieving **0 ms latency** in rendering pipelines.
 - **Dynamic Status Bar:** when weather is active, clock positioning adjusts down (`startY=9`) to display `WEATHER_MSG`, icon graphics, and temperature.

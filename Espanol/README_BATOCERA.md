@@ -43,7 +43,7 @@ He desarrollado un **Script Instalador Inteligente en PowerShell** que realiza t
 
 1. Tener tu **PC** y tu **Batocera** conectados a la misma red local (o conectar el almacenamiento físico de Batocera directamente al PC).
 2. Conocer la **IP local de tu panel LED** Retro Pixel LED (ej. `192.168.1.117`).
-3. Descargar la carpeta completa `Instalador Automático` desde este repositorio, la puedes encontrar [aquí](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/Instalador%20Automatico).
+3. Descargar la carpeta completa `Instalador Automático` desde este repositorio, la puedes encontrar [aquí](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/Instalador%20Automatico).
 
 > [!IMPORTANT]
 > Si descargaste el repositorio en un archivo `.zip`, asegúrate de **descomprimirlo por completo** antes de ejecutar el instalador.
@@ -52,20 +52,16 @@ He desarrollado un **Script Instalador Inteligente en PowerShell** que realiza t
 
 ### 💻 Paso a Paso
 
-1. Abre la carpeta `Instalador Automatico` en tu PC. Dentro encontrarás dos archivos y dos carpetas:
-   * `Ejecutar Script Instalador Arcade.bat`
-   * `Script_Instalador_Arcade.ps1`
-   * `Batocera`
-   * `Recalbox`
+1. Abre la carpeta Instalador Automatico en tu PC. Contiene los lanzadores/scripts en español e inglés, además de las subcarpetas Batocera, Recalbox y RetroBat.
 
 2. Haz **clic** sobre `Ejecutar Script Instalador Arcade.bat`.
 
 3. Sigue las instrucciones en la ventana de la consola:
    * **Paso 1:** Introduce la IP de tu panel LED y pulsa `Enter`.
-   * **Paso 2:** Introduce la ruta de tu Batocera. Puede ser una ruta de red (ej: `\\192.168.1.120` o `\\BATOCERA`) o la letra de una unidad física si conectaste el disco/SD al PC (ej: `E:`).
+   * **Paso 2:** Selecciona 1 Batocera.
+   * **Paso 3:** Introduce la ruta de tu Batocera. Puede ser una ruta de red o una letra de unidad si conectaste el soporte directamente al PC.
 
 4. El script nos solicitará:
-    * El sistema que utilizamos, seleccionaremos 1 Batocera.
     * Que modo de funcionamiento deseas activar?
        * **Opción 1:** Menús y Juegos (Muestra sistemas al navegar + juego lanzado)
        * **Opción 2:** Solo Juegos (Marquesina fija/reloj en menús, cambia solo al jugar)
@@ -75,14 +71,19 @@ He desarrollado un **Script Instalador Inteligente en PowerShell** que realiza t
 
 5. El script procesará los archivos en un segundo. Al finalizar, verás el mensaje `INSTALACIÓN COMPLETADA!`. Pulsa cualquier tecla para salir.
 
-<img width="1103" height="686" alt="image" src="https://github.com/user-attachments/assets/d94c2a67-c40a-451e-9c61-981a188a294d" />
+<img width="941" height="834" alt="image" src="https://github.com/user-attachments/assets/cec91be3-82b4-44e4-8873-6ce67383e2e1" />
+
 
 6. **Reinicia tu sistema Batocera por completo.**
 > [!CAUTION]
-> El reinicio completo del sistema es **obligatorio**. Durante este arranque, el script `custom.sh` configurará los permisos internos. A partir de ese momento, cada vez que navegues por el menú, lances o cierres un juego, el panel reaccionará automáticamente.
+> El reinicio completo del sistema es **obligatorio** para que el servicio de permisos quede disponible en el menú.
+
+7. **Actívalo (solo la primera vez):** ve a `Menú Principal > Ajustes del Sistema > Servicios` y activa **`retropixelperms`**.
+> [!NOTE]
+> Este servicio sustituye al antiguo `custom.sh` y es el que da permisos de ejecución a los scripts de la marquesina en cada arranque. Una vez lo actives aquí, queda activado para siempre — incluso si vuelves a ejecutar el instalador más adelante (reinstalar solo regenera el archivo del servicio, no lo desactiva). A partir de ese momento, cada vez que navegues por el menú, lances o cierres un juego, el panel reaccionará automáticamente.
 
 ### 3. 🛠️ Marquesinas.
-Usaremos el script se encuentra en la carpeta `Arcade/Marquesinas/` del proyecto [aquí](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/Marquesinas). Consta de dos archivos `Ejecutar Script Marquesinas Batocera.bat` y `Script Marquesinas Batocera.ps1`.
+Usaremos el script se encuentra en la carpeta `Arcade/Marquesinas/` del proyecto [aquí](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/Marquesinas). Consta de dos archivos `Ejecutar Script Marquesinas Batocera.bat` y `Script_Marquesinas_Batocera.ps1`.
 
 1.  **Ejecuta el archivo** ``Ejecutar Script Marquesinas Batocera.bat` (Lanzador para evitar bloqueos de Windows).
 2.  **Configuración de rutas:**
@@ -140,7 +141,7 @@ roms/marquesinas/Arcade/neogeo/mslug_02.gif
 
 #### ¿De dónde saco los GIFs?
 
-Si ya tienes (o has descargado) una colección de GIFs de arcade con nombres "humanos" en vez de nombres de romset (por ejemplo `ARCADE_NEOGEO_MetalSlugStory.gif` en vez de `mslug.gif`), usa el sigueinte script para renombar los GIFs, descargalo de [aquí](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/GIFs) y sigue estos pasos:
+Si ya tienes (o has descargado) una colección de GIFs de arcade con nombres "humanos" en vez de nombres de romset (por ejemplo `ARCADE_NEOGEO_MetalSlugStory.gif` en vez de `mslug.gif`), usa el sigueinte script para renombar los GIFs, descargalo de [aquí](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/GIFs) y sigue estos pasos:
 
 1. Ejecuta `Ejecutar Script_RetroPixelLED_GIF_Renamer.bat`.
 
@@ -153,10 +154,10 @@ Si ya tienes (o has descargado) una colección de GIFs de arcade con nombres "hu
 También puedes generarlos — el panel solo necesita que el archivo final esté a **128×32 píxeles**. Como referencia, si tu colección de Batocera ya tiene vídeos de preview scrapeados (`<video>` en el `gamelist.xml`), puedes convertirlos a GIF con una herramienta como [dmd_gif_converter](https://github.com/red77290/dmd_gif_converter), que además de redimensionar incluye un modo de encuadre automático pensado para no perder la acción al reducir un vídeo grande a un tamaño tan pequeño. Es un proyecto de terceros, independiente de este repositorio — cualquier otro método que te deje un `.gif` de 128×32 servirá igual de bien.
 
  ### 5. 🛠️ Logos de Sistemas.
- Podemos usar los logos ya redimensionados que se encuentran en la carpeta `Arcade/Logos Sistemas/` del proyecto [aquí](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/Logos%20Sistemas).
+ Podemos usar los logos ya redimensionados que se encuentran en la carpeta `Arcade/Logos Sistemas/` del proyecto [aquí](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/Logos%20Sistemas).
  1.  **Copiar:** Copia la carpeta  `Logos` y todo su contenido en la SD o SSD donde está instalado Batocera `roms/marquesinas/`, como se indica en el punto `6. Estructura de archivos en la SD o SSD de Batocera`.
     
- Si prefieres usar otros logos como por ejemplo los del tema que tienes instalado. Usaremos el script se encuentra en la carpeta `Arcade/Logos Sistemas/` del proyecto [aquí](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/Logos%20Sistemas). Consta de dos archivos `Ejecutar Script Logos.bat` y `Script Logos.ps1`.
+ Si prefieres usar otros logos como por ejemplo los del tema que tienes instalado. Usaremos el script se encuentra en la carpeta `Arcade/Logos Sistemas/` del proyecto [aquí](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/Logos%20Sistemas). Consta de dos archivos `Ejecutar Script Logos.bat` y `Script Logos.ps1`.
 
 1.  **Ejecuta el archivo** ``Ejecutar Script Logos.bat` (Lanzador para evitar bloqueos de Windows).
 2.  **Configuración de rutas:**

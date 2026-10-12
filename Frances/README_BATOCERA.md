@@ -34,7 +34,7 @@ J'ai développé un **Script d'Installation Intelligent en PowerShell** qui réa
 * **Configuration de l'IP :** Injecte automatiquement l'adresse IP de votre panneau LED dans tous les scripts de communication.
 * **Correction de Format :** Force le format de fin de ligne **Unix (LF)**. Cela évite que les scripts échouent s'ils ont été ouverts par erreur avec le Bloc-notes de Windows.
 * **Organisation des Fichiers :** Crée la structure de répertoires nécessaire dans Batocera et copie les fichiers à leur emplacement correspondant.
-* **Auto-Permissions (Sans PuTTY) :** Génère un script système (`custom.sh`) qui fait que Batocera s'accorde lui-même les permissions d'exécution (`chmod +x`) sur les dossiers à chaque démarrage.
+* **Permissions automatiques :** crée le service natif retropixelperms, qui attribue les permissions d'exécution aux scripts de marquise à chaque démarrage. Après un redémarrage complet, activez-le une fois dans Menu Principal > Paramètres Système > Services.
 * **Marquises Animées :** Installe également le moteur de lecture de GIF (`pixel_stream.py`) et l'événement `game-start`, chargés de détecter et de lire la marquise animée du jeu que vous venez de lancer.
 
 ---
@@ -52,20 +52,16 @@ J'ai développé un **Script d'Installation Intelligent en PowerShell** qui réa
 
 ### 💻 Pas à Pas
 
-1. Ouvrez le dossier `Instalador Automatico` sur votre PC. À l'intérieur, vous trouverez deux fichiers et deux dossiers :
-   * `Ejecutar Script Instalador Arcade.bat`
-   * `Script_Instalador_Arcade.ps1`
-   * `Batocera`
-   * `Recalbox`
+1. Ouvrez le dossier Instalador Automatico sur votre PC. Il contient les lanceurs/scripts espagnols et les sous-dossiers Batocera, Recalbox et RetroBat.
 
 2. Faites **clic** sur `Ejecutar Script Instalador Arcade.bat`.
 
 3. Suivez les instructions dans la fenêtre de la console :
    * **Étape 1 :** Entrez l'IP de votre panneau LED et appuyez sur `Entrée`.
-   * **Étape 2 :** Entrez le chemin de votre Batocera. Cela peut être un chemin réseau (ex : `\\192.168.1.120` ou `\\BATOCERA`) ou la lettre d'un lecteur physique si vous avez connecté le disque/SD au PC (ex : `E:`).
+   * **Étape 2 :** Sélectionnez 1 Batocera.
+   * **Étape 3 :** Entrez le chemin de votre Batocera. Le chemin peut être réseau ou une lettre de lecteur si le support est connecté directement au PC.
 
 4. Le script nous demandera :
-    * Le système que nous utilisons, nous sélectionnerons 1 Batocera.
     * Quel mode de fonctionnement souhaitez-vous activer ?
        * **Option 1 :** Menus et Jeux (Affiche les systèmes lors de la navigation + le jeu lancé)
        * **Option 2 :** Seulement Jeux (Marquise fixe/horloge dans les menus, change uniquement en jouant)
@@ -82,7 +78,7 @@ J'ai développé un **Script d'Installation Intelligent en PowerShell** qui réa
 > Le redémarrage complet du système est **obligatoire**. Pendant ce démarrage, le script `custom.sh` configurera les permissions internes. À partir de ce moment, chaque fois que vous naviguerez dans le menu, lancerez ou fermerez un jeu, le panneau réagira automatiquement.
 
 ### 3. 🛠️ Marquises.
-Nous utiliserons le script qui se trouve dans le dossier `Arcade/Marquesinas/` du projet [ici](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/Marquesinas). Il se compose de deux fichiers `Ejecutar Script Marquesinas Batocera.bat` et `Script Marquesinas Batocera.ps1`.
+Nous utiliserons le script qui se trouve dans le dossier `Arcade/Marquesinas/` du projet [ici](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/Marquesinas). Il se compose de deux fichiers `Ejecutar Script Marquesinas Batocera.bat` et `Script_Marquesinas_Batocera.ps1`.
 
 1.  **Exécutez le fichier** `Ejecutar Script Marquesinas Batocera.bat` (Lanceur pour éviter les blocages de Windows).
 2.  **Configuration des chemins :**
