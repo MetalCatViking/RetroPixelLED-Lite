@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    RetroPixelLED - Arcade GIF Renamer v2.0
+    RetroPixelLED - Arcade GIF Renamer v2.1
 .DESCRIPTION
     Replaces the "blind" renaming of the previous script (which assumed that cleaning the
     human-readable name of the file already gave the MAME romset, which is almost never true)
@@ -32,7 +32,7 @@
       that exists.
 #>
 
-$Host.UI.RawUI.WindowTitle = "RetroPixelLED - GIF Renamer v2.0"
+$Host.UI.RawUI.WindowTitle = "RetroPixelLED - GIF Renamer v2.1"
 $OutputEncoding = [System.Text.Encoding]::UTF8
 $ErrorActionPreference = "Stop"
 
@@ -103,6 +103,49 @@ function Get-SystemFolders([string]$root) {
     return Get-ChildItem -Path $root -Directory | Sort-Object Name | ForEach-Object {
         [PSCustomObject]@{ Nombre = $_.Name; Ruta = $_.FullName }
     }
+}
+
+# Create nested folders one level at a time instead of asking New-Item -Force
+# to create several missing levels at once. This is more reliable on UNC paths
+# and identifies exactly which directory level could not be created.
+function New-NestedFolder([string]$fullPath) {
+    if (Test-Path $fullPath) { return $true }
+
+    $parts = $fullPath -split '\\' | Where-Object { $_ -ne '' }
+    if ($parts.Count -eq 0) { return $false }
+
+    if ($fullPath.StartsWith('\\')) {
+        if ($parts.Count -lt 2) {
+            Write-Host "Incomplete network path: $fullPath" -ForegroundColor Red
+            return $false
+        }
+        $current = '\\' + $parts[0] + '\' + $parts[1]
+        $remaining = @()
+        if ($parts.Count -gt 2) { $remaining = $parts[2..($parts.Count - 1)] }
+    } else {
+        $current = $parts[0]
+        $remaining = @()
+        if ($parts.Count -gt 1) { $remaining = $parts[1..($parts.Count - 1)] }
+    }
+
+    if (-not (Test-Path $current)) {
+        Write-Host "Cannot access base path: $current (check that the network share is accessible from this PC)" -ForegroundColor Red
+        return $false
+    }
+
+    foreach ($level in $remaining) {
+        $current = Join-Path $current $level
+        if (-not (Test-Path $current)) {
+            try {
+                New-Item -ItemType Directory -Path $current -ErrorAction Stop | Out-Null
+            } catch {
+                Write-Host "Could not create folder: $current" -ForegroundColor Red
+                Write-Host "  Details: $_" -ForegroundColor DarkYellow
+                return $false
+            }
+        }
+    }
+    return $true
 }
 
 # Returns an available "<baseName>.gif" filename in $carpeta, trying
@@ -604,7 +647,8 @@ function Invoke-CopiarGifsASistemas {
     Write-Host "  1) ReplayOS (RetroPixelLED SD card)" -ForegroundColor White
     Write-Host "  2) Batocera (marquees/Arcade on the network share)" -ForegroundColor White
     Write-Host "  3) Recalbox (marquees/Arcade on the network share)" -ForegroundColor White
-    $destinoOpt = Read-Host "Option (1-3)"
+    Write-Host "  4) RetroBat (local Arcade folder)" -ForegroundColor White
+    $destinoOpt = Read-Host "Option (1-4)"
 
     switch ($destinoOpt) {
         "2" {
@@ -612,6 +656,9 @@ function Invoke-CopiarGifsASistemas {
         }
         "3" {
             $arcadeRoot = Get-ConfigValue "ArcadeRoot_Recalbox" "\\RECALBOX\share\marquesinas\Arcade" "Recalbox marquee/Arcade path (network share)"
+        }
+        "4" {
+            $arcadeRoot = Get-ConfigValue "ArcadeRoot_RetroBat" "C:\RetroPixelLED\Arcade" "RetroBat local Arcade folder path"
         }
         Default {
             $arcadeRoot = Get-ConfigValue "ArcadeRoot" "D:\Arcade" "Destination Arcade folder path (ReplayOS SD card)"
@@ -641,17 +688,20 @@ function Invoke-CopiarGifsASistemas {
         Write-Host "---------------------------------------------------" -ForegroundColor DarkCyan
 
         $romsets = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
-        Get-ChildItem -Path $sistema.Ruta -File -Filter "*.zip" -ErrorAction SilentlyContinue | ForEach-Object {
+        Get-ChildItem -Path $sistema.Ruta -File -ErrorAction SilentlyContinue | Where-Object { $_.Extension -in ".zip", ".7z" } | ForEach-Object {
             [void]$romsets.Add([System.IO.Path]::GetFileNameWithoutExtension($_.Name))
         }
 
         if ($romsets.Count -eq 0) {
-            Write-Host "No .zip romsets were found in this system." -ForegroundColor Yellow
+            Write-Host "No .zip or .7z romsets were found in this system." -ForegroundColor Yellow
             continue
         }
 
         $destinoDir = Join-Path $arcadeRoot $sistema.Nombre
-        if (-not (Test-Path $destinoDir)) { New-Item -ItemType Directory -Path $destinoDir -Force | Out-Null }
+        if (-not (New-NestedFolder $destinoDir)) {
+            Write-Host "Skipping system [$($sistema.Nombre)] because its destination folder could not be created/accessed." -ForegroundColor Red
+            continue
+        }
 
         $copiados = 0
         foreach ($gif in $gifsDisponibles) {
@@ -665,7 +715,7 @@ function Invoke-CopiarGifsASistemas {
 
         Write-Host "GIFs copied to [$($sistema.Nombre)]: $copiados" -ForegroundColor White
         if ($copiados -gt 0) {
-            Write-Host "Remember: run Option 3 of the main toolkit to update $($sistema.Nombre).txt" -ForegroundColor Yellow
+            Write-Host "Remember: run the marquee script to update $($sistema.Nombre).txt" -ForegroundColor Yellow
         }
     }
 }
@@ -676,7 +726,7 @@ function Invoke-CopiarGifsASistemas {
 do {
     Clear-Host
     Write-Host "===================================================" -ForegroundColor Magenta
-    Write-Host "   RETROPIXELLED - GIF RENAMER v2.0" -ForegroundColor White
+    Write-Host "   RETRO PIXEL LED Lite - GIF RENAMER v2.1" -ForegroundColor White
     Write-Host "===================================================" -ForegroundColor Magenta
     Write-Host ""
     Write-Host "  1) Rename GIFs (MAME.dat + manual dictionary)" -ForegroundColor White
