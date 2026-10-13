@@ -34,7 +34,7 @@ He desarrollado un **Script Instalador Inteligente en PowerShell** que realiza t
 * **Configuración de IP:** Inyecta automáticamente la dirección IP de tu panel LED en todos los scripts de comunicación.
 * **Corrección de Formato:** Fuerza el formato de fin de línea **Unix (LF)**. Esto evita que los scripts fallen si fueron abiertos por error con el Bloc de Notas de Windows.
 * **Organización de Archivos:** Crea la estructura de directorios necesaria en Batocera y copia los archivos en su lugar correspondiente.
-* **Auto-Permisos (Sin PuTTY):** Genera un script del sistema (`custom.sh`) que hace que Batocera se otorgue a sí mismo permisos de ejecución (`chmod +x`) sobre las carpetas en cada arranque.
+* **Auto-Permisos (Sin PuTTY):** Crea el servicio nativo `retropixelperms`, que asigna permisos de ejecución (`chmod +x`) a los scripts de marquesina en cada arranque. Tras reiniciar Batocera por completo, actívalo una sola vez en `Menú Principal > Ajustes del Sistema > Servicios`.
 * **Marquesinas Animadas:** Instala también el motor de reproducción de GIF (`pixel_stream.py`) y el evento `game-start`, encargados de detectar y reproducir la marquesina animada del juego que acabas de lanzar.
 
 ---
