@@ -514,7 +514,7 @@ Activez l'option dans `Menu → Lecture → Arcade` pour afficher les marquises 
 >
 > **[👉 Guide d'installation pour ReplayOS](https://github.com/MetalCatViking/RetroPixelLED-Lite/blob/main/Frances/README_REPLAYOS.md)**
 >
-> **[👉 Guide RetroBat (en anglais)](https://github.com/MetalCatViking/RetroPixelLED-Lite/blob/main/Ingles/README_RETROBAT.md)**
+> **[👉 Guide d’installation pour RetroBat](https://github.com/MetalCatViking/RetroPixelLED-Lite/blob/main/Frances/README_RETROBAT.md)**
 
 ---
 
