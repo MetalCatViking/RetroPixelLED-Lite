@@ -89,7 +89,7 @@ We will use the script located in the `Arcade/Marquesinas/` folder of the projec
 2. **Path configuration:**
     * **Source:** Enter the path to your Batocera ROMs (e.g., `\\192.168.1.119\share\roms`).
     * **Destination:** Enter the path `C:\marquesinas`.
-3. **System Selection:** The script will automatically detect which systems contain a `gamelist.xml` file. You can choose to process a single system by its number, multiple systems, or **All (0)**.
+3. **System Selection:** The script will automatically detect which systems contain a `gamelist.xml` file. You can process one system by its number or **all systems (0)**.
 4. **Copying files:** If you selected the path `C:\marquesinas`, copy the `marquesinas` folder and all its contents to the SD or SSD where Batocera is installed inside `roms/`, as indicated in step `6. File structure on Batocera SD or SSD`.
 
 <img width="1096" height="572" alt="image" src="https://github.com/user-attachments/assets/388368a7-a57b-4611-89fc-4bfc184c1fa7" />

@@ -93,7 +93,7 @@ Usaremos el script que se encuentra en la carpeta `Arcade/Marquesinas/` del proy
 2. **Configuración de rutas:**
    * **Origen:** ruta de tus ROMs de RetroBat (Enter para usar `C:\RetroBat\roms`, ruta local — aquí no hace falta ninguna ruta de red, todo está en el mismo PC).
    * **Destino:** Enter para usar `C:\RetroPixelLED`.
-3. **Selección de Sistema:** el script detecta automáticamente qué sistemas tienen un `gamelist.xml` ya escrapeado por RetroBat. Puedes elegir uno, varios, o **Todos (0)**.
+3. **Selección de Sistema:** el script detecta automáticamente qué sistemas tienen un `gamelist.xml` ya escrapeado por RetroBat. Puedes elegir un sistema por su número o **Todos (0)**.
 4. Las marquesinas quedan listas directamente en `C:\RetroPixelLED\Arcade\` — como es local, no hace falta copiar nada a ningún sitio.
 <img width="946" height="574" alt="image" src="https://github.com/user-attachments/assets/7eb498e2-9644-471a-9762-10c08cca52c7" />
 
@@ -155,7 +155,7 @@ También puedes generarlos — el panel solo necesita que el archivo final esté
  Podemos usar los logos ya redimensionados que se encuentran en la carpeta `Arcade/Logos Sistemas/` del proyecto [aquí](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/Logos%20Sistemas).
  1.  **Copiar:** Copia todo su contenido directamente a `C:\RetroPixelLED\Arcade\``, como se indica en el punto `7. Estructura de archivos en el PC de RetroBat`.
 
- Si prefieres usar otros logos como por ejemplo los del tema que tienes instalado. Usaremos el script se encuentra en la carpeta `Arcade/Logos Sistemas/` del proyecto [aquí](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/Logos%20Sistemas). Consta de dos archivos `Ejecutar Script Logos.bat` y `Script Logos.ps1`.
+ Si prefieres usar otros logos como por ejemplo los del tema que tienes instalado. Usaremos el script se encuentra en la carpeta `Arcade/Logos Sistemas/` del proyecto [aquí](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/Logos%20Sistemas). Consta de dos archivos `Ejecutar Script Logos.bat` y `Script_Logos.ps1`.
 
 1.  **Ejecuta el archivo** ``Ejecutar Script Logos.bat` (Lanzador para evitar bloqueos de Windows).
 2.  **Configuración de rutas:**

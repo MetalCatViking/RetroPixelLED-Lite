@@ -89,7 +89,7 @@ Le script de préparation se trouve dans le dossier [`Arcade/Marquesinas/`](http
 2. Configurez les chemins :
    - **Source :** dossier des ROMs RetroBat (appuyez sur `Entrée` pour utiliser `C:\RetroBat\roms`).
    - **Destination :** dossier où générer les fichiers (appuyez sur `Entrée` pour utiliser `C:\RetroPixelLED`).
-3. Le script détecte les systèmes qui possèdent déjà un fichier `gamelist.xml`. Choisissez un système, plusieurs systèmes ou **Tous (0)**.
+3. Le script détecte les systèmes qui possèdent déjà un fichier `gamelist.xml`. Choisissez un système par son numéro ou **tous les systèmes (0)**.
 4. Les marquises et les index sont générés dans `C:\RetroPixelLED\Arcade\`. Comme le dossier est local, il n'est pas nécessaire de copier les fichiers sur un partage réseau.
 
 <img width="946" height="574" alt="Capture du script de préparation des marquises RetroBat" src="https://github.com/user-attachments/assets/7eb498e2-9644-471a-9762-10c08cca52c7" />

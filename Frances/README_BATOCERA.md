@@ -88,7 +88,7 @@ Nous utiliserons le script qui se trouve dans le dossier `Arcade/Marquesinas/` d
 2.  **Configuration des chemins :**
     * **Origine :** Entrez le chemin de vos ROMs Batocera (ex : `\\192.168.1.119\share\roms`).
     * **Destination :** Entrez le chemin `C:\marquesinas`.
-3.  **Sélection du Système :** Le script détectera automatiquement quels systèmes ont un fichier `gamelist.xml`. Vous pouvez choisir d'en traiter un seul par son numéro, plusieurs ou **Tous (0)**.
+3.  **Sélection du Système :** Le script détectera automatiquement quels systèmes ont un fichier `gamelist.xml`. Vous pouvez traiter un seul système en saisissant son numéro, ou **tous les systèmes (0)**.
 4.  **Copier :** Si vous avez sélectionné le chemin `C:\marquesinas`, copiez le dossier `marquesinas` et tout son contenu sur la carte SD ou le SSD où Batocera est installé `roms/`, comme indiqué au point `6. Structure des fichiers sur la carte SD ou le SSD de Batocera`.
 
 <img width="1096" height="572" alt="image" src="https://github.com/user-attachments/assets/388368a7-a57b-4611-89fc-4bfc184c1fa7" />
@@ -142,7 +142,7 @@ roms/marquesinas/Arcade/neogeo/mslug_02.gif
 
 Si vous avez déjà (ou avez téléchargé) une collection de GIFs arcade avec des noms "lisibles" au lieu de noms de romset (par exemple `ARCADE_NEOGEO_MetalSlugStory.gif` au lieu de `mslug.gif`), utilisez le script suivant pour renommer les GIFs. Téléchargez-le [ici](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/GIFs) et suivez ces étapes :
 
-1. Exécutez `Ejecutar Script_RetroPixelLED_GIF_Renamer.bat`.
+1. Exécutez `Ejecutar RetroPixelLED_GIF_Renamer.bat`.
 
 2. **Option 1 — Renommer les GIFs :** indiquez le dossier dans lequel se trouvent vos GIFs. Le script consulte un catalogue public de noms MAME ([`MAME.dat`](https://github.com/libretro/libretro-database)) pour identifier le romset correspondant à chaque titre, ainsi qu'un dictionnaire interne pour les cas les plus courants. Vous pouvez choisir entre une correspondance exacte uniquement, ou exacte + approximative (résout plus de cas, avec un peu plus de risques). Tout ce qu'il ne parvient pas à identifier est déplacé dans un dossier `SinResolver\` afin que vous puissiez le vérifier manuellement — il ne renomme jamais "à l'aveugle".
    <img width="1090" height="830" alt="image" src="https://github.com/user-attachments/assets/58ba389f-367c-4114-b6e1-533018f50e77" />
@@ -156,7 +156,7 @@ Vous pouvez également les générer — le panneau nécessite seulement que le 
  Nous pouvons utiliser les logos déjà redimensionnés qui se trouvent dans le dossier `Arcade/Logos Sistemas/` du projet [ici](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/Logos%20Sistemas).
  1.  **Copier :** Copiez le dossier `Logos` et tout son contenu sur la carte SD ou le SSD où Batocera est installé `roms/marquesinas/`, comme indiqué au point `6. Structure des fichiers sur la carte SD ou le SSD de Batocera`.
     
- Si vous préférez utiliser d'autres logos, comme par exemple ceux du thème que vous avez installé. Nous utiliserons le script qui se trouve dans le dossier `Arcade/Logos Sistemas/` du projet [ici](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/Logos%20Sistemas). Il se compose de deux fichiers `Ejecutar Script Logos.bat` et `Script Logos.ps1`.
+ Si vous préférez utiliser d'autres logos, comme par exemple ceux du thème que vous avez installé. Nous utiliserons le script qui se trouve dans le dossier `Arcade/Logos Sistemas/` du projet [ici](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/Logos%20Sistemas). Il se compose de deux fichiers `Ejecutar Script Logos.bat` et `Script_Logos.ps1`.
 
 1.  **Exécutez le fichier** `Ejecutar Script Logos.bat` (Lanceur pour éviter les blocages de Windows).
 2.  **Configuration des chemins :**

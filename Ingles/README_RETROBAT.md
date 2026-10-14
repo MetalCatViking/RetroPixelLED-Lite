@@ -93,7 +93,7 @@ We will use the script located in the `Arcade/Marquesinas/` folder of the projec
 2. **Path Configuration:**
    * **Source:** path to your RetroBat ROMs (press Enter to use `C:\RetroBat\roms`, local path — no network path needed here, everything is on the same PC).
    * **Destination:** press Enter to use `C:\RetroPixelLED`.
-3. **System Selection:** the script automatically detects which systems have a `gamelist.xml` already scraped by RetroBat. You can choose one, several, or **All (0)**.
+3. **System Selection:** the script automatically detects which systems have a `gamelist.xml` already scraped by RetroBat. Choose one system by its number or **all systems (0)**.
 4. The marquees will be ready directly in `C:\RetroPixelLED\Arcade\` — since it's local, there is no need to copy anything anywhere.
 <img width="946" height="574" alt="image" src="https://github.com/user-attachments/assets/7eb498e2-9644-471a-9762-10c08cca52c7" />
 

@@ -86,7 +86,7 @@ Use the script located in the project's `Arcade/Marquesinas/` folder [here](http
     * **Source:** Enter the path to your Recalbox ROMs (e.g., `\\192.168.1.118\share\roms`).
     * **Destination:** Enter `C:\marquesinas`.
 3. **Image Selection:** Select the image type to use for marquees.
-4. **System Selection:** The script automatically detects systems containing a `gamelist.xml` file. Select individual systems by number, multiple systems, or **All (0)**.
+4. **System Selection:** The script automatically detects systems containing a `gamelist.xml` file. Select one system by number or **all systems (0)**.
 5. **Copying Files:** If using `C:\marquesinas`, copy the `marquesinas` folder and its contents to your Recalbox SD/SSD under `share\`, as described in section `6. File Structure on Recalbox SD or SSD`.
 
 <img width="1098" height="630" alt="image" src="https://github.com/user-attachments/assets/f2a99ce2-0b83-40cc-84bc-d24962f2c83e" />
