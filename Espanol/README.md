@@ -376,7 +376,7 @@ El archivo `config.ini` está en la carpeta [Contenido SD](https://github.com/Me
 
 ```ini
 # ============================================================
-# 🕹️ RETRO PIXEL LED LITE v3.1.3 - ARCHIVO DE CONFIGURACIÓN
+# 🕹️ RETRO PIXEL LED LITE v3.1.4 - ARCHIVO DE CONFIGURACIÓN
 # ============================================================
 # Nota: No dejes espacios alrededor del símbolo '='.
 # Ejemplo correcto: BRIGHTNESS=40
@@ -398,6 +398,8 @@ COLOR_ORDER=RGB
 BRIGHTNESS=38
 # Velocidad I2S: 0=8MHz, 1=10MHz, 2=16MHz, 3=20MHz (Turbo)
 I2S_SPEED=2
+# Velocidad SPI de la tarjeta SD en MHz: 4, 10 (predeterminado), 20 o 25
+SD_SPEED=10
 # Refresco Minimo (Hz): 30 a 120
 REFRESH_MIN=120
 # Doble Buffer: 0=OFF, 1=ON (Elimina parpadeos)
