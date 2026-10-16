@@ -23,7 +23,9 @@ void registrarRutasWeb() {
 void registrarRutasEstado() {
     server.on("/status", HTTP_GET, [&]() {
         server.sendHeader("Access-Control-Allow-Origin", "*");
-        StaticJsonDocument<256> doc;
+        StaticJsonDocument<384> doc;
+        doc["fw"]              = FIRMWARE_VERSION;
+        doc["fwNum"]           = CURRENT_VERSION_NUM;
         doc["brightness"]      = brightness;
         doc["playMode"]        = modoVisual;
         doc["randomMode"]      = randomMode;

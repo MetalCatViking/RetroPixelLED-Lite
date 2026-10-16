@@ -44,10 +44,15 @@
   .brand h1{font-family:var(--font-pixel); font-size:11px; letter-spacing:1px; margin:0; line-height:1.4;}
   .brand h1 span{color:var(--amber);}
   .gear{
+    position:relative;
     background:none; border:1px solid var(--grid-line); color:var(--text-dim);
     width:30px; height:30px; border-radius:6px; font-size:14px; cursor:pointer;
   }
   .gear:active{background:var(--panel);}
+  .gear.hasUpdate::after{
+    content:""; position:absolute; top:3px; right:3px; width:8px; height:8px;
+    border-radius:50%; background:var(--amber); box-shadow:0 0 6px var(--amber);
+  }
 
   /* ---------- CONEXIÓN ---------- */
   .conn{
@@ -534,6 +539,7 @@
     <div class="otaBox">
       <h3>Firmware (OTA)</h3>
       <p>Comprueba si hay una versión nueva publicada y, si la hay, la descarga e instala. El panel se reiniciará automáticamente durante el proceso.</p>
+      <div class="otaResult" id="otaInfo" style="margin:0 0 10px;"></div>
       <button id="otaBtn">⬆ BUSCAR ACTUALIZACIÓN</button>
     </div>
 
@@ -775,7 +781,7 @@ PALETTE.forEach(p => {
 });
 
 function refreshSwatchSelection(hex){
-  document.querySelectorAll('.swatch').forEach(s => {
+  document.querySelectorAll('#swatches .swatch').forEach(s => {
     s.classList.toggle('active', s.dataset.color.toLowerCase() === hex.toLowerCase());
     if (s.classList.contains('active')) s.style.color = hex;
   });
@@ -903,6 +909,7 @@ async function cargarEstadoPanel(){
     if (!res.ok) return;
     panelStatus = await res.json();
     aplicarEstadoPanelAUI(panelStatus);
+    comprobarActualizacion(panelStatus, false);
   } catch (e) { /* sin conexión: dejamos los valores por defecto */ }
 }
 
@@ -1508,7 +1515,66 @@ document.getElementById('plClose').addEventListener('click', () => plOverlay.cla
    ========================================================= */
 const updateOverlay = document.getElementById('updateOverlay');
 document.getElementById('updateBtn').addEventListener('click', () => { updateOverlay.classList.add('open'); mostrarUltimoEstadoIdiomas(); });
+document.getElementById('updateBtn').addEventListener('click', () => {
+  if (panelStatus) comprobarActualizacion(panelStatus, true);
+});
 document.getElementById('updateClose').addEventListener('click', () => updateOverlay.classList.remove('open'));
+
+/* ---------- Aviso de versión de firmware publicada ---------- */
+const VERSION_URL = '../version.json';
+const VERSION_TTL = 6 * 3600 * 1000;
+
+function fmtVersion(n) {
+  return Math.floor(n / 100) + '.' + (Math.floor(n / 10) % 10) + '.' + (n % 10);
+}
+
+async function leerVersionPublicada(forzar) {
+  try {
+    const cached = JSON.parse(localStorage.getItem('rpl_ver') || 'null');
+    if (!forzar && cached && cached.v > 0 && Date.now() - cached.t < VERSION_TTL) return cached;
+  } catch (e) {}
+
+  const res = await fetch(VERSION_URL, { cache: 'no-store', signal: AbortSignal.timeout(5000) });
+  if (!res.ok) throw new Error('Error al consultar la versión: ' + res.status);
+  const json = await res.json();
+  const version = { t: Date.now(), v: Number(json.v) || 0, name: json.name || '' };
+  if (version.v > 0) {
+    try { localStorage.setItem('rpl_ver', JSON.stringify(version)); } catch (e) {}
+  }
+  return version;
+}
+
+async function comprobarActualizacion(st, forzar) {
+  // El firmware antiguo puede no incluir estos campos; en ese caso no mostramos aviso.
+  const instalada = Number(st && st.fwNum);
+  if (!instalada || !st.fw) return;
+
+  try {
+    const publicada = await leerVersionPublicada(forzar);
+    if (!publicada.v) return;
+
+    const hayActualizacion = publicada.v > instalada;
+    const nombrePublicada = publicada.name || fmtVersion(publicada.v);
+    const info = document.getElementById('otaInfo');
+    const boton = document.getElementById('otaBtn');
+
+    document.getElementById('updateBtn').classList.toggle('hasUpdate', hayActualizacion);
+
+    if (hayActualizacion) {
+      info.className = 'otaResult ok';
+      info.textContent = 'Disponible: ' + nombrePublicada + ' (instalada: ' + st.fw + ')';
+      boton.textContent = '⬆ INSTALAR ' + nombrePublicada;
+    } else {
+      info.className = 'otaResult';
+      info.textContent = instalada > publicada.v
+        ? 'Versión de desarrollo: ' + st.fw
+        : 'Estás al día: ' + st.fw;
+      boton.textContent = '⬆ BUSCAR ACTUALIZACIÓN';
+    }
+  } catch (e) {
+    // Sin conexión a Internet o sin metadatos: no interrumpimos el uso normal del panel.
+  }
+}
 
 /* ---------- OTA (actualización de firmware) ---------- */
 async function lanzarOTA(){

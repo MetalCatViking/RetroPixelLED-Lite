@@ -43,7 +43,7 @@ He desarrollado un **Script Instalador Inteligente en PowerShell** que realiza t
 
 1. Tener tu **PC** y tu **Recalbox** conectados a la misma red local (o conectar el almacenamiento físico de Recalbox directamente al PC).
 2. Conocer la **IP local de tu panel LED** Retro Pixel LED (ej. `192.168.1.117`).
-3. Descargar la carpeta completa `Instalador Automático` desde este repositorio, la puedes encontrar [aquí](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/Instalador%20Automatico).
+3. Descargar la carpeta completa `Instalador Automático` desde este repositorio, la puedes encontrar [aquí](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/Instalador%20Automatico).
    
 > [!IMPORTANT]
 > Si descargaste el repositorio en un archivo `.zip`, asegúrate de **descomprimirlo por completo** antes de ejecutar el instalador.
@@ -52,20 +52,16 @@ He desarrollado un **Script Instalador Inteligente en PowerShell** que realiza t
 
 ### 💻 Paso a Paso
 
-1. Abre la carpeta `Instalador Automatico` en tu PC. Dentro encontrarás dos archivos y dos carpetas:
-   * `Ejecutar Script Instalador Arcade.bat`
-   * `Script_Instalador_Arcade.ps1`
-   * `Batocera`
-   * `Recalbox`
+1. Abre la carpeta Instalador Automatico en tu PC. Contiene los lanzadores/scripts en español e inglés, además de las subcarpetas Batocera, Recalbox y RetroBat.
 
 2. Haz **clic** sobre `Ejecutar Script Instalador Arcade.bat`.
 
 3. Sigue las instrucciones en la ventana de la consola:
    * **Paso 1:** Introduce la IP de tu panel LED y pulsa `Enter`.
-   * **Paso 2:** Introduce la ruta de tu Recalbox. Puede ser una ruta de red (ej: `\\192.168.1.118`) o la letra de una unidad física si conectaste el disco/SD al PC (ej: `E:`).
+   * **Paso 2:** Selecciona 2 Recalbox.
+   * **Paso 3:** Introduce la ruta de tu Recalbox. Puede ser una ruta de red o una letra de unidad si conectaste el soporte directamente al PC.
 
 4. El script nos solicitará:
-   * El sistema que utilizamos, seleccionaremos 2 Recalbox.
    * Que modo de funcionamiento deseas activar?
      * Opción 1: Menús y Juegos (Muestra sistemas al navegar + juego lanzado)
      * Opción 2: Solo Juegos (Marquesina fija/reloj en menús, cambia solo al jugar)
@@ -83,14 +79,14 @@ He desarrollado un **Script Instalador Inteligente en PowerShell** que realiza t
 > El reinicio completo del sistema es **obligatorio**. A partir de ese momento, cada vez que navegues por el menú, lances o cierres un juego, el panel reaccionará automáticamente.
 
 ### 3. 🛠️ Marquesinas.
-Usaremos el script se encuentra en la carpeta `Arcade/Marquesinas/` del proyecto [aquí](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/Marquesinas). Consta de dos archivos `Ejecutar Script Marquesinas Recalbox.bat` y `Script Marquesinas Recalbox.ps1`.
+Usaremos el script se encuentra en la carpeta `Arcade/Marquesinas/` del proyecto [aquí](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/Marquesinas). Consta de dos archivos `Ejecutar Script Marquesinas_Recalbox.bat` y `Script_Marquesinas_Recalbox.ps1`.
 
-1.  **Ejecuta el archivo** ``Ejecutar Script Marquesinas Recalbox.bat` (Lanzador para evitar bloqueos de Windows).
+1.  **Ejecuta el archivo** ``Ejecutar Script Marquesinas_Recalbox.bat` (Lanzador para evitar bloqueos de Windows).
 2.  **Configuración de rutas:**
     * **Origen:** Introduce la ruta de tus ROMs de Recalbox (ej: `\\192.168.1.118\share\roms`).
     * **Destino:** Introduce la ruta `C:\marquesinas`.
 3.  **Selección de Imagen:** Selecciona el tipo de imagen a usar para las marquesinas.
-4.  **Selección de Sistema:** El script detectará automáticamente qué sistemas tienen un archivo `gamelist.xml`. Puedes elegir procesar uno solo por su número, varios o **Todos (0)**.
+4.  **Selección de Sistema:** El script detectará automáticamente qué sistemas tienen un archivo `gamelist.xml`. Puedes elegir procesar un solo sistema por su número o **Todos (0)**.
 5.  **Copiar:** Si seleccionaste la ruta `C:\marquesinas` copia la carpeta  `marquesinas` y todo su contenido en la SD o SSD donde está instalado Recalbox `share\`, como se indica en el punto `6. Estructura de archivos en la SD o SSD de Recalbox`.
 
 <img width="1098" height="630" alt="image" src="https://github.com/user-attachments/assets/f2a99ce2-0b83-40cc-84bc-d24962f2c83e" />
@@ -142,9 +138,9 @@ share/marquesinas/Arcade/neogeo/mslug_02.gif
 
 #### ¿De dónde saco los GIFs?
 
-Si ya tienes (o has descargado) una colección de GIFs de arcade con nombres "humanos" en vez de nombres de romset (por ejemplo `ARCADE_NEOGEO_MetalSlugStory.gif` en vez de `mslug.gif`), usa el sigueinte script para renombar los GIFs, descargalo de [aquí](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/GIFs) y sigue estos pasos:
+Si ya tienes (o has descargado) una colección de GIFs de arcade con nombres "humanos" en vez de nombres de romset (por ejemplo `ARCADE_NEOGEO_MetalSlugStory.gif` en vez de `mslug.gif`), usa el sigueinte script para renombar los GIFs, descargalo de [aquí](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/GIFs) y sigue estos pasos:
 
-1. Ejecuta `Ejecutar Script_RetroPixelLED_GIF_Renamer.bat`.
+1. Ejecuta `Ejecutar RetroPixelLED_GIF_Renamer.bat`.
 
 2. **Opción 1 — Renombrar GIFs:** indica la carpeta donde tienes los GIFs. El script consulta un catálogo público de nombres de MAME ([`MAME.dat`](https://github.com/libretro/libretro-database)) para identificar a qué romset corresponde cada título, además de un diccionario propio para los casos más comunes. Puedes elegir entre coincidencia solo exacta, o exacta + aproximada (resuelve más casos, con algo más de riesgo). Lo que no consiga identificar se mueve a una carpeta `SinResolver\` para que lo revises tú a mano — nunca renombra "a ciegas".
    <img width="1090" height="830" alt="image" src="https://github.com/user-attachments/assets/58ba389f-367c-4114-b6e1-533018f50e77" />
@@ -155,10 +151,10 @@ Si ya tienes (o has descargado) una colección de GIFs de arcade con nombres "hu
 También puedes generarlos — el panel solo necesita que el archivo final esté a **128×32 píxeles**. Como referencia, si tu colección de Batocera ya tiene vídeos de preview scrapeados (`<video>` en el `gamelist.xml`), puedes convertirlos a GIF con una herramienta como [dmd_gif_converter](https://github.com/red77290/dmd_gif_converter), que además de redimensionar incluye un modo de encuadre automático pensado para no perder la acción al reducir un vídeo grande a un tamaño tan pequeño. Es un proyecto de terceros, independiente de este repositorio — cualquier otro método que te deje un `.gif` de 128×32 servirá igual de bien.
 
  ### 5. 🛠️ Logos de Sistemas.
- Podemos usar los logos ya redimensionados que se encuentran en la carpeta `Arcade/Logos Sistemas/` del proyecto [aquí](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/Logos%20Sistemas).
+ Podemos usar los logos ya redimensionados que se encuentran en la carpeta `Arcade/Logos Sistemas/` del proyecto [aquí](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/Logos%20Sistemas).
  1.  **Copiar:** Copia la carpeta  `Logos` y todo su contenido en la SD o SSD donde está instalado Recalbox `share\marquesinas`, como se indica en el punto `6. Estructura de archivos en la SD o SSD de Recalbox`
 
- Si prefieres usar otros logos como por ejemplo los del tema que tienes instalado. Usaremos el script se encuentra en la carpeta `Arcade/Logos Sistemas/` del proyecto [aquí](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/Logos%20Sistemas). Consta de dos archivos `Ejecutar Script Logos.bat` y `Script Logos.ps1`.
+ Si prefieres usar otros logos como por ejemplo los del tema que tienes instalado. Usaremos el script se encuentra en la carpeta `Arcade/Logos Sistemas/` del proyecto [aquí](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/Logos%20Sistemas). Consta de dos archivos `Ejecutar Script Logos.bat` y `Script_Logos.ps1`.
 
 1.  **Ejecuta el archivo** ``Ejecutar Script Logos.bat` (Lanzador para evitar bloqueos de Windows).
 2.  **Configuración de rutas:**

@@ -1,4 +1,8 @@
 {
   "v": 314,
-  "url": "https://github.com/MetalCatViking/RetroPixelLED-Lite/raw/refs/heads/main/docs/firmware.bin"
+  "url": "https://github.com/MetalCatViking/RetroPixelLED-Lite/raw/refs/heads/main/docs/firmware.bin",
+  "notes": [
+    "Firmware update notifications in the PWA",
+    "Diagnostics from the PWA"
+  ]
 }

@@ -641,7 +641,8 @@ function Invoke-CopiarGifsASistemas {
     Write-Host "  1) ReplayOS (SD de RetroPixelLED)" -ForegroundColor White
     Write-Host "  2) Batocera (marquesinas/Arcade en el recurso de red)" -ForegroundColor White
     Write-Host "  3) Recalbox (marquesinas/Arcade en el recurso de red)" -ForegroundColor White
-    $destinoOpt = Read-Host "Opcion (1-3)"
+    Write-Host "  4) RetroBat (carpeta Arcade local)" -ForegroundColor White
+    $destinoOpt = Read-Host "Opcion (1-4)"
 
     switch ($destinoOpt) {
         "2" {
@@ -649,6 +650,9 @@ function Invoke-CopiarGifsASistemas {
         }
         "3" {
             $arcadeRoot = Get-ConfigValue "ArcadeRoot_Recalbox" "\\RECALBOX\share\marquesinas\Arcade" "Ruta de marquesinas/Arcade de Recalbox (recurso de red)"
+        }
+        "4" {
+            $arcadeRoot = Get-ConfigValue "ArcadeRoot_RetroBat" "C:\RetroPixelLED\Arcade" "Ruta local de Arcade para RetroBat"
         }
         Default {
             $arcadeRoot = Get-ConfigValue "ArcadeRoot" "D:\Arcade" "Ruta de la carpeta Arcade de destino (SD de ReplayOS)"

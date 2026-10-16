@@ -36,13 +36,13 @@ Si la rama 2.x.x trajo el Menú OSD, la **v3.0.0** fue el salto definitivo hacia
 
 ## 📑 Índice
 
-1. [🆕 Novedades de la versión actual](#-novedades-de-la-versión-v313-lite)
+1. [🆕 Novedades de la versión actual](#-novedades-de-la-versión-v314-lite)
 2. [🚀 Guía rápida](#-guía-rápida-primeros-pasos)
 3. [🎛️ Funciones principales](#️-funciones-principales)
    - [🖥️ Menú OSD](#️-menú-osd-navegación-inteligente)
    - [📱 PWA — App de control remoto](#-pwa--app-de-control-remoto)
    - [🏠 Home Assistant](#-home-assistant)
-   - [🕹️ Modo Arcade](#️-modo-arcade-batocera-recalbox--replayos)
+   - [🕹️ Modo Arcade](#️-modo-arcade-batocera-recalbox-replayos-y-retrobat)
    - [🕒 Reloj y Clima](#-reloj-y-clima)
    - [⏰ Temporizador](#-temporizador)
    - [🌐 Multi-idioma](#-multi-idioma)
@@ -55,7 +55,7 @@ Si la rama 2.x.x trajo el Menú OSD, la **v3.0.0** fue el salto definitivo hacia
    - [4. Zona horaria (TZ)](#4--configuración-de-zona-horaria-tz)
    - [5. API key del clima](#5-%EF%B8%8F-c%C3%B3mo-obtener-tu-api-key-de-clima)
 5. [📖 Generador de playlists (Windows)](#-generador-de-playlists-windows)
-6. [🕹️ Integración con Arcade](#️-integración-con-arcade-batocera-recalbox-o-replayos)
+6. [🕹️ Integración con Arcade](#️-integración-con-arcade-batocera-recalbox-replayos-o-retrobat)
 7. [🏠 Integración con Home Assistant](#-integración-con-home-assistant-guía-completa)
 8. [🧠 Arquitectura interna / Core Lite](#-arquitectura-interna--core-lite)
 9. [📜 Historial de cambios detallado](#-historial-de-cambios-detallado-v300--v313)
@@ -66,7 +66,13 @@ Si la rama 2.x.x trajo el Menú OSD, la **v3.0.0** fue el salto definitivo hacia
 
 ---
 
-## 🆕 Novedades de la versión v3.1.3 Lite
+## 🆕 Novedades de la versión v3.1.4 Lite
+
+- **🕹️ Soporte para RetroBat:** hooks de Windows al iniciar/finalizar juegos, con GIF animado, marquesina estática y logo de sistema como alternativa.
+- **⚙️ Velocidad de lectura SD configurable:** permite bajar la velocidad del bus SD si aparecen cortes o errores de lectura.
+- **💾 Nuevo esquema de particiones:** para actualizar desde versiones anteriores, usa el instalador web; la actualización OTA no es compatible con el cambio de particiones.
+
+### También incluido desde v3.1.3
 
 - **🕹️ Soporte para el sistema RePlayOS:** reproducción automática de GIFs y marquesinas retro al cambiar de juego mediante integración con el frontend RePlayOS.
 - **⏰ Nuevos estilos visuales para el reloj:** más opciones de personalización para la visualización de la hora en el panel LED.
@@ -85,7 +91,7 @@ Si es la primera vez que instalas Retro Pixel LED Lite, este es el camino más c
 3. **Edita `config.ini`** con tu WiFi y tus preferencias — es el único archivo que necesitas tocar para arrancar ([referencia completa](#3--configuración-vía-configini)).
 4. **Enciende el panel.** Sincronizará la hora, cargará tus GIFs y estará listo. ✨
 5. *(Opcional)* Instala la [PWA](#-pwa--app-de-control-remoto) para controlarlo desde el móvil, o [intégralo con Home Assistant](#-integración-con-home-assistant-guía-completa) si usas domótica.
-6. *(Opcional)* Si tienes Batocera, Recalbox o ReplayOS, sigue la [guía de integración Arcade](#️-integración-con-arcade-batocera-recalbox-o-replayos) para marquesinas dinámicas.
+6. *(Opcional)* Si usas Batocera, Recalbox, ReplayOS o RetroBat, sigue la [guía de integración Arcade](#️-integración-con-arcade-batocera-recalbox-replayos-o-retrobat) para marquesinas dinámicas.
 
 El resto de este documento es la referencia detallada de cada función — no hace falta leerlo entero para empezar. 🙂
 
@@ -120,7 +126,7 @@ El sistema se controla mediante un **único botón** (o el mando IR), con una l�
 ├── 📂 Reproducción
 │   ├── 🖼️ Modo: [GIFs / Reloj]
 │   ├── 🔀 Aleatorio: [SI / NO]
-│   ├── 🕹️ Arcade: [OFF / Batocera / Recalbox / ReplayOS]
+│   ├── 🕹️ Arcade: [OFF / Batocera / Recalbox / ReplayOS / RetroBat]
 │   ├── 💬 Texto: [SI / NO]
 │   └── 🔙 Volver
 ├── ☀️ Brillo
@@ -135,7 +141,7 @@ El sistema se controla mediante un **único botón** (o el mando IR), con una l�
 │   ├── 🔄 Activar: [SI / NO]
 │   ├── 🖼️ Cada: [1...20] GIFs
 │   ├── ⏳ Ver: [5...30] seg
-│   ├── 🎨 Estilo Reloj: [Matrix, Solid, Rainbow, Pulse, Gradient]
+│   ├── 🎨 Estilo Reloj: [Solid, Aurora, Rainbow, Gradient, Fuego, Glitch]
 │   ├── 🎨 Color: [Blanco, Rojo, Verde, Azul, Amarillo, Cian, Magenta, Naranja, Rosa]
 │   ├── 🔄 Transición: [SI / NO]
 │   └── 🔙 Volver
@@ -188,7 +194,7 @@ La interfaz se divide en **5 secciones**:
 - **☀️ Control de brillo:** slider 0-100% con aplicación instantánea, sin reinicio.
 - **🎛️ Selector de modo:** GIF, Reloj o Texto en tiempo real.
   - **Modo GIF:** playlist activa + toggle de reproducción aleatoria.
-  - **Modo Reloj:** 5 estilos (Matrix, Solid, Rainbow, Pulse, Gradient) y 9 colores.
+  - **Modo Reloj:** 6 estilos (Solid, Aurora, Rainbow, Gradient, Fuego, Glitch) y 9 colores.
   - **Modo Texto:** vista previa en vivo de la matriz mientras escribes, con color, fuente y velocidad de scroll.
 - **🔌 Estado de conexión:** indicador visual (verde/rojo) del WiFi.
 
@@ -244,9 +250,9 @@ Ver la [guía completa de integración con Home Assistant](#-integración-con-ho
 
 ---
 
-### 🕹️ Modo Arcade (Batocera, Recalbox & ReplayOS)
+### 🕹️ Modo Arcade (Batocera, Recalbox, ReplayOS y RetroBat)
 
-Convierte el panel en una marquesina dinámica que reacciona a lo que estás jugando, con dos vías de sincronización: scripts locales (**Batocera / Recalbox**) o monitorización nativa por red (**ReplayOS**).
+Convierte el panel en una marquesina dinámica que reacciona a lo que estás jugando. Batocera y Recalbox usan scripts locales, ReplayOS su integración de red y RetroBat hooks de Windows al iniciar/finalizar juegos. RetroBat reacciona al lanzar o cerrar un juego, no mientras navegas por los menús.
 
 Muestra automáticamente:
 1. **Marquesina del juego:** imagen `.bmp` de 24 bits, o un **GIF animado** si existe uno para ese juego — incluyendo secuencias de varios GIFs reproducidos uno tras otro en bucle.
@@ -258,7 +264,7 @@ Se activa desde `Menú → Reproducción → Arcade`. La guía de instalación c
 
 ### 🕒 Reloj y Clima
 
-- **Reloj:** 5 estilos (Matrix, Solid, Rainbow, Pulse, Gradient) y 9 colores, con transición de partículas al aparecer/desaparecer. Se interrumpe la galería de GIFs cada *x* GIFs para mostrarlo *x* segundos (configurable), retomando la reproducción justo donde se quedó.
+- **Reloj:** 6 estilos (Solid, Aurora, Rainbow, Gradient, Fuego, Glitch) y 9 colores, con transición de partículas al aparecer/desaparecer. Se interrumpe la galería de GIFs cada *x* GIFs para mostrarlo *x* segundos (configurable), retomando la reproducción justo donde se quedó.
 - **Clima:** con una API key gratuita de OpenWeatherMap, muestra temperatura e icono del tiempo sobre el reloj, junto a un mensaje personalizable (`WEATHER_MSG`). Ver [cómo obtener tu API key](#5--cómo-obtener-tu-api-key-de-clima).
 
 ---
@@ -404,7 +410,7 @@ LATCH_BLANK=1
 PLAY_MODE=0
 # Activa o desactiva la configuracion mediante la APP: 0=OFF, 1=ON (Requiere WiFi)
 CONFI_APP_ENABLE=1
-# Selecciona tu sistema Arcade: 0=OFF, 1=Batocera, 2=Recalbox, 3=ReplayOS
+# Selecciona tu sistema Arcade: 0=OFF, 1=Batocera, 2=Recalbox, 3=ReplayOS, 4=RetroBat
 ARCADE_ENABLE=0
 # Activa o desactiva el texto en scroll: 0=OFF, 1=ON (Requiere WiFi)
 TEXT_ENABLE=1
@@ -416,7 +422,7 @@ RANDOM_MODE=1
 AUTO_CLOCK_INT=6
 # Duracion: Cuantos segundos se muestra el reloj
 CLOCK_DURATION=10
-# Estilos: 0=Matrix, 1=Solid, 2=Rainbow, 3=Pulse, 4=Gradient
+# Estilos: 0=Solid, 1=Aurora, 2=Rainbow, 3=Gradient, 4=Fuego, 5=Glitch
 CLOCK_STYLE=2
 # Activa la transicion del reloj a GIFs con una explosion de particulas : 0=OFF, 1=ON
 TRANSITION_ENABLE=1
@@ -497,7 +503,7 @@ El script `Generador de Playlist v1.0.1.bat` crea colecciones personalizadas sin
 
 ---
 
-## 🕹️ Integración con Arcade (Batocera, Recalbox o ReplayOS)
+## 🕹️ Integración con Arcade (Batocera, Recalbox, ReplayOS o RetroBat)
 
 Activa `Menú → Reproducción → Arcade` para que el panel muestre las marquesinas del juego o sistema en el que estás:
 
@@ -506,7 +512,7 @@ Activa `Menú → Reproducción → Arcade` para que el panel muestre las marque
 ├── 📂 Reproducción
 │   ├── 🖼️ Modo: [GIFs / Reloj]
 │   ├── 🔀 Aleatorio: [SI / NO]
-│   ├── 🕹️ Arcade: [OFF / Batocera / Recalbox / ReplayOS]   <-- AQUÍ
+│   ├── 🕹️ Arcade: [OFF / Batocera / Recalbox / ReplayOS / RetroBat]   <-- AQUÍ
 │   └── 🔙 Volver
 ```
 
@@ -518,6 +524,8 @@ Activa `Menú → Reproducción → Arcade` para que el panel muestre las marque
 > **[👉 Instrucciones de Recalbox](https://github.com/MetalCatViking/RetroPixelLED-Lite/blob/main/Espanol/README_RECALBOX.md)**
 >
 > **[👉 Instrucciones de ReplayOS](https://github.com/MetalCatViking/RetroPixelLED-Lite/blob/main/Espanol/README_REPLAYOS.md)**
+>
+> **[👉 Instrucciones de RetroBat](https://github.com/MetalCatViking/RetroPixelLED-Lite/blob/main/Espanol/README_RETROBAT.md)**
 
 ---
 
@@ -552,7 +560,7 @@ Detalles técnicos de cómo funciona el sistema por dentro:
 - **Anti-Panic RAM Management:** vigilancia del *heap* — si el DMA no puede asignar memoria tras usar WiFi, conmuta a Single Buffer para garantizar estabilidad.
 - **Motor de búsqueda binaria (Arcade):** localiza marquesinas entre miles de archivos en milisegundos, saltando directamente a la posición en la SD gracias a índices ordenados alfabéticamente — no "escanea" carpetas.
 - **Memoria adaptativa (Single/Double Buffer):** Double Buffer para fluidez total en GIFs; conmuta a Single Buffer en modo Arcade al cargar bitmaps de alta definición.
-- **API HTTP en tiempo real:** receptor de comandos para sincronización con Batocera, Recalbox, ReplayOS y Home Assistant.
+- **API HTTP en tiempo real:** receptor de comandos para sincronización con Batocera, Recalbox, ReplayOS, RetroBat y Home Assistant.
 - **Smart Text Centering:** alinea automáticamente menús y estados al centro de la matriz (`offset + 64px`), calculando el ancho de cada cadena.
 - **WiFi Stealth Mode:** el WiFi solo se activa brevemente para sincronizar hora y clima; el resto del tiempo el sistema va **100% offline**, con **0 lag** en la reproducción.
 - **Barra de notificaciones dinámica:** con el clima activo, el reloj baja su posición (`startY=9`) para mostrar `WEATHER_MSG`, el icono del tiempo y la temperatura.
