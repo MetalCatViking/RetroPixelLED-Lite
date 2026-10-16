@@ -42,8 +42,8 @@ Contrairement à Batocera et Recalbox, il n'y a pas d'installateur qui déploie 
 ### 🛠️ Prérequis
 
 1. Avoir accès, depuis le PC, à votre dossier de **ROMS** et à la **carte SD** du panneau (insérée dans le PC ou accessible comme lecteur).
-2. Télécharger les scripts pour les marquees **`Ejecutar Script Marquesinas_ReplayOS.bat`** et **`Script_Marquesinas_ReplayOS.ps1`**, disponibles [ici](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/Marquesinas).
-3. Télécharger les scripts pour renommer les GIFs **`Ejecutar Script_RetroPixelLED_GIF_Renamer.bat`** et **`Script_RetroPixelLED_GIF_Renamer.ps1`**, disponibles [ici](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/GIFs).
+2. Télécharger les scripts pour les marquees **`Ejecutar Script Marquesinas_ReplayOS.bat`** et **`Script_Marquesinas_ReplayOS.ps1`**, disponibles [ici](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/Marquesinas).
+3. Télécharger les scripts pour renommer les GIFs **`Ejecutar Script_RetroPixelLED_GIF_Renamer.bat`** et **`Script_RetroPixelLED_GIF_Renamer.ps1`**, disponibles [ici](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/GIFs).
 > [!IMPORTANT]
 > Si vous avez téléchargé le dépôt sous forme de fichier `.zip`, veillez à le **décompresser entièrement** avant d'exécuter les scripts.
 
@@ -98,7 +98,7 @@ Si un jeu ne possède ni marquee propre ni logo de système, le panneau cherche 
 
 #### Où trouver des GIFs ?
 
-Si vous avez déjà (ou avez téléchargé) une collection de GIFs arcade avec des noms "humains" au lieu de noms de romsets (par exemple `ARCADE_NEOGEO_MetalSlugStory.gif` au lieu de `mslug.gif`), utilisez le script suivant pour les renommer, téléchargeable [ici](https://github.com/fjgordillo86/RetroPixelLED-Lite/tree/main/Arcade/GIFs) :
+Si vous avez déjà (ou avez téléchargé) une collection de GIFs arcade avec des noms "humains" au lieu de noms de romsets (par exemple `ARCADE_NEOGEO_MetalSlugStory.gif` au lieu de `mslug.gif`), utilisez le script suivant pour les renommer, téléchargeable [ici](https://github.com/MetalCatViking/RetroPixelLED-Lite/tree/main/Arcade/GIFs) :
 
 1. Exécutez `Ejecutar Script_RetroPixelLED_GIF_Renamer.bat`.
 

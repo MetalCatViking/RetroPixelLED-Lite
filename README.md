@@ -480,7 +480,7 @@ For accurate **clock** and **timer** operation, the `TZ` environment string must
 ### 5. ☁️ How to Get Your Weather API Key
 
 1. Visit [OpenWeatherMap.org](https://openweathermap.org/) and create a free user account.
-2. For Batocera, Recalbox, and ReplayOS, configure the integration under your account profile → **"My API Keys"**.
+2. Open your account profile and select **"My API Keys"** to manage your API keys.
 3. Generate a new key (e.g., named "RetroPixel").
 4. **Note:** Newly generated API keys take 30 to 120 minutes to activate globally. If the display shows `0.0C`, allow time for key activation. ⏳
 5. Copy the generated key string into `API_KEY=` inside `config.ini`.
