@@ -1,8 +1,10 @@
 {
-  "v": 314,
+  "v": 315,
   "url": "https://github.com/MetalCatViking/RetroPixelLED-Lite/raw/refs/heads/main/docs/firmware.bin",
   "notes": [
-    "Firmware update notifications in the PWA",
-    "Diagnostics from the PWA"
+    "Integrated Wi-Fi setup portal",
+    "Configurable SD-card read speed",
+    "PWA notifications and diagnostics",
+    "Bug fixes and improvements"
   ]
 }
