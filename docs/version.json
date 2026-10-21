@@ -3,8 +3,6 @@
   "url": "https://github.com/MetalCatViking/RetroPixelLED-Lite/raw/refs/heads/main/docs/firmware.bin",
   "notes": [
     "Integrated Wi-Fi setup portal",
-    "Configurable SD-card read speed",
-    "PWA notifications and diagnostics",
-    "Bug fixes and improvements"
+    "Fixed parsing of # in Wi-Fi SSIDs and passwords unless preceded by a space"
   ]
 }
