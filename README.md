@@ -1,7 +1,7 @@
 # ✨ Retro Pixel LED Lite
 
 <p align="center">
-  <img alt="Version" src="https://img.shields.io/badge/version-3.1.4-blue">
+  <img alt="Version" src="https://img.shields.io/badge/version-3.1.5-blue">
   <img alt="Platform" src="https://img.shields.io/badge/platform-ESP32-informational">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-green">
   <img alt="Status" src="https://img.shields.io/badge/status-active-success">
@@ -24,7 +24,7 @@
 
 ## 💡 Project Description
 
-**Retro Pixel LED Lite** is the high-performance edition of Retro Pixel LED, designed for those seeking absolute stability, instant speed, and a maintenance-free system. Unlike the standard version, the **LITE** firmware ditches the embedded web server and continuous network overhead to dedicate 100% of the ESP32’s processing power to one main task: rendering GIFs flawlessly.
+**Retro Pixel LED Lite** is the high-performance edition of Retro Pixel LED, designed for those seeking absolute stability, instant speed, and a maintenance-free system. The **LITE** firmware prioritizes responsive GIF playback while providing local HTTP endpoints for the PWA, Home Assistant, and arcade integrations. Network features are available without requiring a separate server or PC.
 
 While the 2.x.x branch introduced the OSD Menu, **v3.0.0** was the definitive leap towards hardware independence: the panel became an autonomous smart device that does not require connection to a PC for setup or maintenance. `config.ini` and playlists can be edited directly via Windows File Explorer or an FTP client, turning your SD card into a wireless network drive. It also includes native IR remote control support: browse the OSD Menu, adjust brightness, and toggle power right from your couch.
 
@@ -34,7 +34,7 @@ While the 2.x.x branch introduced the OSD Menu, **v3.0.0** was the definitive le
 
 ## 📑 Table of Contents
 
-1. [🆕 What's New in the Current Version](#-whats-new-in-v314-lite)
+1. [🆕 What's New in the Current Version](#-whats-new-in-v315-lite)
 2. [🚀 Quick Start Guide](#-quick-start-guide)
 3. [🎛️ Key Features](#️-key-features)
    - [🖥️ OSD Menu](#️-osd-menu-smart-navigation)
@@ -56,7 +56,7 @@ While the 2.x.x branch introduced the OSD Menu, **v3.0.0** was the definitive le
 6. [🕹️ Arcade Integration](#️-arcade-integration-batocera-recalbox-replayos-or-retrobat)
 7. [🏠 Home Assistant Integration](#-home-assistant-integration-complete-guide)
 8. [🧠 Internal Architecture / Core Lite](#-internal-architecture--core-lite)
-9. [📜 Detailed Changelog](#-detailed-changelog-v300--v314)
+9. [📜 Detailed Changelog](#-detailed-changelog-v300--v315)
 10. [🛒 Bill of Materials](#-bill-of-materials)
 11. [🔌 Pinout & Wiring](#-pinout--wiring)
 12. [🛠️ Roadmap](#️-roadmap)
@@ -64,7 +64,14 @@ While the 2.x.x branch introduced the OSD Menu, **v3.0.0** was the definitive le
 
 ---
 
-## 🆕 What's New in v3.1.4 Lite
+## 🆕 What's New in v3.1.5 Lite
+
+- **📶 Wi-Fi setup portal:** configure a network from the panel's **Wi-Fi → Add Network** menu, or when Wi-Fi is enabled but no SSID is configured. The temporary access point is named `RetroPixel-LED`; follow the instructions displayed on the panel.
+- **🔧 Wi-Fi credential parsing fix:** `#` in SSIDs and passwords is now handled correctly unless preceded by a space.
+- **🌐 Local hostname support (English fork):** connect the PWA to `retropixel.local` on networks and devices that support mDNS; an IP-address fallback remains available.
+- **🩺 About and Diagnostics (English fork):** the PWA shows firmware and connection information, ESP32 diagnostics, and a copyable report.
+
+### Previously introduced in v3.1.4
 
 - **🕹️ RetroBat support:** adds Windows game-start/game-end hooks for animated or static game marquees and system-logo fallback.
 - **⚙️ Configurable SD card speed:** the SD interface speed can be selected in Advanced settings.
@@ -77,7 +84,7 @@ While the 2.x.x branch introduced the OSD Menu, **v3.0.0** was the definitive le
 - **⏰ New Clock Visual Styles:** additional customization options for rendering the clock display on the LED panel.
 - **📡 IR Remote Mapping via PWA:** capture, assign, and configure remote control buttons directly from the web interface.
 
-The RePlayOS, clock-style, and PWA IR-mapping features were introduced in v3.1.3; see the [Detailed Changelog](#-detailed-changelog-v300--v314) for earlier release history.
+The RePlayOS, clock-style, and PWA IR-mapping features were introduced in v3.1.3; see the [Detailed Changelog](#-detailed-changelog-v300--v315) for earlier release history.
 
 ---
 
@@ -183,7 +190,7 @@ The system is operated via a **single push button** (or IR remote) using input l
 
 **[👉 Install or test Retro Pixel LED Control](https://metalcatviking.github.io/RetroPixelLED-Lite/control/index_EN.htm)**
 
-A modern web app installable on any smartphone, tablet, or desktop connected to the same local network as your display. It does not rely on cloud servers and works offline once loaded. 📴
+A browser-based control app for devices on the same local network as the display. Installation as a standalone PWA has been tested in Chrome on Windows; support and installation behavior vary by browser and operating system. The app shell can load offline after caching, but controlling the panel still requires local network connectivity. 📴
 
 https://github.com/user-attachments/assets/f5231448-7862-4476-901e-ac25ac7f4248
 
@@ -223,9 +230,9 @@ Triggers an automatic reboot upon saving *only* if hardware changes require it.
 #### ⚙️ PWA Installation & Connection
 
 1. Open <https://metalcatviking.github.io/RetroPixelLED-Lite/control/index_EN.htm> on your device.
-2. Tap the connection icon (⚙) and enter your display panel's local IP (e.g., `192.168.1.117`).
-3. *(Optional)* Install as a standalone web application: Chrome/Edge will prompt automatically; otherwise, use the browser menu (⋮) → "Install app". On iOS Safari, tap Share (↗) → "Add to Home Screen".
-4. Ready — launches like a native app without typing URLs. 🎉
+2. Tap the connection icon (⚙) and enter `retropixel.local` (if mDNS works on your device) or the panel's local IP address (e.g., `192.168.1.117`). If hostname discovery fails, the PWA can offer a previously saved IP address.
+3. *(Optional)* In a supported browser, install the PWA as a standalone application. **Chrome on Windows has been tested**; installation on iOS has not yet been verified for this fork.
+4. Open **About** in the PWA to see firmware details and diagnostics or copy a diagnostic report.
 
 #### 📝 Prerequisites
 
@@ -375,7 +382,7 @@ The default configuration file is provided in the [Contenido SD](https://github.
 
 ```ini
 # ============================================================
-# 🕹️ RETRO PIXEL LED LITE v3.1.4 - CONFIGURATION FILE
+# 🕹️ RETRO PIXEL LED LITE v3.1.5 - CONFIGURATION FILE
 # ============================================================
 # Note: Do not leave spaces around '=' signs.
 # Correct example: BRIGHTNESS=40
@@ -566,7 +573,7 @@ Engine design and technical specifications:
 - **Adaptive Memory Management:** uses Double Buffering for high frame rate GIF playback and smoothly transitions to Single Buffering during high-resolution bitmap rendering in Arcade mode.
 - **Real-Time HTTP API:** embedded REST request handlers for external synchronization with Batocera, Recalbox, ReplayOS, RetroBat, and Home Assistant.
 - **Smart Text Centering Engine:** calculates string pixel length and centers text automatically across panel bounds (`offset + 64px`).
-- **WiFi Stealth Mode:** network interfaces activate transiently for NTP time sync and weather fetches before going **100% offline**, achieving **0 ms latency** in rendering pipelines.
+- **Network-aware operation:** Wi-Fi supports time/weather synchronization and optional local services such as the PWA, HTTP API, and arcade integrations. The panel can continue operating without an internet connection.
 - **Dynamic Status Bar:** when weather is active, clock positioning adjusts down (`startY=9`) to display `WEATHER_MSG`, icon graphics, and temperature.
 - **Advanced Day/Night Iconography:** pixel art icons (Sun, Moon, Clouds, Rain, Snow, Thunderstorm, Fog) mapped to match local time.
 - **Dynamic Playlist Pipeline:** handles custom lists from `/playlists/` on demand through OSD controls.
@@ -576,10 +583,13 @@ Engine design and technical specifications:
 
 ---
 
-## 📜 Detailed Changelog (v3.0.0 → v3.1.4)
+## 📜 Detailed Changelog (v3.0.0 → v3.1.5)
 
 | Feature | Technical Details | Benefit |
 | :--- | :--- | :--- |
+| **📶 Wi-Fi Setup Portal (v3.1.5)** | Configure Wi-Fi from the OSD or when no SSID is configured; temporary local setup portal. | Set up networking without manually editing the SD card. |
+| **🌐 mDNS Hostname (English fork)** | `retropixel.local` with an IP-address fallback in the English PWA. | Easier local connection when mDNS is supported. |
+| **🩺 About and Diagnostics (English fork)** | PWA firmware and system information with a copyable diagnostic report. | Easier troubleshooting. |
 | **⚙️ Configurable SD Card Speed** | SD card interface speed can be selected from Advanced settings. | Allows adjustment for SD-card compatibility and stability. |
 | **🧩 Updated Partition Layout (v3.1.4)** | New partition scheme; earlier versions cannot be upgraded to v3.1.4 via OTA. | Use the web installer for the initial 3.1.4 installation; SD-card files and settings are preserved. |
 | **🕹️ RePlayOS Integration** | Native API client integration with the RePlayOS frontend for game marquees and system GIFs. | **Dynamic Arcade Experience.** Automatically updates marquees when changing games in RePlayOS. |
