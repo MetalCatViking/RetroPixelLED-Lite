@@ -1,5 +1,18 @@
 ## 📝 Changelog
 
+### [v3.1.5] - 2026-10 (English fork)
+
+#### ✨ Added
+* **Wi-Fi Setup Portal:** configure Wi-Fi from the OSD (**Wi-Fi → Add Network**) or automatically when Wi-Fi is enabled but no SSID is configured. The temporary access point is named `RetroPixel-LED`.
+* **mDNS Hostname (English fork):** the panel advertises `retropixel.local` when connected to Wi-Fi. The English PWA can fall back to a previously saved IP address if hostname resolution fails.
+* **PWA About and Diagnostics (English fork):** firmware version, device statistics, and a copyable diagnostic report, backed by a read-only `/diag` endpoint.
+
+#### 🛡️ Fixes
+* **Wi-Fi Configuration Parsing:** corrected handling of `#` in SSIDs and passwords unless preceded by a space.
+* **English PWA Cache Isolation:** moved original Spanish PWA files to `docs/control/spanish-reference/` and limited the service-worker app shell to English assets.
+
+---
+
 ### [v3.1.4] - 2026-10-04
 **Retro Pixel LED Lite: "Total Smoothness"**
 
