@@ -1,4 +1,4 @@
-const CACHE_NAME = "retropixel-shell-v2";
+const CACHE_NAME = "retropixel-shell-v4";
 const APP_SHELL = [
   "index.htm",
   "index_EN.htm",

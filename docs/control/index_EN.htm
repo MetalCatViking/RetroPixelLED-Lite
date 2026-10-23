@@ -57,6 +57,25 @@
     font-size:12px; line-height:1.6; color:var(--text-dim); list-style:disc;}
   .otaNotes.show{display:block;}
 
+  /* ---------- ABOUT / PANEL DIAGNOSTICS ---------- */
+  .aboutLink{text-align:center; margin:4px 0 20px;}
+  .aboutLink button{
+    background:none; border:none; color:var(--text-dim); font-size:11px;
+    letter-spacing:.5px; cursor:pointer; padding:8px 12px;
+  }
+  .infoGrid{display:grid; grid-template-columns:auto 1fr; gap:7px 14px; font-size:11px; margin-bottom:6px;}
+  .infoGrid .k{color:var(--text-dim);}
+  .infoGrid .v{color:var(--text-primary); text-align:right; word-break:break-word;}
+  .infoGrid .v a{color:var(--amber); text-decoration:none;}
+  .infoGrid .v.ok{color:#5FDB7E;}
+  .infoGrid .v.upd{color:var(--amber);}
+  .infoGrid .v.warn{color:var(--red-alert);}
+  #aboutCopy{
+    width:100%; margin-top:10px; padding:11px; border-radius:8px; border:2px solid var(--amber);
+    background:transparent; color:var(--amber); font-family:var(--font-pixel);
+    font-size:10px; letter-spacing:1px; cursor:pointer;
+  }
+
   /* ---------- CONNECTION ---------- */
   .conn{
     display:none;
@@ -459,6 +478,7 @@
   </div>
 
   <div class="status" id="statusMsg"></div>
+  <div class="aboutLink"><button id="aboutBtn">ℹ About</button></div>
 
 </div>
 
@@ -531,6 +551,27 @@
     </div>
 
     <button id="timerToggleBtn">TURN OFF NOW</button>
+  </div>
+</div>
+
+<div class="modalOverlay" id="aboutOverlay">
+  <div class="modalBox">
+    <div class="modalHead">
+      <h2>ABOUT</h2>
+      <button class="modalClose" id="aboutClose">✕</button>
+    </div>
+
+    <div class="otaBox">
+      <h3>Retro Pixel LED Lite</h3>
+      <div class="infoGrid" id="aboutInfo"></div>
+    </div>
+
+    <div class="otaBox">
+      <h3>Panel diagnostics</h3>
+      <div class="infoGrid" id="aboutDiag"><span class="k">Connecting…</span><span class="v"></span></div>
+      <div class="otaResult" id="aboutMsg" style="margin:6px 0 0;"></div>
+      <button id="aboutCopy">COPY REPORT</button>
+    </div>
   </div>
 </div>
 
@@ -1563,6 +1604,163 @@ document.getElementById('updateBtn').addEventListener('click', () => {
   if (panelStatus) comprobarActualizacion(panelStatus, true);
 });
 document.getElementById('updateClose').addEventListener('click', () => updateOverlay.classList.remove('open'));
+
+
+/* =========================================================
+   ABOUT: versions, credits and panel diagnostics
+   ========================================================= */
+const APP_ORIGINAL_AUTHOR      = 'fjgordillo86';
+const APP_ORIGINAL_AUTHOR_URL  = 'https://github.com/fjgordillo86';
+const APP_ORIGINAL_REPO_URL    = 'https://github.com/fjgordillo86/RetroPixelLED-Lite';
+const APP_FORK_AUTHOR          = 'MetalCatViking';
+const APP_FORK_AUTHOR_URL      = 'https://github.com/MetalCatViking';
+const APP_REPO_URL             = 'https://github.com/MetalCatViking/RetroPixelLED-Lite';
+const APP_LICENSE              = 'MIT';
+const APP_LICENSE_URL          = 'https://github.com/MetalCatViking/RetroPixelLED-Lite/blob/main/LICENSE';
+const APP_COPYRIGHT            = '© 2025-2026 fjgordillo86';
+
+const ABOUT_RESET = {
+  0:'Unknown', 1:'Power-on', 2:'External reset', 3:'Software reset',
+  4:'Panic (exception)', 5:'Interrupt watchdog', 6:'Task watchdog', 7:'Watchdog',
+  8:'Deep sleep', 9:'Brownout (power supply)', 10:'SDIO'
+};
+const ABOUT_RESET_WARN = [4, 5, 6, 7, 9];
+const ABOUT_MIN_BLOCK = 20 * 1024;
+const ABOUT_INTERVAL = 5000;
+
+let aboutTimer = null, aboutBusy = false, aboutLatest = null, aboutVersionNote = null, aboutPwaVersion = '';
+
+async function aboutReadPwaVersion(){
+  try {
+    const names = (await caches.keys()).filter(n => n.startsWith('retropixel-shell-v')).sort();
+    aboutPwaVersion = names.length ? names[names.length - 1].replace('retropixel-shell-v', '') : '';
+  } catch (e) { aboutPwaVersion = ''; }
+}
+
+function aboutKB(bytes){ return (Number(bytes) / 1024).toFixed(1) + ' KB'; }
+function aboutUptime(seconds){
+  const days = Math.floor(seconds / 86400), hours = Math.floor(seconds % 86400 / 3600), minutes = Math.floor(seconds % 3600 / 60);
+  return (days ? days + 'd ' : '') + hours + 'h ' + minutes + 'm';
+}
+
+function aboutAddRow(grid, key, value, cls, href){
+  const label = document.createElement('span'); label.className = 'k'; label.textContent = key;
+  const val = document.createElement('span'); val.className = 'v' + (cls ? ' ' + cls : '');
+  if (href) {
+    const link = document.createElement('a');
+    link.href = href; link.target = '_blank'; link.rel = 'noopener'; link.textContent = value;
+    val.appendChild(link);
+  } else {
+    val.textContent = value;
+  }
+  grid.append(label, val);
+}
+
+function aboutRenderInfo(){
+  const grid = document.getElementById('aboutInfo');
+  grid.replaceChildren();
+  const fw = aboutLatest ? aboutLatest.fw : ((panelStatus && panelStatus.fw) || '—');
+  aboutAddRow(grid, 'PWA', aboutPwaVersion ? 'v' + aboutPwaVersion : 'Not installed');
+  aboutAddRow(grid, 'Firmware', fw + (aboutVersionNote ? ' · ' + aboutVersionNote.text : ''), aboutVersionNote ? aboutVersionNote.cls : '');
+  aboutAddRow(grid, 'Original author', APP_ORIGINAL_AUTHOR, '', APP_ORIGINAL_AUTHOR_URL);
+  aboutAddRow(grid, 'Original Spanish project', 'GitHub', '', APP_ORIGINAL_REPO_URL);
+  aboutAddRow(grid, 'Fork / English translation', APP_FORK_AUTHOR, '', APP_FORK_AUTHOR_URL);
+  aboutAddRow(grid, 'License', APP_LICENSE, '', APP_LICENSE_URL);
+  aboutAddRow(grid, 'Copyright', APP_COPYRIGHT);
+  aboutAddRow(grid, 'Fork source code', 'GitHub', '', APP_REPO_URL);
+}
+
+async function aboutCheckPublishedVersion(firmwareNumber){
+  try {
+    const published = await leerVersionPublicada(false);
+    if (!published.v || !firmwareNumber) return;
+    if (published.v > firmwareNumber) aboutVersionNote = { text:'update available: ' + (published.name || fmtVersion(published.v)), cls:'upd' };
+    else if (firmwareNumber > published.v) aboutVersionNote = { text:'development version', cls:'' };
+    else aboutVersionNote = { text:'up to date', cls:'ok' };
+    aboutRenderInfo();
+  } catch (e) {}
+}
+
+function aboutRenderDiagnostics(data){
+  aboutLatest = data;
+  const firmwarePercent = data.slotKB ? Math.round(data.sketchKB / data.slotKB * 100) : 0;
+  const grid = document.getElementById('aboutDiag');
+  grid.replaceChildren();
+  aboutAddRow(grid, 'Uptime', aboutUptime(data.uptime));
+  aboutAddRow(grid, 'Last reset', ABOUT_RESET[data.rst] || ('Code ' + data.rst), ABOUT_RESET_WARN.includes(data.rst) ? 'warn' : '');
+  aboutAddRow(grid, 'Free RAM', aboutKB(data.heapFree) + ' of ' + aboutKB(data.heapTotal));
+  aboutAddRow(grid, 'Minimum free RAM since boot', aboutKB(data.heapMin));
+  aboutAddRow(grid, 'Largest free block', aboutKB(data.heapBlock), data.heapBlock < ABOUT_MIN_BLOCK ? 'warn' : 'ok');
+  aboutAddRow(grid, 'Smallest observed free block', aboutKB(data.heapBlockMin), data.heapBlockMin < ABOUT_MIN_BLOCK ? 'warn' : '');
+  aboutAddRow(grid, 'Wi-Fi signal', data.rssi + ' dBm', data.rssi < -80 ? 'warn' : '');
+  aboutAddRow(grid, 'SD card', data.sdMB + ' MB at ' + data.sdSpeed + ' MHz');
+  aboutAddRow(grid, 'CPU', data.cpuMHz + ' MHz');
+  aboutAddRow(grid, 'Firmware in flash', data.sketchKB + ' KB of ' + data.slotKB + ' KB (' + firmwarePercent + '%)', firmwarePercent > 90 ? 'warn' : '');
+
+  const msg = document.getElementById('aboutMsg');
+  msg.className = 'otaResult'; msg.textContent = '';
+  aboutRenderInfo();
+  aboutCheckPublishedVersion(data.fwNum);
+}
+
+async function aboutLoadDiagnostics(){
+  if (aboutBusy) return;
+  const msg = document.getElementById('aboutMsg');
+  const ip = ipEl.value.trim();
+  if (!ip) { msg.className = 'otaResult err'; msg.textContent = 'Configure the panel address (⚙)'; return; }
+  aboutBusy = true;
+  try {
+    const response = await fetch(`http://${ip}/diag`, { signal: AbortSignal.timeout(4000) });
+    if (!response.ok) throw new Error('HTTP ' + response.status);
+    aboutRenderDiagnostics(await response.json());
+  } catch (e) {
+    msg.className = 'otaResult err';
+    msg.textContent = 'No data: ' + (e.name === 'TimeoutError' ? 'the panel is not responding' : e.message);
+  }
+  aboutBusy = false;
+}
+
+function aboutStart(){
+  aboutReadPwaVersion().then(aboutRenderInfo);
+  aboutLoadDiagnostics();
+  if (!aboutTimer) aboutTimer = setInterval(aboutLoadDiagnostics, ABOUT_INTERVAL);
+}
+function aboutStop(){ clearInterval(aboutTimer); aboutTimer = null; }
+
+const aboutOverlay = document.getElementById('aboutOverlay');
+document.getElementById('aboutBtn').addEventListener('click', () => aboutOverlay.classList.add('open'));
+document.getElementById('aboutClose').addEventListener('click', () => aboutOverlay.classList.remove('open'));
+new MutationObserver(() => {
+  if (aboutOverlay.classList.contains('open')) aboutStart(); else aboutStop();
+}).observe(aboutOverlay, { attributes:true, attributeFilter:['class'] });
+
+function aboutCopyText(text){
+  if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+  return new Promise((resolve, reject) => {
+    const textarea = document.createElement('textarea');
+    textarea.value = text; textarea.style.position = 'fixed'; textarea.style.opacity = '0';
+    document.body.appendChild(textarea); textarea.select();
+    try { document.execCommand('copy') ? resolve() : reject(new Error('copy')); } catch (e) { reject(e); }
+    document.body.removeChild(textarea);
+  });
+}
+
+document.getElementById('aboutCopy').addEventListener('click', async () => {
+  const msg = document.getElementById('aboutMsg');
+  if (!aboutLatest) { msg.className = 'otaResult err'; msg.textContent = 'No panel data available to copy yet'; return; }
+  const report = {
+    pwa: aboutPwaVersion,
+    browser: navigator.userAgent,
+    ...aboutLatest,
+    resetText: ABOUT_RESET[aboutLatest.rst] || ''
+  };
+  try {
+    await aboutCopyText(JSON.stringify(report, null, 2));
+    msg.className = 'otaResult ok'; msg.textContent = 'Report copied';
+  } catch (e) {
+    msg.className = 'otaResult err'; msg.textContent = 'Could not copy report';
+  }
+});
 
 /* ---------- Published firmware version notification ---------- */
 const VERSION_URL = '../version.json';
