@@ -26,6 +26,7 @@ void registrarRutasEstado() {
         StaticJsonDocument<384> doc;
         doc["fw"]              = FIRMWARE_VERSION;
         doc["fwNum"]           = CURRENT_VERSION_NUM;
+        doc["ip"]               = WiFi.localIP().toString();
         doc["brightness"]      = brightness;
         doc["playMode"]        = modoVisual;
         doc["randomMode"]      = randomMode;

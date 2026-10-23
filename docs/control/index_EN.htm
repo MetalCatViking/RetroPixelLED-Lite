@@ -346,9 +346,11 @@
   </header>
 
   <div class="conn" id="connPanel">
-    <label for="ip">Panel IP on local network</label>
-    <input type="text" id="ip" placeholder="192.168.1.50" inputmode="decimal">
-    <div class="hint">The app sends requests to <code>http://IP/</code>. It must be on the same WiFi network as the panel.</div>
+    <label for="ip">Panel address (hostname or IP)</label>
+    <input type="text" id="ip" placeholder="retropixel.local" inputmode="url" autocapitalize="none" autocorrect="off" spellcheck="false">
+    <div class="hint">Enter <code>retropixel.local</code> or the panel's IP address (for example <code>192.168.1.50</code>). Your device must be on the same Wi-Fi network. If the hostname does not work on your device, use the IP address.</div>
+    <div class="hint" id="ipFallback" style="display:none;"></div>
+    <div class="hint">The app sends requests to <code>http://HOST/</code>. Your device must be on the same Wi-Fi network as the panel.</div>
   </div>
 
   <section class="powerSection">
@@ -836,7 +838,7 @@ if (fontPillsEl) {
   });
 }
 
-/* ---------- Connection (locally saved IP) ---------- */
+/* ---------- Connection (hostname or IP, saved locally) ---------- */
 const ipEl = document.getElementById('ip');
 const gearBtn = document.getElementById('gearBtn');
 const connPanel = document.getElementById('connPanel');
@@ -848,13 +850,45 @@ function loadIp(){
 function saveIp(ip){
   try { localStorage.setItem('rpl_ip', ip); } catch(e){}
 }
+function isIPv4(host){ return /^\d{1,3}(\.\d{1,3}){3}$/.test(host); }
+function lastKnownIp(){
+  try { return localStorage.getItem('rpl_ip_last') || ''; } catch(e){ return ''; }
+}
+function rememberPanelIp(ip){
+  if (!ip || !isIPv4(ip)) return;
+  try { localStorage.setItem('rpl_ip_last', ip); } catch(e){}
+}
+function showIpFallback(){
+  const box = document.getElementById('ipFallback');
+  const host = ipEl.value.trim();
+  const lastIp = lastKnownIp();
+  box.replaceChildren();
+  if (!host || isIPv4(host) || !lastIp) { box.style.display = 'none'; return; }
+
+  box.append('Could not reach “' + host + '”. Last known IP: ' + lastIp + ' ');
+  const button = document.createElement('button');
+  button.textContent = 'Use this IP';
+  button.style.cssText = 'margin-left:8px; padding:4px 8px; border:1px solid var(--amber); background:transparent; ' +
+                         'color:var(--amber); border-radius:6px; font-size:10px; cursor:pointer;';
+  button.onclick = () => {
+    ipEl.value = lastIp;
+    saveIp(lastIp);
+    box.style.display = 'none';
+    pingPanel();
+    cargarEstadoPanel();
+  };
+  box.append(button);
+  box.style.display = 'block';
+}
 
 ipEl.value = loadIp();
 if (!ipEl.value) connPanel.classList.add('open');
 
 gearBtn.addEventListener('click', () => connPanel.classList.toggle('open'));
 ipEl.addEventListener('change', () => {
-  saveIp(ipEl.value.trim());
+  const host = ipEl.value.trim();
+  ipEl.value = host;
+  saveIp(host);
   pingPanel();
   cargarEstadoPanel();
 });
@@ -868,15 +902,18 @@ function setStatus(text, kind){
 }
 
 async function pingPanel(){
-  const ip = ipEl.value.trim();
-  if (!ip) { connDot.style.background = '#6B7280'; connDot.style.boxShadow = 'none'; return; }
+  const host = ipEl.value.trim();
+  if (!host) { connDot.style.background = '#6B7280'; connDot.style.boxShadow = 'none'; return; }
   try {
-    await fetch(`http://${ip}/`, { method: 'GET', mode: 'no-cors', signal: AbortSignal.timeout(2500) });
+    await fetch(`http://${host}/`, { method: 'GET', mode: 'no-cors', signal: AbortSignal.timeout(2500) });
     connDot.style.background = '#5FDB7E';
     connDot.style.boxShadow = '0 0 8px #5FDB7E';
+    if (isIPv4(host)) rememberPanelIp(host);
+    document.getElementById('ipFallback').style.display = 'none';
   } catch (e) {
     connDot.style.background = 'var(--red-alert)';
     connDot.style.boxShadow = '0 0 8px var(--red-alert)';
+    showIpFallback();
   }
 }
 pingPanel();
@@ -912,6 +949,7 @@ async function cargarEstadoPanel(){
     const res = await fetch(`http://${ip}/status`, { signal: AbortSignal.timeout(4000) });
     if (!res.ok) return;
     panelStatus = await res.json();
+    rememberPanelIp(panelStatus.ip);
     aplicarEstadoPanelAUI(panelStatus);
     comprobarActualizacion(panelStatus, false);
   } catch (e) { /* offline: keep the default values */ }
