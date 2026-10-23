@@ -13,6 +13,7 @@ void registrarRutasWeb() {
     registrarRutasOTA();
     registrarRutasTexto();
     registrarRutasIR();
+    registrarRutasDiag();
 
     server.begin();
     tcpServer.begin();
@@ -519,4 +520,40 @@ void registrarRutasIR() {
         server.send(204);
     });
 
+}
+
+
+// --- READ-ONLY DIAGNOSTICS ---
+void registrarRutasDiag() {
+    server.on("/diag", HTTP_GET, [&]() {
+        server.sendHeader("Access-Control-Allow-Origin", "*");
+        server.sendHeader("Cache-Control", "no-store");
+
+        // Track the smallest largest-contiguous-free-heap value seen since this endpoint was first queried.
+        static uint32_t minimumFreeBlock = UINT32_MAX;
+        const uint32_t largestFreeBlock = ESP.getMaxAllocHeap();
+        if (largestFreeBlock < minimumFreeBlock) minimumFreeBlock = largestFreeBlock;
+
+        StaticJsonDocument<512> doc;
+        doc["fw"]           = FIRMWARE_VERSION;
+        doc["fwNum"]        = CURRENT_VERSION_NUM;
+        doc["uptime"]       = millis() / 1000;
+        doc["heapTotal"]    = ESP.getHeapSize();
+        doc["heapFree"]     = ESP.getFreeHeap();
+        doc["heapMin"]      = ESP.getMinFreeHeap();
+        doc["heapBlock"]    = largestFreeBlock;
+        doc["heapBlockMin"] = minimumFreeBlock;
+        doc["rst"]          = static_cast<int>(esp_reset_reason());
+        doc["rssi"]         = WiFi.RSSI();
+        doc["sdMB"]         = static_cast<uint32_t>(SD.cardSize() / (1024ULL * 1024ULL));
+        doc["sdSpeed"]      = sdSpeed;
+        doc["cpuMHz"]       = ESP.getCpuFreqMHz();
+        doc["sketchKB"]     = ESP.getSketchSize() / 1024;
+        doc["slotKB"]       = ESP.getFreeSketchSpace() / 1024;
+
+        // Serialize into a stack buffer to avoid allocating another heap-backed String.
+        char buf[512];
+        serializeJson(doc, buf, sizeof(buf));
+        server.send(200, "application/json", buf);
+    });
 }
