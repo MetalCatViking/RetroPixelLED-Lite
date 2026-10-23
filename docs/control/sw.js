@@ -1,8 +1,6 @@
-const CACHE_NAME = "retropixel-shell-v4";
+const CACHE_NAME = "retropixel-shell-v5";
 const APP_SHELL = [
-  "index.htm",
   "index_EN.htm",
-  "manifest.json",
   "manifest_EN.json",
   "icons/icon-192.png",
   "icons/icon-512.png"
