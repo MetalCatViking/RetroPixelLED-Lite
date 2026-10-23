@@ -1,4 +1,5 @@
 #include <WiFi.h>
+#include <ESPmDNS.h>
 #include <time.h>
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
@@ -2776,6 +2777,33 @@ void gestionarReconexionWiFi() {
 }
 
 // ====================================================================
+//                     mDNS (retropixel.local)
+// ====================================================================
+#define MDNS_HOSTNAME "retropixel"
+
+void gestionarMDNS() {
+    static bool activo = false;
+    static unsigned long ultimoIntento = 0;
+    const bool conectado = (WiFi.status() == WL_CONNECTED);
+
+    if (conectado && !activo) {
+        // Retry initialization every 30 seconds if it fails.
+        if (ultimoIntento != 0 && millis() - ultimoIntento < 30000UL) return;
+        ultimoIntento = millis();
+        if (MDNS.begin(MDNS_HOSTNAME)) {
+            MDNS.addService("http", "tcp", 80);
+            activo = true;
+            Serial.println(F("[mDNS] http://" MDNS_HOSTNAME ".local"));
+        } else {
+            Serial.println(F("[mDNS] Could not start; will retry."));
+        }
+    } else if (!conectado && activo) {
+        MDNS.end();
+        activo = false;
+    }
+}
+
+// ====================================================================
 //                     OTA UPDATE SYSTEM
 // ====================================================================
 int resultadoOTA = -1; // -1: none, 0: up to date, 1: updated, 2: error
@@ -4102,6 +4130,7 @@ void loop() {
     leerControlRemoto();
     chequearTimeoutMapeo();
 
+    gestionarMDNS();
     gestionarReconexionWiFi();
 
     if (WiFi.status() == WL_CONNECTED) {
