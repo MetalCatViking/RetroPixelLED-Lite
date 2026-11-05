@@ -1,7 +1,10 @@
 {
-  "v": 315,
+  "v": 316,
   "url": "https://github.com/MetalCatViking/RetroPixelLED-Lite/raw/refs/heads/main/docs/firmware.bin",
   "notes": [
+    "Added animated dynamic clock faces with fixed, random, and timed rotation modes",
+    "Added clock backgrounds, custom RGB color, and clock position controls",
+    "Supports OTA upgrade from v3.1.5 with the existing partition layout",
     "Integrated Wi-Fi setup portal",
     "Fixed parsing of # in Wi-Fi SSIDs and passwords unless preceded by a space"
   ]

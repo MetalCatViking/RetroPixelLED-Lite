@@ -1,7 +1,7 @@
 # ✨ Retro Pixel LED Lite
 
 <p align="center">
-  <img alt="Version" src="https://img.shields.io/badge/version-3.1.5-blue">
+  <img alt="Version" src="https://img.shields.io/badge/version-3.1.6-blue">
   <img alt="Platform" src="https://img.shields.io/badge/platform-ESP32-informational">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-green">
   <img alt="Status" src="https://img.shields.io/badge/status-active-success">
@@ -34,7 +34,7 @@ While the 2.x.x branch introduced the OSD Menu, **v3.0.0** was the definitive le
 
 ## 📑 Table of Contents
 
-1. [🆕 What's New in the Current Version](#-whats-new-in-v315-lite)
+1. [🆕 What's New in the Current Version](#-whats-new-in-v316-lite)
 2. [🚀 Quick Start Guide](#-quick-start-guide)
 3. [🎛️ Key Features](#️-key-features)
    - [🖥️ OSD Menu](#️-osd-menu-smart-navigation)
@@ -56,7 +56,7 @@ While the 2.x.x branch introduced the OSD Menu, **v3.0.0** was the definitive le
 6. [🕹️ Arcade Integration](#️-arcade-integration-batocera-recalbox-replayos-or-retrobat)
 7. [🏠 Home Assistant Integration](#-home-assistant-integration-complete-guide)
 8. [🧠 Internal Architecture / Core Lite](#-internal-architecture--core-lite)
-9. [📜 Detailed Changelog](#-detailed-changelog-v300--v315)
+9. [📜 Detailed Changelog](#-detailed-changelog-v300--v316)
 10. [🛒 Bill of Materials](#-bill-of-materials)
 11. [🔌 Pinout & Wiring](#-pinout--wiring)
 12. [🛠️ Roadmap](#️-roadmap)
@@ -64,7 +64,13 @@ While the 2.x.x branch introduced the OSD Menu, **v3.0.0** was the definitive le
 
 ---
 
-## 🆕 What's New in v3.1.5 Lite
+## 🆕 What's New in v3.1.6 Lite
+
+- **🕒 Dynamic clock faces:** choose from animated themes and set a fixed face, random selection, or timed rotation.
+- **🖼️ Clock backgrounds and color:** upload and manage 128×32 backgrounds from the PWA, choose a custom RGB clock color, and position the clock over a background.
+- **🔄 OTA upgrade compatibility:** v3.1.5 can upgrade to v3.1.6 over the air because the partition layout is unchanged.
+
+### Previously introduced in v3.1.5
 
 - **📶 Wi-Fi setup portal:** configure a network from the panel's **Wi-Fi → Add Network** menu, or when Wi-Fi is enabled but no SSID is configured. The temporary access point is named `RetroPixel-LED`; follow the instructions displayed on the panel.
 - **🔧 Wi-Fi credential parsing fix:** `#` in SSIDs and passwords is now handled correctly unless preceded by a space.
@@ -84,7 +90,7 @@ While the 2.x.x branch introduced the OSD Menu, **v3.0.0** was the definitive le
 - **⏰ New Clock Visual Styles:** additional customization options for rendering the clock display on the LED panel.
 - **📡 IR Remote Mapping via PWA:** capture, assign, and configure remote control buttons directly from the web interface.
 
-The RePlayOS, clock-style, and PWA IR-mapping features were introduced in v3.1.3; see the [Detailed Changelog](#-detailed-changelog-v300--v315) for earlier release history.
+The RePlayOS, clock-style, and PWA IR-mapping features were introduced in v3.1.3; see the [Detailed Changelog](#-detailed-changelog-v300--v316) for earlier release history.
 
 ---
 
@@ -382,7 +388,7 @@ The default configuration file is provided in the [Contenido SD](https://github.
 
 ```ini
 # ============================================================
-# 🕹️ RETRO PIXEL LED LITE v3.1.5 - CONFIGURATION FILE
+# 🕹️ RETRO PIXEL LED LITE v3.1.6 - CONFIGURATION FILE
 # ============================================================
 # Note: Do not leave spaces around '=' signs.
 # Correct example: BRIGHTNESS=40
@@ -583,10 +589,13 @@ Engine design and technical specifications:
 
 ---
 
-## 📜 Detailed Changelog (v3.0.0 → v3.1.5)
+## 📜 Detailed Changelog (v3.0.0 → v3.1.6)
 
 | Feature | Technical Details | Benefit |
 | :--- | :--- | :--- |
+| **🕒 Dynamic Clock Faces (v3.1.6)** | Animated clock themes with fixed, random, and timed rotation modes. | More clock styles with controls from the PWA. |
+| **🖼️ Clock Backgrounds and RGB Color (v3.1.6)** | Manage 128×32 SD-card backgrounds, set a custom RGB clock color, and select clock position. | Customize the Lite clock from the PWA. |
+| **🔄 OTA Upgrade (v3.1.6)** | v3.1.5 can upgrade to v3.1.6 with the existing partition layout. | Update the panel without a full installer flash. |
 | **📶 Wi-Fi Setup Portal (v3.1.5)** | Configure Wi-Fi from the OSD or when no SSID is configured; temporary local setup portal. | Set up networking without manually editing the SD card. |
 | **🌐 mDNS Hostname (English fork)** | `retropixel.local` with an IP-address fallback in the English PWA. | Easier local connection when mDNS is supported. |
 | **🩺 About and Diagnostics (English fork)** | PWA firmware and system information with a copyable diagnostic report. | Easier troubleshooting. |
