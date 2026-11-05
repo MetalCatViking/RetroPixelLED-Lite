@@ -244,6 +244,26 @@
   .plItem .plCheck{opacity:0; font-size:14px;}
   .plItem.active .plCheck{opacity:1;}
 
+  /* ---------- CLOCK BACKGROUND UPLOAD AND DELETE ---------- */
+  .bgUploadPanel{margin:12px 0 16px; padding:12px; background:var(--bg-deep); border:1px solid var(--grid-line); border-radius:8px;}
+  .bgUploadPanel .modalSub{margin:8px 0 4px;}
+  .bgRow{margin-top:12px; font-size:11px; color:var(--text-dim);}
+  .bgRow label{display:block; margin-bottom:6px;}
+  .bgRow label input[type=checkbox]{margin-right:6px; vertical-align:middle;}
+  .bgRow input[type=text]{width:100%; padding:8px 10px; background:var(--panel); border:1px solid var(--grid-line); border-radius:6px; color:var(--text-primary); font-family:var(--font-mono); font-size:13px;}
+  #bgPreview{display:block; width:100%; height:auto; image-rendering:pixelated; background:#000; border:1px solid var(--grid-line); border-radius:6px;}
+  button.big.bgGo{background:var(--amber); color:#1a1200; box-shadow:0 3px 0 var(--amber-dim);}
+  button.big.bgGo:active{transform:translateY(2px); box-shadow:none;}
+  button.big.bgCancel{background:transparent; border:2px solid var(--grid-line); color:var(--text-dim);}
+  button.big:disabled{opacity:.5; cursor:default;}
+  .plRight{display:flex; align-items:center; gap:4px;}
+  .plTrash{background:none; border:none; color:var(--text-dim); font-size:16px; padding:2px 8px; cursor:pointer;}
+  .plTrash:active{color:var(--red-alert);}
+  .bgMsg{display:none; margin:0 0 12px; padding:9px 12px; border-radius:6px; font-size:12px; line-height:1.4; background:var(--bg-deep); border:1px solid var(--grid-line); color:var(--text-dim);}
+  .bgMsg.ok{display:block; color:#5FDB7E; border-color:#5FDB7E;}
+  .bgMsg.err{display:block; color:var(--red-alert); border-color:var(--red-alert);}
+  .plCurrentRow.disabled{opacity:.55;}
+
   /* ---------- OTA SECTION (inside Settings) ---------- */
   .otaBox{
     background:var(--bg-deep); border:1px solid var(--grid-line); border-radius:10px;
@@ -346,6 +366,19 @@
   .irMsg{font-size:10px; text-align:center; min-height:14px; margin-top:10px;}
   .irMsg.ok{color:#5FDB7E;}
   .irMsg.err{color:var(--red-alert);}
+  /* ---------- DYNAMIC CLOCKS ---------- */
+  .dynHide{display:none !important;}
+  .dynHint{font-size:11px;color:var(--text-dim);margin-top:8px;line-height:1.4;}
+  .dynRotRow{margin-top:8px;}
+  .dynGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:10px;}
+  .dynCard{display:block;width:100%;padding:0;text-align:left;cursor:pointer;overflow:hidden;background:var(--panel);border:1px solid var(--grid-line);border-radius:8px;color:var(--text-primary);font-family:inherit;}
+  .dynCard.active{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber-dim);}
+  .dynThumb{position:relative;width:100%;aspect-ratio:4/1;background:#000;overflow:hidden;}
+  .dynThumb img{display:block;width:100%;height:100%;image-rendering:pixelated;}
+  .dynThumb::after{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(to right,rgba(0,0,0,.40) 1px,transparent 1px),linear-gradient(to bottom,rgba(0,0,0,.40) 1px,transparent 1px);background-size:calc(100% / 128) calc(100% / 32);}
+  .dynName{font-size:12px;padding:8px 10px 2px;}
+  .dynCard.active .dynName{color:var(--amber);}
+  .dynEmpty{font-size:11px;color:var(--text-dim);padding:12px;}
 </style>
 </head>
 <body>
@@ -413,6 +446,36 @@
       <span id="clockModeStatus">Current mode: GIF</span>
       <button class="pill" id="applyClockModeBtn">Switch to Clock</button>
     </div>
+    <section id="dynTypeSection" style="display:none;">
+      <div class="label-row"><span class="l">Clock type</span></div>
+      <div class="pillRow" id="dynTypeRow">
+        <button class="pill" data-type="lite">Classic clock</button>
+        <button class="pill" data-type="dynamic">Dynamic clock</button>
+      </div>
+    </section>
+    <div id="dynBox" style="display:none;">
+      <section id="dynModeSection">
+        <div class="label-row"><span class="l">Dynamic clock mode</span></div>
+        <div class="pillRow" id="dynModeRow">
+          <button class="pill" data-mode="0">Fixed</button>
+          <button class="pill" data-mode="1">Random</button>
+          <button class="pill" data-mode="2">Rotate</button>
+        </div>
+        <div class="pillRow dynRotRow" id="dynRotRow" style="display:none;"></div>
+        <div class="dynHint" id="dynHint"></div>
+      </section>
+      <section id="dynGridSection">
+        <div class="label-row"><span class="l">Clock faces</span><span class="v" id="dynCountLbl"></span></div>
+        <div class="pillRow" id="dynFilterRow">
+          <button class="pill" data-era="0">All</button>
+          <button class="pill" data-era="8">8-bit</button>
+          <button class="pill" data-era="16">16-bit</button>
+          <button class="pill" data-era="anime">Anime</button>
+          <button class="pill" data-era="cine">Movies</button>
+        </div>
+        <div class="dynGrid" id="dynGrid"></div>
+      </section>
+    </div>
     <section>
       <div class="label-row"><span class="l">Style</span></div>
       <div class="pillRow" id="clockStyleRow"></div>
@@ -420,7 +483,10 @@
     <section>
       <div class="label-row"><span class="l">Color</span></div>
       <div class="swatches" id="clockSwatches"></div>
+      <div class="hexrow"><input type="color" id="clockColorPicker" value="#FF0055"><input type="text" id="clockColorHex" value="#FF0055" maxlength="7" aria-label="Clock color hex value"></div>
     </section>
+    <section id="clockBgSection" style="display:none;"><div class="label-row"><span class="l">Background</span></div><div class="plCurrentRow" id="clockBgBtn"><span id="clockBgName">Black</span><span class="plChevron">▸</span></div></section>
+    <section id="clockPosSection" style="display:none;"><div class="label-row"><span class="l">Clock position</span></div><div class="pillRow" id="clockPosRow"></div></section>
   </div>
 
   <!-- ---------- PANEL: TEXT MODE ---------- -->
@@ -517,6 +583,24 @@
     </div>
     <div class="modalSub">Tap a playlist to activate it on the panel immediately.</div>
     <div id="plBody"><div class="cfgLoading">Loading playlists...</div></div>
+  </div>
+</div>
+
+<div class="modalOverlay" id="bgOverlay">
+  <div class="modalBox">
+    <div class="modalHead"><h2>CLOCK BACKGROUNDS</h2><button class="modalClose" id="bgClose">✕</button></div>
+    <div class="modalSub">Choose an image for the clock background. Any image can be uploaded; it will be converted to a 128x32 BMP before it is sent to the panel.</div>
+    <div class="bgMsg" id="bgMsg"></div>
+    <div class="plCurrentRow" id="bgUploadBtn" style="margin-bottom:12px;"><span id="bgUploadTxt">＋ Upload image…</span></div>
+    <input type="file" id="bgFile" accept="image/*" style="display:none;">
+    <div class="bgUploadPanel" id="bgUploadPanel" style="display:none;">
+      <canvas id="bgPreview" width="128" height="32"></canvas><div class="modalSub" id="bgNota"></div>
+      <div class="bgRow" id="bgModoRow"><label>Fit</label><div class="pillRow" id="bgModoPills"></div></div>
+      <div class="bgRow"><label><input type="checkbox" id="bgDither"> Smooth gradients (dithering)</label></div>
+      <div class="bgRow"><label for="bgNombre">Name</label><input type="text" id="bgNombre" maxlength="31"></div>
+      <div class="btnrow bgRow"><button class="big bgGo" id="bgSubir">UPLOAD</button><button class="big bgCancel" id="bgCancelar">CANCEL</button></div>
+    </div>
+    <div id="bgBody"><div class="cfgLoading">Loading backgrounds...</div></div>
   </div>
 </div>
 
@@ -1008,10 +1092,12 @@ function aplicarEstadoPanelAUI(st){
   // Aleatorio
   document.getElementById('randomToggle').checked = !!st.randomMode;
 
-  // Clock: style
+  // Clock: style and dynamic clock support
   renderClockStylePills(st.clockStyle);
+  applyDynamicClockState(st);
   // Clock: color
   refreshClockSwatchSelection(st.clockColorIndex);
+  if (st.clockColorHex) mostrarColorRelojUI(st.clockColorHex);
 
   // Text mode enabled in firmware
   document.getElementById('textoDisabledWarning').style.display = st.textEnable ? 'none' : 'block';
@@ -1091,7 +1177,7 @@ function selectMode(mode, avisarPanel = true){
   document.getElementById('modeReloj').classList.toggle('active', mode === 'reloj');
   document.getElementById('modeTexto').classList.toggle('active', mode === 'texto');
 
-  if (mode === 'reloj') actualizarClockModeUI(panelPlayModeActual);
+  if (mode === 'reloj'){ actualizarClockModeUI(panelPlayModeActual); cargarFondosReloj(); }
 
   if (!avisarPanel) return;
 
@@ -1173,6 +1259,529 @@ function refreshClockSwatchSelection(index){
     s.classList.toggle('active', isActive);
     if (isActive) s.style.color = PALETTE[index].c;
   });
+}
+
+/* ---------- CLOCK Mode: dynamic clock faces ---------- */
+const DYNAMIC_FACE_INFO = {
+  mario:{era:8}, luigi:{era:8}, peach:{era:8}, invaders:{era:8}, pacman:{era:8},
+  tetris:{era:8}, zelda:{era:8}, donkey:{era:8}, bubble:{era:8},
+  sonic:{era:16}, megamanx:{era:16}, bomberman:{era:16}, streets:{era:16},
+  fighter:{era:16}, castlevania:{era:16}, chrono:{era:16}, metalslug:{era:16},
+  dragonball:{era:'anime'}, naruto:{era:'anime'}, onepice:{era:'anime'}, pokemon:{era:'anime'},
+  terminator:{era:'cine'}, future:{era:'cine'}, matrix:{era:'cine'}, starwars:{era:'cine'},
+  jurassic:{era:'cine'}, ghostbusters:{era:'cine'}
+};
+const DYNAMIC_ROTATION_OPTIONS = [[5,'5 min'],[15,'15 min'],[30,'30 min'],[60,'1 hr'],[120,'2 hr']];
+const dynamicSlug = value => String(value).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'');
+const dynamicAssetSlug = value => ({castlevania:'castelvania',ghostbusters:'fantasma'}[dynamicSlug(value)] || dynamicSlug(value));
+const dynamicEscape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let dynamicFaces = [];
+let dynamicState = { clock:0, mode:0, rotation:15, supportsModes:false };
+let dynamicFilter = '0';
+let lastDynamicFace = 1;
+const dynamicTypeSection = document.getElementById('dynTypeSection');
+const dynamicBox = document.getElementById('dynBox');
+const dynamicLiteSections = ['clockStyleRow','clockSwatches','clockBgSection','clockPosSection'].map(id => {
+  const el = document.getElementById(id);
+  return el && el.closest('section');
+}).filter(Boolean);
+
+async function loadDynamicFaces(){
+  const ip = ipEl.value.trim();
+  if (!ip) return false;
+  try {
+    const response = await fetch(`http://${ip}/dynfaces`, {signal:AbortSignal.timeout(4000)});
+    if (!response.ok) return false;
+    const names = await response.json();
+    if (!Array.isArray(names)) return false;
+    dynamicFaces = names;
+    return true;
+  } catch (e) { return false; }
+}
+
+function renderDynamicGrid(){
+  const items = dynamicFaces.map((name,index) => ({
+    name,index,era:(DYNAMIC_FACE_INFO[dynamicSlug(name)] || {}).era
+  })).filter(item => dynamicFilter === '0' || String(item.era) === dynamicFilter);
+  document.getElementById('dynCountLbl').textContent = `${items.length} / ${dynamicFaces.length}`;
+  document.querySelectorAll('#dynFilterRow .pill').forEach(button =>
+    button.classList.toggle('active', button.dataset.era === dynamicFilter));
+  document.getElementById('dynGrid').innerHTML = items.map(item => `
+    <button class="dynCard ${dynamicState.clock === item.index + 1 ? 'active' : ''}" data-face="${item.index + 1}">
+      <div class="dynThumb"><img src="dyn/${dynamicAssetSlug(item.name)}.png" alt="" loading="lazy" onerror="this.style.display='none'"></div>
+      <div class="dynName">${dynamicEscape(item.name)}</div>
+    </button>`).join('') || '<div class="dynEmpty">No clock faces match this filter.</div>';
+}
+
+function renderDynamicClock(){
+  const isDynamic = dynamicState.clock > 0;
+  document.querySelectorAll('#dynTypeRow .pill').forEach(button =>
+    button.classList.toggle('active', (button.dataset.type === 'dynamic') === isDynamic));
+  dynamicBox.style.display = isDynamic ? '' : 'none';
+  dynamicLiteSections.forEach(section => section.classList.toggle('dynHide', isDynamic));
+  if (!isDynamic) return;
+
+  document.getElementById('dynModeSection').style.display = dynamicState.supportsModes ? '' : 'none';
+  document.querySelectorAll('#dynModeRow .pill').forEach(button =>
+    button.classList.toggle('active', Number(button.dataset.mode) === dynamicState.mode));
+  const rotationRow = document.getElementById('dynRotRow');
+  rotationRow.style.display = dynamicState.mode === 2 ? '' : 'none';
+  rotationRow.innerHTML = DYNAMIC_ROTATION_OPTIONS.map(([minutes,label]) =>
+    `<button class="pill ${minutes === dynamicState.rotation ? 'active' : ''}" data-rotation="${minutes}">${label}</button>`).join('');
+  const rotationLabel = (DYNAMIC_ROTATION_OPTIONS.find(option => option[0] === dynamicState.rotation) || [0,`${dynamicState.rotation} min`])[1];
+  document.getElementById('dynHint').textContent =
+    dynamicState.mode === 1 ? 'The panel chooses a different face each time the clock appears.' :
+    dynamicState.mode === 2 ? `The panel rotates through the faces every ${rotationLabel}.` : '';
+  document.getElementById('dynGridSection').style.display =
+    (!dynamicState.supportsModes || dynamicState.mode === 0) ? '' : 'none';
+  renderDynamicGrid();
+}
+
+async function applyDynamicClockState(status){
+  const supported = Number.isInteger(Number(status.dynCount)) && Number(status.dynCount) > 0;
+  dynamicTypeSection.style.display = supported ? '' : 'none';
+  if (!supported){
+    dynamicBox.style.display = 'none';
+    dynamicLiteSections.forEach(section => section.classList.remove('dynHide'));
+    return;
+  }
+  dynamicState.clock = Number(status.dynClock) || 0;
+  dynamicState.supportsModes = ('dynMode' in status);
+  dynamicState.mode = dynamicState.supportsModes ? (Number(status.dynMode) || 0) : 0;
+  dynamicState.rotation = Number(status.dynRot) || 15;
+  if (dynamicState.clock > 0) lastDynamicFace = dynamicState.clock;
+  if (dynamicFaces.length !== Number(status.dynCount)) await loadDynamicFaces();
+  renderDynamicClock();
+}
+
+document.getElementById('dynTypeRow').addEventListener('click', async event => {
+  const button = event.target.closest('.pill');
+  if (!button) return;
+  const face = button.dataset.type === 'dynamic' ?
+    (lastDynamicFace >= 1 && lastDynamicFace <= dynamicFaces.length ? lastDynamicFace : 1) : 0;
+  if (await enviarControl({dynClock:face}) !== false){
+    dynamicState.clock = face;
+    renderDynamicClock();
+  }
+});
+document.getElementById('dynModeRow').addEventListener('click', async event => {
+  const button = event.target.closest('.pill');
+  if (!button) return;
+  const mode = Number(button.dataset.mode);
+  if (await enviarControl({dynMode:mode}) !== false){
+    dynamicState.mode = mode;
+    renderDynamicClock();
+  }
+});
+document.getElementById('dynRotRow').addEventListener('click', async event => {
+  const button = event.target.closest('.pill');
+  if (!button) return;
+  const rotation = Number(button.dataset.rotation);
+  if (await enviarControl({dynRot:rotation}) !== false){
+    dynamicState.rotation = rotation;
+    renderDynamicClock();
+  }
+});
+document.getElementById('dynFilterRow').addEventListener('click', event => {
+  const button = event.target.closest('.pill');
+  if (!button) return;
+  dynamicFilter = button.dataset.era;
+  renderDynamicGrid();
+});
+document.getElementById('dynGrid').addEventListener('click', async event => {
+  const card = event.target.closest('.dynCard');
+  if (!card) return;
+  const face = Number(card.dataset.face);
+  if (await enviarControl({dynClock:face}) !== false){
+    dynamicState.clock = face;
+    lastDynamicFace = face;
+    renderDynamicGrid();
+  }
+});
+
+/* ---------- CLOCK Mode: custom RGB color ---------- */
+const clockColorPicker = document.getElementById('clockColorPicker');
+const clockColorHex = document.getElementById('clockColorHex');
+let clockColorTimer = null;
+
+function mostrarColorRelojUI(hex){            // Update the interface without sending a request
+  clockColorPicker.value = hex.toLowerCase();
+  clockColorHex.value = hex.toUpperCase();
+}
+
+async function enviarColorReloj(hex){
+  refreshClockSwatchSelection(-1);            // Custom color: no palette swatch is selected
+  const ok = await enviarControl({ clockColorHex: hex });
+  if (!ok) setStatus('Could not change the clock color', 'err');
+}
+
+// While dragging the picker, send after 500 ms of inactivity; each request saves config.ini to the SD card
+clockColorPicker.addEventListener('input', (e) => {
+  mostrarColorRelojUI(e.target.value);
+  clearTimeout(clockColorTimer);
+  clockColorTimer = setTimeout(() => enviarColorReloj(e.target.value), 500);
+});
+clockColorPicker.addEventListener('change', (e) => {   // Send immediately when the color is confirmed
+  clearTimeout(clockColorTimer);
+  enviarColorReloj(e.target.value);
+});
+clockColorHex.addEventListener('change', (e) => {
+  let v = e.target.value.trim();
+  if (!v.startsWith('#')) v = '#' + v;
+  if (/^#[0-9A-Fa-f]{6}$/.test(v)){
+    mostrarColorRelojUI(v);
+    enviarColorReloj(v);
+  } else {
+    mostrarColorRelojUI(clockColorPicker.value);       // Invalid value: restore the previous color
+  }
+});
+
+/* ---------- CLOCK Mode: background (128x32 BMP in /relojes/imagenes) and position ---------- */
+const CLOCK_POSITIONS = ['Left', 'Center', 'Right'];
+const bgOverlay = document.getElementById('bgOverlay');
+const bgBody = document.getElementById('bgBody');
+
+function nombreFondoVisible(n){ return n ? n.replace(/\.bmp$/i, '') : 'Black'; }
+
+function aplicarFondoActualUI(activo){
+  document.getElementById('clockBgName').textContent = nombreFondoVisible(activo);
+  // Position only applies with a selected background; otherwise the clock uses the full width
+  document.getElementById('clockPosSection').style.display = activo ? '' : 'none';
+}
+
+async function pedirFondosReloj(){
+  const ip = ipEl.value.trim();
+  const res = await fetch(`http://${ip}/reloj/fondos`, { signal: AbortSignal.timeout(5000) });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  return res.json();
+}
+
+async function cargarFondosReloj(){
+  if (!ipEl.value.trim()) return;
+  const secFondo = document.getElementById('clockBgSection');
+  const secPos = document.getElementById('clockPosSection');
+  try {
+    const data = await pedirFondosReloj();
+    renderClockPosPills(Number.isInteger(data.pos) ? data.pos : 1);
+    secFondo.style.display = '';
+    aplicarFondoActualUI(data.active || '');
+  } catch (e) {
+    // Older firmware without this route, or no connection: hide both sections
+    secFondo.style.display = 'none';
+    secPos.style.display = 'none';
+  }
+}
+
+function avisoRelojPendiente(){
+  // In Clock mode changes appear immediately; in GIF mode they appear the next time the clock is shown
+  if (panelPlayModeActual !== 1) setStatus('Saved: it will appear the next time the clock is shown');
+}
+
+async function abrirFondosReloj(){
+  if (!ipEl.value.trim()){ setStatus('Set the panel IP in Settings (⚙)', 'err'); connPanel.classList.add('open'); return; }
+  bgOverlay.classList.add('open');
+  bgBody.innerHTML = '<div class="cfgLoading">Loading backgrounds...</div>';
+  try {
+    const data = await pedirFondosReloj();
+    bgMax = Number.isInteger(data.max) ? data.max : 24;
+    renderFondosReloj(data.items || [], data.active || '');
+  } catch (e){
+    bgBody.innerHTML = '<div class="cfgLoading">Could not load the background list.</div>';
+  }
+}
+
+function renderFondosReloj(items, activo){
+  bgItems = items;                                       // Used to detect when an upload replaces an existing background
+  actualizarEstadoSubida();
+  bgBody.replaceChildren();
+  const lista = document.createElement('div');
+  lista.className = 'plList';
+  [''].concat(items).forEach(valor => {                  // Empty string means no background
+    const el = document.createElement('div');
+    el.className = 'plItem' + (valor === activo ? ' active' : '');
+    const nombre = document.createElement('span');
+    nombre.textContent = nombreFondoVisible(valor);
+    const der = document.createElement('span');
+    der.className = 'plRight';
+    if (valor){
+      const papelera = document.createElement('button');
+      papelera.className = 'plTrash';
+      papelera.textContent = '❌';
+      papelera.title = 'Delete from SD card';
+      papelera.addEventListener('click', (ev) => { ev.stopPropagation(); borrarFondoReloj(valor); });
+      der.appendChild(papelera);
+    }
+    const check = document.createElement('span');
+    check.className = 'plCheck';
+    check.textContent = '●';
+    der.appendChild(check);
+    el.append(nombre, der);
+    el.addEventListener('click', () => seleccionarFondoReloj(valor));
+    lista.appendChild(el);
+  });
+  bgBody.appendChild(lista);
+  if (!items.length){
+    const vacio = document.createElement('div');
+    vacio.className = 'cfgLoading';
+    vacio.textContent = 'No 128x32 BMP images found in /relojes/imagenes on the SD card.';
+    bgBody.appendChild(vacio);
+  }
+}
+
+async function seleccionarFondoReloj(valor){
+  const ok = await enviarControl({ clockBg: valor });
+  if (!ok){ bgMensaje('Could not change the background', 'err'); return; }
+  aplicarFondoActualUI(valor);
+  avisoRelojPendiente();
+  setTimeout(() => bgOverlay.classList.remove('open'), 400);
+}
+
+function renderClockPosPills(activa){
+  const row = document.getElementById('clockPosRow');
+  row.replaceChildren();
+  CLOCK_POSITIONS.forEach((nombre, i) => {
+    const b = document.createElement('button');
+    b.className = 'pill' + (i === activa ? ' active' : '');
+    b.textContent = nombre;
+    b.addEventListener('click', async () => {
+      const ok = await enviarControl({ clockPos: i });
+      if (!ok) { setStatus('Could not change the position', 'err'); return; }
+      row.querySelectorAll('.pill').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      avisoRelojPendiente();
+    });
+    row.appendChild(b);
+  });
+}
+
+document.getElementById('clockBgBtn').addEventListener('click', () => { bgMensaje(''); abrirFondosReloj(); });
+document.getElementById('bgClose').addEventListener('click', () => { bgOverlay.classList.remove('open'); bgMensaje(''); });
+
+/* ---------- Upload and delete clock backgrounds ---------- */
+const BG_W = 128, BG_H = 32;
+const BG_MODOS = [
+  { id: 'recortar', texto: 'Crop' },
+  { id: 'ajustar',  texto: 'Fit'  },
+  { id: 'estirar',  texto: 'Stretch'  }
+];
+const bgFile = document.getElementById('bgFile');
+const bgUploadPanel = document.getElementById('bgUploadPanel');
+const bgPreview = document.getElementById('bgPreview');
+const bgNombre = document.getElementById('bgNombre');
+const bgDither = document.getElementById('bgDither');
+const bgNota = document.getElementById('bgNota');
+const bgModoRow = document.getElementById('bgModoRow');
+const bgModoPills = document.getElementById('bgModoPills');
+let bgImg = null, bgModo = 'recortar', bgRgba = null, bgItems = [];
+let bgMax = 24;                                          // Reported by GET /reloj/fondos as "max"
+const bgMsg = document.getElementById('bgMsg');
+let bgMsgTimer = null;
+
+function textoMaximo(){
+  return `Maximum of ${bgMax} backgrounds reached. Delete one before uploading another.`;
+}
+
+// Show messages inside the modal because it covers the page status line
+function bgMensaje(texto, tipo){
+  clearTimeout(bgMsgTimer);
+  bgMsg.textContent = texto || '';
+  bgMsg.className = 'bgMsg' + (texto ? ' ' + (tipo || '') : '');
+  if (texto && tipo === 'ok') bgMsgTimer = setTimeout(() => bgMensaje(''), 4000);
+}
+
+// Background count and upload button state
+function actualizarEstadoSubida(){
+  const lleno = bgItems.length >= bgMax;
+  document.getElementById('bgUploadTxt').textContent = lleno
+    ? `Maximum reached (${bgItems.length}/${bgMax}): delete one to upload another`
+    : `＋ Upload image… (${bgItems.length}/${bgMax})`;
+  document.getElementById('bgUploadBtn').classList.toggle('disabled', lleno);
+}
+
+// "My photo (1).jpg" -> "My_photo__1_.bmp": letters, numbers, _ and - only (max 27 characters plus .bmp)
+function normalizarNombreFondo(nombre){
+  let base = nombre.replace(/\.[^.]*$/, '');
+  base = base.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^A-Za-z0-9_-]/g, '_');
+  if (!base) base = 'background';
+  return base.slice(0, 27) + '.bmp';
+}
+
+// Floyd-Steinberg dithering to RGB565 (the panel uses the same levels), on 128x32 RGBA data
+function ditherRGB565(px){
+  const w = BG_W, h = BG_H;
+  const f = new Float32Array(w * h * 3);
+  for (let i = 0; i < w * h; i++){ f[i*3] = px[i*4]; f[i*3+1] = px[i*4+1]; f[i*3+2] = px[i*4+2]; }
+  for (let y = 0; y < h; y++){
+    for (let x = 0; x < w; x++){
+      for (let c = 0; c < 3; c++){
+        const i = (y * w + x) * 3 + c;
+        const old = Math.min(255, Math.max(0, f[i]));
+        let nv;
+        if (c === 1){ const q = Math.floor(old * 63 / 255 + 0.5); nv = (q << 2) | (q >> 4); }
+        else        { const q = Math.floor(old * 31 / 255 + 0.5); nv = (q << 3) | (q >> 2); }
+        const e = old - nv;
+        f[i] = nv;
+        if (x + 1 < w) f[i + 3] += e * 7 / 16;
+        if (y + 1 < h){
+          if (x > 0)     f[i + w * 3 - 3] += e * 3 / 16;
+          f[i + w * 3] += e * 5 / 16;
+          if (x + 1 < w) f[i + w * 3 + 3] += e / 16;
+        }
+      }
+    }
+  }
+  for (let i = 0; i < w * h; i++){ px[i*4] = f[i*3]; px[i*4+1] = f[i*3+1]; px[i*4+2] = f[i*3+2]; px[i*4+3] = 255; }
+}
+
+// Convert the image to 128x32. Images already at this size are copied pixel by pixel without smoothing or fit modes.
+function convertirFondo(img, modo, dither){
+  const c = document.createElement('canvas');
+  c.width = BG_W; c.height = BG_H;
+  const g = c.getContext('2d', { willReadFrequently: true });
+  g.fillStyle = '#000';
+  g.fillRect(0, 0, BG_W, BG_H);                         // Composite transparency over black
+  const sw = img.width, sh = img.height;
+  const exacta = (sw === BG_W && sh === BG_H);
+  g.imageSmoothingEnabled = !exacta;
+  g.imageSmoothingQuality = 'high';
+  let sx = 0, sy = 0, sW = sw, sH = sh, dx = 0, dy = 0, dW = BG_W, dH = BG_H;
+  if (!exacta){
+    const rs = sw / sh, rd = BG_W / BG_H;               // The panel aspect ratio is 4:1
+    if (modo === 'recortar'){
+      if (rs > rd){ sW = sh * rd; sx = (sw - sW) / 2; } else { sH = sw / rd; sy = (sh - sH) / 2; }
+    } else if (modo === 'ajustar'){
+      if (rs > rd){ dH = Math.round(BG_W / rs); dy = Math.floor((BG_H - dH) / 2); }
+      else        { dW = Math.round(BG_H * rs); dx = Math.floor((BG_W - dW) / 2); }
+    }                                                    // 'estirar': use as-is
+  }
+  g.drawImage(img, sx, sy, sW, sH, dx, dy, dW, dH);
+  const data = g.getImageData(0, 0, BG_W, BG_H);
+  if (dither) ditherRGB565(data.data);
+  return { rgba: data.data, exacta };
+}
+
+// RGBA 128x32 to 24-bit BMP (12,342 bytes). Each 384-byte row is divisible by 4, so no padding is needed.
+function rgbaABmp(rgba){
+  const rowBytes = BG_W * 3, size = 54 + rowBytes * BG_H;
+  const buf = new ArrayBuffer(size), dv = new DataView(buf), u8 = new Uint8Array(buf);
+  u8[0] = 0x42; u8[1] = 0x4D;
+  dv.setUint32(2, size, true);  dv.setUint32(10, 54, true);
+  dv.setUint32(14, 40, true);   dv.setInt32(18, BG_W, true);  dv.setInt32(22, BG_H, true);   // Positive height means rows are stored bottom-up
+  dv.setUint16(26, 1, true);    dv.setUint16(28, 24, true);   dv.setUint32(30, 0, true);
+  dv.setUint32(34, rowBytes * BG_H, true);  dv.setInt32(38, 2835, true);  dv.setInt32(42, 2835, true);
+  let o = 54;
+  for (let y = BG_H - 1; y >= 0; y--){
+    for (let x = 0; x < BG_W; x++){
+      const i = (y * BG_W + x) * 4;
+      u8[o++] = rgba[i + 2]; u8[o++] = rgba[i + 1]; u8[o++] = rgba[i];                       // B, G, R order
+    }
+  }
+  return buf;
+}
+
+function refrescarPreviewFondo(){
+  if (!bgImg) return;
+  const r = convertirFondo(bgImg, bgModo, bgDither.checked);
+  bgRgba = r.rgba;
+  bgPreview.getContext('2d').putImageData(new ImageData(r.rgba, BG_W, BG_H), 0, 0);
+  bgModoRow.style.display = r.exacta ? 'none' : '';
+  bgNota.textContent = r.exacta
+    ? 'This image is already 128x32 and will be used as-is.'
+    : `Original size ${bgImg.width}x${bgImg.height}: it will be converted to 128x32.`;
+}
+
+function renderBgModoPills(){
+  bgModoPills.replaceChildren();
+  BG_MODOS.forEach(m => {
+    const b = document.createElement('button');
+    b.className = 'pill' + (m.id === bgModo ? ' active' : '');
+    b.textContent = m.texto;
+    b.addEventListener('click', () => { bgModo = m.id; renderBgModoPills(); refrescarPreviewFondo(); });
+    bgModoPills.appendChild(b);
+  });
+}
+renderBgModoPills();
+
+function cerrarPanelSubida(){
+  bgUploadPanel.style.display = 'none';
+  bgImg = null; bgRgba = null;
+}
+
+bgFile.addEventListener('change', async () => {
+  const f = bgFile.files[0];
+  if (!f) return;
+  try {
+    bgImg = await createImageBitmap(f);
+  } catch (e){
+    setStatus('Could not read the image', 'err');
+    return;
+  }
+  bgNombre.value = normalizarNombreFondo(f.name);
+  bgDither.checked = false;                              // Dithering is off by default; an image already at 128x32 is left unchanged
+  bgUploadPanel.style.display = '';
+  refrescarPreviewFondo();
+  bgFile.value = '';                                     // Allow the same file to be selected again
+});
+bgDither.addEventListener('change', refrescarPreviewFondo);
+document.getElementById('bgUploadBtn').addEventListener('click', () => {
+  if (bgItems.length >= bgMax){ bgMensaje(textoMaximo(), 'err'); return; }
+  bgMensaje('');
+  bgFile.click();
+});
+document.getElementById('bgCancelar').addEventListener('click', cerrarPanelSubida);
+document.getElementById('bgSubir').addEventListener('click', subirFondo);
+
+async function subirFondo(){
+  const ip = ipEl.value.trim();
+  if (!ip || !bgRgba) return;
+  const nombre = normalizarNombreFondo(bgNombre.value.trim());
+  if (!bgItems.includes(nombre) && bgItems.length >= bgMax){ bgMensaje(textoMaximo(), 'err'); return; }
+  if (bgItems.includes(nombre) && !confirm(`"${nombreFondoVisible(nombre)}" already exists. Replace it?`)) return;
+
+  const fd = new FormData();
+  fd.append('file', new Blob([rgbaABmp(bgRgba)], { type: 'image/bmp' }), nombre);
+  const btn = document.getElementById('bgSubir');
+  btn.disabled = true;
+  setStatus('Uploading ' + nombre + '...');
+  try {
+    const res = await fetch(`http://${ip}/reloj/fondos`, { method: 'POST', body: fd, signal: AbortSignal.timeout(20000) });
+    const txt = await res.text();
+    if (!res.ok){
+      throw new Error(res.status === 409 ? textoMaximo()
+                    : res.status === 413 ? 'The file is too large for the panel.'
+                    : (txt || 'HTTP ' + res.status));
+    }
+    setStatus('Background "' + nombreFondoVisible(nombre) + '" uploaded', 'ok');
+    cerrarPanelSubida();
+    await abrirFondosReloj();                            // Reload the list
+    bgMensaje('Background "' + nombreFondoVisible(nombre) + '" uploaded', 'ok');
+  } catch (e){
+    const msg = (e instanceof TypeError) ? 'Could not connect to the panel' : e.message;
+    bgMensaje('Upload failed: ' + msg, 'err');
+    setStatus('Upload failed: ' + msg, 'err');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+async function borrarFondoReloj(valor){
+  if (!confirm(`Delete "${nombreFondoVisible(valor)}" from the SD card?`)) return;
+  const ip = ipEl.value.trim();
+  try {
+    const res = await fetch(`http://${ip}/reloj/fondos/borrar`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: valor }), signal: AbortSignal.timeout(5000)
+    });
+    if (!res.ok) throw new Error(await res.text());
+    setStatus('Background deleted', 'ok');
+    await abrirFondosReloj();                            // Reload the list
+    bgMensaje('Background "' + nombreFondoVisible(valor) + '" deleted', 'ok');
+    cargarFondosReloj();                                 // If it was active, refresh the tab row
+  } catch (e){
+    const msg = (e instanceof TypeError) ? 'Could not connect to the panel' : e.message;
+    bgMensaje('Delete failed: ' + msg, 'err');
+    setStatus('Delete failed: ' + msg, 'err');
+  }
 }
 
 cargarEstadoPanel();

@@ -45,7 +45,12 @@
     "ver": "Voir: ",
     "estilo": "Style: ",
 	"transicion": "Transition: ",
-	"color": "Couleur: "
+	"color": "Couleur: ",
+    "fondo_ninguno": "Aucun",
+    "fondo": "Fond : ",
+    "pos_izq": "Gauche",
+    "pos_centro": "Centre",
+    "pos_der": "Droite"
   },
   "SUBMENU_CLIMA": {
     "titulo": "METEO"
@@ -60,7 +65,8 @@
     "buffer": "Tampon: ",
     "antighos": "Antighosting: ",
     "mapear": "Mapper telec IR",
-    "reset": "Remise a zero"
+    "reset": "Remise a zero",
+    "sdspeed": "Lecture SD: "
   },
   "SUBMENU_MAPEADO_IR": {
     "titulo": "MAPPER TELECOMMANDE",
