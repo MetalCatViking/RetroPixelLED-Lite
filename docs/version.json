@@ -1,11 +1,11 @@
 {
-  "v": 316,
+  "v": 317,
   "url": "https://github.com/MetalCatViking/RetroPixelLED-Lite/raw/refs/heads/main/docs/firmware.bin",
   "notes": [
-    "Added animated dynamic clock faces with fixed, random, and timed rotation modes",
-    "Added clock backgrounds, custom RGB color, and clock position controls",
-    "Supports OTA upgrade from v3.1.5 with the existing partition layout",
-    "Integrated Wi-Fi setup portal",
-    "Fixed parsing of # in Wi-Fi SSIDs and passwords unless preceded by a space"
-  ]
+    "PWA works on iPhone, iPad, and Mac from the panel's SD card.",
+    "Update and recover the SD card PWA from the panel.",
+    "Reorganized Clock options in the OSD.",
+    "Shortened OTA success text to fit the display."
+  ],
+  "web": 201
 }
