@@ -1,5 +1,27 @@
 ## 📝 Changelog
 
+### [v3.1.7] - 2026-11-14 (English fork integration)
+
+#### ✨ Added
+* **PWA hosted by the panel:** serve the English control interface from the SD card so iPhone and iPad can use the panel API over the same HTTP origin.
+* **PWA recovery and update:** show a recovery page when the SD interface is missing, and download a validated replacement from the English fork repository.
+* **iOS web app metadata:** add Apple home-screen support and fork-hosted icons for the English PWA.
+
+#### ⚙️ Improvements
+* **Same-origin API access:** the PWA uses relative API paths when served by the panel and retains saved-address access when opened from GitHub Pages.
+* **Lightweight panel check:** check `/status` instead of fetching the full PWA page.
+* **Clock OSD menu:** group Lite and Dynamic clock controls into separate submenus while keeping `DYN_CLOCK` compatible.
+* **OTA confirmation:** shorten the success line so it fits the display.
+
+---
+
+### [v3.1.6] - 2026-11-01 (English fork integration)
+
+* Added dynamic clock faces, selection modes, clock background management, and instant switching between clock and GIF modes.
+* Preserved English firmware, Wi-Fi portal, diagnostics, SD speed settings, and fork-owned update URLs.
+
+---
+
 ### [v3.1.5] - 2026-10 (English fork)
 
 #### ✨ Added

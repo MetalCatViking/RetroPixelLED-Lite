@@ -1,4 +1,6 @@
-const CACHE_NAME = "retropixel-shell-v6";
+const PWA_VERSION = "2.0.1";
+const CACHE_PREFIX = "retropixel-shell-v";
+const CACHE_NAME = CACHE_PREFIX + PWA_VERSION;
 const APP_SHELL = [
   "index_EN.htm",
   "manifest_EN.json",

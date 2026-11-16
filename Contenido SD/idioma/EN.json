@@ -50,7 +50,20 @@
     "fondo": "Back: ",
     "pos_izq": "Left",
     "pos_centro": "Center",
-    "pos_der": "Right"
+    "pos_der": "Right",
+    "tipo": "Type: ",
+    "tipo_lite": "Lite",
+    "tipo_dinamico": "Dynamic",
+    "menu_lite": "Lite options",
+    "menu_dinamico": "Dynamic options >>",
+    "titulo_lite": "LITE CLOCK ",
+    "titulo_dinamico": "DYNAMIC CLOCK ",
+    "tema": "Face: ",
+    "modo": "Mode: ",
+    "modo_fijo": "Fixed",
+    "modo_aleatorio": "Random",
+    "modo_rotar": "Rotate",
+    "rotar": "Rotate: "
   },
   "SUBMENU_CLIMA": {
     "titulo": "WEATHER"
